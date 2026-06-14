@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tarefas"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:title="Tarefas" />
+
+    <item
+        android:id="@+id/nav_metas"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Metas" />
+
+    <item
+        android:id="@+id/nav_adicionar"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="Adicionar" />
+
+    <item
+        android:id="@+id/nav_anotacoes"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Anotações" />
+</menu>
