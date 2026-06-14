@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Arredondamento das bordas -->
+    <corners android:radius="16dp"/>
+    <!-- padding -> espaçamento interno
+    Exemplo:
+     <padding
+        android:left="16dp"
+        android:top="12dp"
+        android:right="16dp"
+        android:bottom="12dp" /> -->
+
+    <!-- Cor de fundo ou Gradiente
+    Exemplo:
+    <gradient
+        android:startColor="#6200EE"
+        android:endColor="#BB86FC"
+        android:angle="45" /> -->
+
+    <!-- Cor e espessura da borda -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000"/>
+</shape>
