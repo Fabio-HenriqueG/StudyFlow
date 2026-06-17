@@ -2,4 +2,8 @@
     <string name="app_name">StudyFlow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tarefas">Tarefas</string>
+    <string name="atrasadas">Atrasadas</string>
+    <string name="pendentes">Pendentes</string>
+    <string name="feitas">Feitas</string>
 </resources>
