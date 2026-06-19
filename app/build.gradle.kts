@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-fragment:2.9.8")
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

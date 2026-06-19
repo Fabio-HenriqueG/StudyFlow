@@ -20,5 +20,5 @@
     <!-- Cor e espessura da borda -->
     <stroke
         android:width="2dp"
-        android:color="#000000"/>
+        android:color="?attr/colorOutline"/>
 </shape>

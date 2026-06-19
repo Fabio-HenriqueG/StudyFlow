@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +62,23 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        TextView lblSaudacao = view.findViewById(R.id.lblSaudacao);
+
+
+        //Função para retornar bom dia/tarde/noite com base na hora (saudação)
+        int hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        String saudacao;
+        if (hora < 12) {
+            saudacao = "Bom dia!";
+        } else if (hora < 18) {
+            saudacao = "Boa tarde!";
+        } else {
+            saudacao = "Boa noite!";
+        }
+        lblSaudacao.setText(saudacao);
+        return view;
     }
 }

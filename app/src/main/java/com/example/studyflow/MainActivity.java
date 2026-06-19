@@ -1,6 +1,7 @@
 package com.example.studyflow;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         bottom_menu = findViewById(R.id.bottom_menu);
 
         bottom_menu.setOnItemSelectedListener(item -> {
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+
     }
 }
 

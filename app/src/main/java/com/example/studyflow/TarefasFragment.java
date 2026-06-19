@@ -1,12 +1,14 @@
 package com.example.studyflow;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
+
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,16 @@ public class TarefasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tarefas, container, false);
+        View view = inflater.inflate(R.layout.fragment_tarefas, container, false);
+
+        ImageButton btnVoltar = view.findViewById(R.id.btn_voltar);
+        btnVoltar.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        });
+        return view;
     }
 }
