@@ -9,12 +9,14 @@
         android:id="@+id/nav_metas"
         android:icon="@android:drawable/ic_menu_compass"
         android:title="Metas" />
-
     <item
         android:id="@+id/nav_adicionar"
         android:icon="@android:drawable/ic_input_add"
         android:title="Adicionar" />
-
+    <item
+        android:id="@+id/nav_checklist"
+        android:icon="@android:drawable/checkbox_off_background"
+        android:title="Checklists" />
     <item
         android:id="@+id/nav_anotacoes"
         android:icon="@android:drawable/ic_menu_edit"
