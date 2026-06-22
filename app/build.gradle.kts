@@ -36,6 +36,9 @@ android {
 }
 
 dependencies {
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.navigation:navigation-fragment:2.9.8")
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
@@ -45,4 +48,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+}
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
 }

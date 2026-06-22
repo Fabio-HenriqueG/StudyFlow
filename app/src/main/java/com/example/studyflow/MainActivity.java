@@ -42,7 +42,13 @@ public class MainActivity extends AppCompatActivity {
                 // Como você ainda não tem um MetasFragment, vou manter Anotacoes por enquanto
                 selectedFragment = new AnotacoesFragment();
             }
-
+            //Lista adicionar
+            if (item.getItemId() == R.id.nav_adicionar) { // O ID do seu botão de "+" no menu inferior
+                // Cria e exibe a listinha deslizando de baixo para cima
+                MenuMaisBottomSheet bottomSheet = new MenuMaisBottomSheet();
+                bottomSheet.show(getSupportFragmentManager(), "MenuMaisBottomSheet");
+                return true;
+            }
             if (selectedFragment != null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
