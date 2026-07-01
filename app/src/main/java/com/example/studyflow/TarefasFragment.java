@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -76,11 +75,14 @@ public class TarefasFragment extends Fragment {
 
         ImageButton btnVoltar = view.findViewById(R.id.btn_voltar);
         btnVoltar.setOnClickListener(v -> {
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+            // Volta para o fragmento anterior se existir na pilha, ou volta para Home
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else {
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment())
+                        .commit();
+            }
         });
         return view;
 

@@ -10,4 +10,12 @@
     <string name="titulo">Título</string>
     <string name="descricao">Descrição</string>
     <string name="selecione_a_data">Selecione a Data:</string>
+    <string name="voltar">Voltar</string>
+    <string name="bom_dia">Bom dia!</string>
+    <string name="anotacoes_recentes">Anotações recentes</string>
+    <string name="metas_principais">Metas principais</string>
+    <string name="metas">Metas</string>
+    <string name="checklist">Checklist</string>
+    <string name="em_breve_metas">Em breve você poderá gerenciar suas metas aqui!</string>
+    <string name="em_breve_checklist">Em breve você poderá gerenciar seu checklist aqui!</string>
 </resources>
