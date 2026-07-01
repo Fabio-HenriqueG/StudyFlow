@@ -1,14 +1,24 @@
 package com.example.studyflow;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Tarefa;
+
+import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +27,7 @@ import android.widget.ImageButton;
  */
 public class TarefasFragment extends Fragment {
 
+    private RecyclerView recyclerTarefas;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,5 +83,41 @@ public class TarefasFragment extends Fragment {
                     .commit();
         });
         return view;
+
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 1. Vincula o componente Java ao ID do RecyclerView que você colocou no XML
+        recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 2. Toda vez que o usuário abrir o app ou voltar da tela de criação, atualiza a lista
+        carregarTarefasDoBanco();
+    }
+
+    private void carregarTarefasDoBanco() {
+        // 3. Busca no banco em segundo plano (Thread separada) para o app não travar
+        Executors.newSingleThreadExecutor().execute(() -> {
+
+            // Puxa a lista de tarefas do Room
+            List<Tarefa> listaDoBanco = AppDatabase.getInstance(getContext()).tarefaDao().buscarTodas();
+
+            // 4. Volta para a Main Thread (linha principal) para desenhar na tela do celular
+            getActivity().runOnUiThread(() -> {
+
+                // CHAMA O SEU ADAPTER PRONTO!
+                // Passamos a lista do banco para o construtor do seu TarefaAdapter
+                TarefaAdapter adapter = new TarefaAdapter(listaDoBanco);
+
+                // Conecta o seu adapter ao RecyclerView da tela
+                recyclerTarefas.setAdapter(adapter);
+
+            });
+        });
     }
 }

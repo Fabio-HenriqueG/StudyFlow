@@ -6,4 +6,8 @@
     <string name="atrasadas">Atrasadas</string>
     <string name="pendentes">Pendentes</string>
     <string name="feitas">Feitas</string>
+    <string name="criar_tarefa">Criar Tarefa</string>
+    <string name="titulo">Título</string>
+    <string name="descricao">Descrição</string>
+    <string name="selecione_a_data">Selecione a Data:</string>
 </resources>

@@ -2,11 +2,21 @@ package com.example.studyflow;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Tarefa;
+
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,8 +24,10 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class CriaTarefaFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
+    //Variáveis da classe de criar as tarefas
+    private EditText txtTituloTarefa;
+    private EditText txtDescricaoTarefa;
+    private Button btnSalvarTarefa;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -58,7 +70,62 @@ public class CriaTarefaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //Aqui ele chama o layout do fragment na tela
         return inflater.inflate(R.layout.fragment_cria_tarefa, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Vincular as variáveis Java aos IDs reais do seu XML (Substitua pelos IDs reais do seu XML se forem diferentes)
+        txtTituloTarefa = view.findViewById(R.id.txtTituloTarefa);
+        txtDescricaoTarefa = view.findViewById(R.id.txtDescricaoTarefa);
+        btnSalvarTarefa = view.findViewById(R.id.btnSalvarTarefa);
+
+        // Configurar a ação de clique do botão Salvar
+        btnSalvarTarefa.setOnClickListener(v -> salvarTarefaNoBanco());
+    }
+
+    // 3. Método responsável por capturar, validar e mandar para o Room
+    private void salvarTarefaNoBanco() {
+        String titulo = txtTituloTarefa.getText().toString().trim();
+        String descricao = txtDescricaoTarefa.getText().toString().trim();
+
+        // Validação obrigatória
+        if (titulo.isEmpty()) {
+            txtTituloTarefa.setError("O título da tarefa é obrigatório!");
+            txtTituloTarefa.requestFocus();
+            return;
+        }
+
+        // Dados simulados para o banco aceitar o registro agora
+        long dataLimiteSimulada = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24 horas para frente
+        int frequenciaPadrao = 1;
+
+        // Criar o objeto Tarefa com os dados da tela
+        Tarefa novaTarefa = new Tarefa(titulo, descricao, dataLimiteSimulada, frequenciaPadrao);
+
+        // Executar a inserção em segundo plano (Thread dedicada para o banco)
+        Executors.newSingleThreadExecutor().execute(() -> {
+
+            // Grava de fato no banco SQLite do celular
+            AppDatabase.getInstance(getContext()).tarefaDao().inserir(novaTarefa);
+
+            // Voltar para a Main Thread para atualizar os elementos visuais
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    // Limpar campos
+                    txtTituloTarefa.setText("");
+                    txtDescricaoTarefa.setText("");
+
+                    // Mostrar mensagem de sucesso
+                    Toast.makeText(getContext(), "Tarefa salva com sucesso!", Toast.LENGTH_SHORT).show();
+
+                    // Fecha essa tela e volta automaticamente para a tela anterior
+                    getParentFragmentManager().popBackStack();
+                });
+            }
+
+        });
     }
 }

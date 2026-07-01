@@ -3,7 +3,7 @@
     <item
         android:id="@+id/nav_tarefas"
         android:icon="@android:drawable/ic_menu_zoom"
-        android:title="Adicionar"/>
+        android:title="Tarefas"/>
     <item
         android:id="@+id/nav_metas"
         android:icon="@android:drawable/ic_menu_compass"

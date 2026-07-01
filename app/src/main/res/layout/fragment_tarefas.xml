@@ -26,49 +26,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <ScrollView
-            android:id="@+id/scrollViewTarefas"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblTarefas">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/estilo_quadrado1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/estilo_quadrado1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/estilo_quadrado1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/estilo_quadrado1" />
-
-            </LinearLayout>
-        </ScrollView>
-
         <ImageButton
             android:id="@+id/btn_voltar"
             android:layout_width="35dp"
@@ -80,5 +37,19 @@
             android:src="@drawable/seta_voltar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTarefas"
+            android:layout_width="409dp"
+            android:layout_height="817dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="1dp"
+            app:layout="@layout/item_tarefa"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTarefas" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

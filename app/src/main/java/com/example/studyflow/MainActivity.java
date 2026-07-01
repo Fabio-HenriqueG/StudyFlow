@@ -39,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_anotacoes) {
                 selectedFragment = new AnotacoesFragment();
             } else if (itemId == R.id.nav_metas) {
-                // Como você ainda não tem um MetasFragment, vou manter Anotacoes por enquanto
-                selectedFragment = new AnotacoesFragment();
+                selectedFragment = new MetasFragment();
+            } else if (itemId == R.id.nav_checklist) {
+                selectedFragment = new CheckListFragment();
             }
+
             //Lista adicionar
             if (item.getItemId() == R.id.nav_adicionar) { // O ID do seu botão de "+" no menu inferior
                 // Cria e exibe a listinha deslizando de baixo para cima

@@ -36,9 +36,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.recyclerview)
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-compiler:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.navigation:navigation-fragment:2.9.8")
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)

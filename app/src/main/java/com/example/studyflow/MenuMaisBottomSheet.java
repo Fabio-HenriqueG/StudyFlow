@@ -9,14 +9,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Infla o layout da listinha que criamos
         return inflater.inflate(R.layout.layout_menu_mais, container, false);
     }
