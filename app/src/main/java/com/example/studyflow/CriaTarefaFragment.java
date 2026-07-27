@@ -28,6 +28,7 @@ public class CriaTarefaFragment extends Fragment {
     private EditText txtTituloTarefa;
     private EditText txtDescricaoTarefa;
     private Button btnSalvarTarefa;
+    private Tarefa tarefaEmEdicao;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -77,10 +78,20 @@ public class CriaTarefaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Vincular as variáveis Java aos IDs reais do seu XML (Substitua pelos IDs reais do seu XML se forem diferentes)
+        // Vincular as variáveis Java aos IDs reais do seu XML
         txtTituloTarefa = view.findViewById(R.id.txtTituloTarefa);
         txtDescricaoTarefa = view.findViewById(R.id.txtDescricaoTarefa);
         btnSalvarTarefa = view.findViewById(R.id.btnSalvarTarefa);
+
+        // Verifica se recebemos uma tarefa para editar
+        if (getArguments() != null && getArguments().containsKey("tarefa_editar")) {
+            tarefaEmEdicao = (Tarefa) getArguments().getSerializable("tarefa_editar");
+            if (tarefaEmEdicao != null) {
+                txtTituloTarefa.setText(tarefaEmEdicao.titulo);
+                txtDescricaoTarefa.setText(tarefaEmEdicao.descricao);
+                btnSalvarTarefa.setText("Atualizar");
+            }
+        }
 
         // Configurar a ação de clique do botão Salvar
         btnSalvarTarefa.setOnClickListener(v -> salvarTarefaNoBanco());
@@ -98,34 +109,37 @@ public class CriaTarefaFragment extends Fragment {
             return;
         }
 
-        // Dados simulados para o banco aceitar o registro agora
-        long dataLimiteSimulada = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24 horas para frente
-        int frequenciaPadrao = 1;
+        // Se estivermos editando, atualizamos o objeto existente. Se não, criamos um novo.
+        if (tarefaEmEdicao != null) {
+            tarefaEmEdicao.titulo = titulo;
+            tarefaEmEdicao.descricao = descricao;
+            
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDatabase.getInstance(getContext()).tarefaDao().atualizar(tarefaEmEdicao);
+                finalizarEDarFeedback("Tarefa atualizada com sucesso!");
+            });
+        } else {
+            // Dados simulados para o banco aceitar o registro agora
+            long dataLimiteSimulada = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24 horas para frente
+            int frequenciaPadrao = 1;
 
-        // Criar o objeto Tarefa com os dados da tela
-        Tarefa novaTarefa = new Tarefa(titulo, descricao, dataLimiteSimulada, frequenciaPadrao);
+            // Criar o objeto Tarefa com os dados da tela
+            Tarefa novaTarefa = new Tarefa(titulo, descricao, dataLimiteSimulada, frequenciaPadrao);
 
-        // Executar a inserção em segundo plano (Thread dedicada para o banco)
-        Executors.newSingleThreadExecutor().execute(() -> {
+            // Executar a inserção em segundo plano
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDatabase.getInstance(getContext()).tarefaDao().inserir(novaTarefa);
+                finalizarEDarFeedback("Tarefa salva com sucesso!");
+            });
+        }
+    }
 
-            // Grava de fato no banco SQLite do celular
-            AppDatabase.getInstance(getContext()).tarefaDao().inserir(novaTarefa);
-
-            // Voltar para a Main Thread para atualizar os elementos visuais
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    // Limpar campos
-                    txtTituloTarefa.setText("");
-                    txtDescricaoTarefa.setText("");
-
-                    // Mostrar mensagem de sucesso
-                    Toast.makeText(getContext(), "Tarefa salva com sucesso!", Toast.LENGTH_SHORT).show();
-
-                    // Fecha essa tela e volta automaticamente para a tela anterior
-                    getParentFragmentManager().popBackStack();
-                });
-            }
-
-        });
+    private void finalizarEDarFeedback(String mensagem) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
+                getParentFragmentManager().popBackStack();
+            });
+        }
     }
 }
