@@ -24,4 +24,7 @@ public interface TarefaDao {
 
     @Query("SELECT * FROM tarefas ORDER BY dataLimite ASC")
     List<Tarefa> buscarTodas(); // Esse método vai puxar todas as tarefas salvas para mostrar na tela inicial
+
+    @Query("SELECT * FROM tarefas WHERE id = :id")
+    Tarefa buscarPorId(int id); // Busca uma tarefa específica pelo ID
 }

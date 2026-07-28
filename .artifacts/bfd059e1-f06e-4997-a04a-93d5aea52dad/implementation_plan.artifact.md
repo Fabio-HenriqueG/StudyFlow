@@ -1,47 +1,47 @@
-# Implementar Opções de Editar e Excluir nas Tarefas
+# Modernização Visual e Responsividade com Material 3
 
-Este plano detalha a adição de um botão de opções em cada item da lista de tarefas, permitindo que o usuário edite ou exclua uma tarefa diretamente do `RecyclerView`.
+Este plano detalha a reformulação completa da interface do StudyFlow para seguir os princípios do Material Design 3, garantindo um visual limpo, profissional e que se adapta automaticamente ao tema do sistema (Claro/Escuro).
 
 ## User Review Required
 
 > [!IMPORTANT]
-> A funcionalidade de edição exigirá modificações no `CriaTarefaFragment` para que ele possa receber uma tarefa existente e preencher os campos automaticamente.
+> A mudança para Material 3 alterará significativamente o visual de botões e campos de texto para um estilo mais moderno e arredondado.
 
 ## Proposed Changes
 
-### [Componente] Layout e Recursos
+### [Componente] Temas e Estilos
+
+#### [MODIFY] [themes.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values/themes.xml)
+- Definir cores semânticas usando atributos do Material 3 (`colorPrimary`, `colorSurface`, etc.).
+- Configurar estilos globais para botões e campos de texto.
+
+#### [MODIFY] [themes.xml (night)](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values-night/themes.xml)
+- Configurar as mesmas cores semânticas, mas com tons otimizados para o modo escuro.
+
+### [Componente] Layouts Principais
+
+#### [MODIFY] [activity_main.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/activity_main.xml)
+- Remover cores hardcoded do `BottomNavigationView`.
+- Ajustar para que ele use as cores do tema.
+
+#### [MODIFY] [fragment_tarefas.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_tarefas.xml)
+- Refinar espaçamentos.
+- Usar cores de texto dinâmicas.
+
+#### [MODIFY] [fragment_cria_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_cria_tarefa.xml)
+- Substituir `EditText` simples por `TextInputLayout` com `MaterialTextInputEditText`.
+- Usar `MaterialButton`.
+- Melhorar a hierarquia visual.
+
+### [Componente] Itens de Lista
 
 #### [MODIFY] [item_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_tarefa.xml)
-- Adicionar um `ImageButton` com um ícone de "mais opções" (três pontos verticais).
-- Ajustar o `RelativeLayout` para que o botão fique posicionado à direita, ao lado da data ou do título.
-
-### [Componente] Lógica do Adapter
-
-#### [MODIFY] [TarefaAdapter.java](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/java/com/example/studyflow/TarefaAdapter.java)
-- Atualizar o `TarefaViewHolder` para incluir o novo `ImageButton`.
-- No `onBindViewHolder`, configurar o clique do botão para exibir um `PopupMenu`.
-- Implementar as ações do `PopupMenu`:
-    - **Editar**: Navegar para o `CriaTarefaFragment` passando a tarefa selecionada.
-    - **Excluir**: Chamar o `TarefaDao` para remover a tarefa do banco de dados e atualizar a lista no Adapter.
-
-### [Componente] Criação/Edição de Tarefas
-
-#### [MODIFY] [CriaTarefaFragment.java](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/java/com/example/studyflow/CriaTarefaFragment.java)
-- Adicionar suporte para receber um objeto `Tarefa` via `Arguments`.
-- Se uma tarefa for recebida, preencher os campos `EditText` e mudar o texto do botão para "Atualizar".
-- Alterar a lógica de salvamento para decidir entre `inserir` ou `atualizar` no banco de dados.
-
-#### [MODIFY] [TarefaDao.java](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/java/com/example/studyflow/data/dao/TarefaDao.java)
-- Adicionar os métodos `@Update void atualizar(Tarefa tarefa)` e `@Delete void excluir(Tarefa tarefa)`.
+- Usar `MaterialCardView`.
+- Ajustar cores de texto para `?attr/colorOnSurface` e `?attr/colorOnSurfaceVariant`.
 
 ## Verification Plan
 
-### Automated Tests
-- Não se aplica (verificação manual via interface).
-
 ### Manual Verification
-1. Abrir a tela de tarefas.
-2. Verificar se o botão de opções aparece em cada item.
-3. Clicar no botão e verificar se o menu com "Editar" e "Excluir" é exibido.
-4. Testar a exclusão: a tarefa deve sumir da lista imediatamente.
-5. Testar a edição: deve abrir a tela de criação com os dados preenchidos, e ao salvar, a tarefa original deve ser atualizada.
+1. **Tema Claro/Escuro**: Alternar o tema do sistema do celular e verificar se o app muda as cores corretamente.
+2. **Responsividade**: Testar em diferentes tamanhos de tela (se possível no emulador) para garantir que os elementos não fiquem cortados.
+3. **Usabilidade**: Verificar se os campos de texto e botões têm estados visuais claros (foco, clique).

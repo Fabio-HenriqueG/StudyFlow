@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -103,23 +104,30 @@ public class TarefasFragment extends Fragment {
     }
 
     private void carregarTarefasDoBanco() {
+        // Capturamos o contexto antes de abrir a Thread para ser seguro
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         // 3. Busca no banco em segundo plano (Thread separada) para o app não travar
         Executors.newSingleThreadExecutor().execute(() -> {
 
-            // Puxa a lista de tarefas do Room
-            List<Tarefa> listaDoBanco = AppDatabase.getInstance(getContext()).tarefaDao().buscarTodas();
+            // Puxa a lista de tarefas do Room usando o contexto seguro
+            List<Tarefa> listaDoBanco = AppDatabase.getInstance(appContext).tarefaDao().buscarTodas();
 
             // 4. Volta para a Main Thread (linha principal) para desenhar na tela do celular
-            getActivity().runOnUiThread(() -> {
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
 
-                // CHAMA O SEU ADAPTER PRONTO!
-                // Passamos a lista do banco para o construtor do seu TarefaAdapter
-                TarefaAdapter adapter = new TarefaAdapter(listaDoBanco);
+                    // CHAMA O SEU ADAPTER PRONTO!
+                    // Passamos a lista do banco para o construtor do seu TarefaAdapter
+                    TarefaAdapter adapter = new TarefaAdapter(listaDoBanco);
 
-                // Conecta o seu adapter ao RecyclerView da tela
-                recyclerTarefas.setAdapter(adapter);
+                    // Conecta o seu adapter ao RecyclerView da tela
+                    recyclerTarefas.setAdapter(adapter);
 
-            });
+                });
+            }
         });
     }
 }

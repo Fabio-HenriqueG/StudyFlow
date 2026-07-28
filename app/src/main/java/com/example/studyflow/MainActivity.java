@@ -1,13 +1,27 @@
 package com.example.studyflow;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +40,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bottom_menu = findViewById(R.id.bottom_menu);
+
+        // 1. Criar o canal de notificações logo que o app abre
+        NotificacaoHelper.criarCanalNotificacao(this);
+
+        // 2. Pedir permissão para enviar notificações (apenas para Android 13 ou mais novo)
+        pedirPermissaoNotificacao();
+
+        // 3. Agendar o verificador de tarefas em segundo plano para rodar a cada 15 minutos
+        agendarVerificadorTarefas();
 
         bottom_menu.setOnItemSelectedListener(item -> {
             // Reabilita a seleção visual quando um item é clicado
@@ -59,5 +82,47 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    /**
+     * Pede permissão ao usuário para mostrar notificações.
+     * Necessário a partir do Android 13.
+     */
+    private void pedirPermissaoNotificacao() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+
+                // Registra o pedido de permissão
+                ActivityResultLauncher<String> requestPermissionLauncher =
+                        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                            if (!isGranted) {
+                                Toast.makeText(this, "Você não receberá alertas de tarefas.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                // Abre a janelinha do Android perguntando se o usuário aceita
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    /**
+     * Configura o WorkManager para rodar o nosso código de verificação
+     * periodicamente, garantindo que as notificações sejam enviadas.
+     */
+    private void agendarVerificadorTarefas() {
+        // Criamos um pedido de trabalho que se repete a cada 15 minutos (mínimo permitido pelo Android)
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+                NotificacaoWorker.class, 
+                15, TimeUnit.MINUTES
+        ).build();
+
+        // Mandamos o Android começar a executar esse trabalho.
+        // KEEP garante que se já estiver rodando, ele não cria outro duplicado.
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "VerificadorPrazos",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
     }
 }

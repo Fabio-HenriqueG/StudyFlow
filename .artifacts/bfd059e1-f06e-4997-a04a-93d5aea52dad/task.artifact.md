@@ -1,9 +1,10 @@
-# Tarefas para Implementar Opções de Editar e Excluir
+# Tarefas para Modernização Visual e Estilização
 
-- [x] Atualizar o DAO de tarefas (`TarefaDao.java`)
-- [x] Criar ícone de opções no projeto
-- [x] Modificar o layout do item da lista (`item_tarefa.xml`)
-- [x] Atualizar o Adapter (`TarefaAdapter.java`) para lidar com o menu de opções
-- [x] Adaptar o fragmento de criação (`CriaTarefaFragment.java`) para suportar edição
-- [x] Tornar a classe `Tarefa` serializável para permitir passagem entre fragmentos
-- [ ] Testar as funcionalidades de editar e excluir
+- [x] Definir paleta de cores Material 3 (`colors.xml`)
+- [x] Configurar Temas Claro e Escuro (`themes.xml`)
+- [x] Modernizar o Layout Principal (`activity_main.xml`)
+- [x] Modernizar a Lista de Tarefas (`fragment_tarefas.xml`)
+- [x] Refatorar Item da Lista (`item_tarefa.xml`) com MaterialCardView
+- [x] Modernizar Tela de Criação (`fragment_cria_tarefa.xml`) com TextInputLayout
+- [x] Harmonizar outros fragmentos (Home, Anotações, Metas, Checklist)
+- [x] Validar suporte a Modo Escuro

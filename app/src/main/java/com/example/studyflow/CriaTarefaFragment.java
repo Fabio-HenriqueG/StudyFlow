@@ -1,22 +1,31 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Tarefa;
 
+import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +37,9 @@ public class CriaTarefaFragment extends Fragment {
     private EditText txtTituloTarefa;
     private EditText txtDescricaoTarefa;
     private Button btnSalvarTarefa;
+    private CalendarView calendarioTarefa;
     private Tarefa tarefaEmEdicao;
+    private long dataSelecionada; // Guarda a data que o usuário clicou no calendário
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -82,6 +93,17 @@ public class CriaTarefaFragment extends Fragment {
         txtTituloTarefa = view.findViewById(R.id.txtTituloTarefa);
         txtDescricaoTarefa = view.findViewById(R.id.txtDescricaoTarefa);
         btnSalvarTarefa = view.findViewById(R.id.btnSalvarTarefa);
+        calendarioTarefa = view.findViewById(R.id.calendario_tarefa);
+
+        // Define a data selecionada inicialmente como a data atual (hoje)
+        dataSelecionada = calendarioTarefa.getDate();
+
+        // Escuta quando o usuário clica em outro dia no calendário
+        calendarioTarefa.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            dataSelecionada = calendar.getTimeInMillis();
+        });
 
         // Verifica se recebemos uma tarefa para editar
         if (getArguments() != null && getArguments().containsKey("tarefa_editar")) {
@@ -109,36 +131,83 @@ public class CriaTarefaFragment extends Fragment {
             return;
         }
 
+        // Capturamos o contexto da aplicação para usar dentro da Thread de forma segura
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         // Se estivermos editando, atualizamos o objeto existente. Se não, criamos um novo.
         if (tarefaEmEdicao != null) {
             tarefaEmEdicao.titulo = titulo;
             tarefaEmEdicao.descricao = descricao;
+            tarefaEmEdicao.dataLimite = dataSelecionada; // Atualiza a data também na edição
             
             Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).tarefaDao().atualizar(tarefaEmEdicao);
-                finalizarEDarFeedback("Tarefa atualizada com sucesso!");
+                AppDatabase.getInstance(appContext).tarefaDao().atualizar(tarefaEmEdicao);
+                
+                // Se o prazo for para hoje, agenda o alerta imediato
+                if (DateUtils.isToday(tarefaEmEdicao.dataLimite)) {
+                    agendarAlertaImediato(appContext, tarefaEmEdicao.id);
+                }
+                
+                finalizarEDarFeedback(appContext, "Tarefa atualizada com sucesso!");
             });
         } else {
-            // Dados simulados para o banco aceitar o registro agora
-            long dataLimiteSimulada = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24 horas para frente
+            // Frequência padrão
             int frequenciaPadrao = 1;
 
-            // Criar o objeto Tarefa com os dados da tela
-            Tarefa novaTarefa = new Tarefa(titulo, descricao, dataLimiteSimulada, frequenciaPadrao);
+            // Criar o objeto Tarefa com os dados da tela e a data do calendário
+            Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, frequenciaPadrao);
 
             // Executar a inserção em segundo plano
             Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).tarefaDao().inserir(novaTarefa);
-                finalizarEDarFeedback("Tarefa salva com sucesso!");
+                // Ao inserir, o banco gera um novo ID. Precisamos dele para o alerta.
+                AppDatabase.getInstance(appContext).tarefaDao().inserir(novaTarefa);
+                
+                // Para pegar o ID que acabou de ser gerado, vamos buscar a última tarefa inserida
+                // (ou poderíamos mudar o DAO para retornar o long do ID inserido)
+                List<Tarefa> todas = AppDatabase.getInstance(appContext).tarefaDao().buscarTodas();
+                if (!todas.isEmpty()) {
+                    Tarefa inserida = todas.get(todas.size() - 1); // Simplificação
+                    
+                    // Se o prazo for para hoje, agenda o alerta de 10 segundos
+                    if (DateUtils.isToday(inserida.dataLimite)) {
+                        agendarAlertaImediato(appContext, inserida.id);
+                    }
+                }
+
+                finalizarEDarFeedback(appContext, "Tarefa salva com sucesso!");
             });
         }
     }
 
-    private void finalizarEDarFeedback(String mensagem) {
+    /**
+     * Agenda uma notificação para aparecer 10 segundos depois de criar a tarefa de hoje.
+     */
+    private void agendarAlertaImediato(Context context, int tarefaId) {
+        // Dados que o Worker vai precisar (ID da tarefa)
+        Data inputData = new Data.Builder()
+                .putInt("tarefa_id", tarefaId)
+                .build();
+
+        // Cria o pedido de trabalho único com delay de 10 segundos
+        OneTimeWorkRequest alertaRequest = new OneTimeWorkRequest.Builder(NotificacaoImediataWorker.class)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                .setInputData(inputData)
+                .build();
+
+        // Envia para o WorkManager
+        WorkManager.getInstance(context).enqueue(alertaRequest);
+    }
+
+    private void finalizarEDarFeedback(Context context, String mensagem) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
-                getParentFragmentManager().popBackStack();
+                Toast.makeText(context, mensagem, Toast.LENGTH_SHORT).show();
+                // Verifica se o fragmento ainda está anexado antes de fechar
+                if (isAdded()) {
+                    getParentFragmentManager().popBackStack();
+                }
             });
         }
     }

@@ -1,33 +1,32 @@
-# Implementação de Opções de Tarefas (Editar/Excluir)
+# Modernização Visual com Material 3
 
-As funcionalidades de edição e exclusão de tarefas foram implementadas com sucesso. Agora, cada item da lista possui um menu de opções acessível por um botão de três pontos.
+Transformamos a interface do StudyFlow para um padrão moderno, limpo e totalmente adaptável ao tema do sistema (Claro e Escuro).
 
-## Mudanças Realizadas
+## O que foi melhorado
 
-### 1. Interface do Usuário
-- **Novo Ícone**: Adicionado `ic_more_vert.xml` para representar o menu de opções.
-- **Layout de Item**: Modificado `item_tarefa.xml` para incluir o botão de opções posicionado à direita do título e data.
+### 1. Sistema de Cores Dinâmico
+- **Material 3**: Implementamos o sistema de cores do Material Design 3.
+- **Modo Escuro**: O app agora muda todas as cores automaticamente conforme a configuração do celular do usuário.
+- **Cores Semânticas**: Substituímos cores fixas (como `#FFFFFF`) por atributos dinâmicos (como `?attr/colorSurface`), garantindo que o texto sempre seja legível em qualquer fundo.
 
-### 2. Lógica de Negócio e Dados
-- **TarefaDao**: Adicionados métodos `@Update` e `@Delete` para permitir a manipulação de tarefas existentes.
-- **Entidade Tarefa**: Implementada a interface `Serializable` para permitir que objetos de tarefa sejam passados como argumentos entre fragmentos.
-- **TarefaAdapter**:
-    - Implementada a exibição de um `PopupMenu` ao clicar no botão de opções.
-    - Implementada a exclusão direta com atualização imediata da lista.
-    - Implementada a navegação para a tela de edição.
+### 2. Componentes Modernizados
+- **Campos de Texto**: Na tela de criação, agora usamos o estilo "Outlined" do Material 3, que é muito mais elegante e funcional.
+- **Cartões de Tarefas**: Os itens da lista agora são `MaterialCardView`, com bordas arredondadas e um design mais leve.
+- **Botões**: Todos os botões foram atualizados para o padrão Material 3, com feedback visual aprimorado ao clicar.
 
-### 3. Fluxo de Edição
-- **CriaTarefaFragment**:
-    - Agora detecta se recebeu uma tarefa para edição através de `arguments`.
-    - Preenche os campos automaticamente se estiver em modo de edição.
-    - O botão muda o texto para "Atualizar".
-    - A lógica de salvamento diferencia entre inserir uma nova tarefa ou atualizar uma existente.
+### 3. Layout Responsivo e Limpo
+- **Espaçamentos**: Ajustamos margens e paddings em todas as telas para dar mais "ar" ao design.
+- **Hierarquia Visual**: Títulos maiores e cores de destaque ajudam o usuário a focar no que é importante.
+- **Menu Inferior**: O menu de navegação foi simplificado para seguir o novo padrão visual.
+
+## Arquivos Principais
+
+- [themes.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values/themes.xml): Configuração central do novo estilo.
+- [fragment_cria_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_cria_tarefa.xml): Exemplo da nova interface de formulário.
+- [item_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_tarefa.xml): O novo visual dos cards de tarefas.
 
 ## Como Testar
-1. Vá para a tela de **Tarefas**.
-2. Clique no ícone de três pontos (`⋮`) em qualquer tarefa.
-3. Escolha **Excluir** para remover a tarefa da lista.
-4. Escolha **Editar** para abrir a tela de criação com os dados da tarefa preenchidos.
-5. Altere o título ou descrição e clique em **Atualizar** para salvar as mudanças.
-
-![Screenshot do item com o botão de opções](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_tarefa.xml)
+1. Abra o app no **Tema Claro**.
+2. Vá nas configurações do seu Android e mude para o **Tema Escuro**.
+3. Volte para o StudyFlow e veja como ele se adaptou instantaneamente.
+4. Navegue pelas abas e note como os títulos e botões estão mais harmônicos.

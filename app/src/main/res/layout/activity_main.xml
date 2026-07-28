@@ -10,21 +10,12 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_menu"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="@color/blue_menu"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/menu_inferior"
-        app:labelVisibilityMode="labeled"
-        app:itemPaddingBottom="0dp"
-        app:itemPaddingTop="10dp"
-        app:itemActiveIndicatorStyle="@null"
-        app:itemIconTint="@color/menu_cores_selector"
-        app:itemTextColor="@color/menu_cores_selector"/>
+        app:labelVisibilityMode="labeled" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"

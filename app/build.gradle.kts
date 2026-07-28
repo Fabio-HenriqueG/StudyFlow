@@ -41,6 +41,10 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.navigation:navigation-fragment:2.9.8")
+    
+    // WorkManager para tarefas em segundo plano (Notificações)
+    implementation("androidx.work:work-runtime:2.9.0")
+
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

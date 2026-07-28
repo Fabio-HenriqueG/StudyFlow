@@ -8,7 +8,7 @@ import com.example.studyflow.data.dao.TarefaDao;
 
 
 // Se no futuro vocês criarem a entidade Anotacao, é só colocar uma vírgula aqui e adicionar: Anotacao.class
-@Database(entities = {Tarefa.class}, version = 1, exportSchema = false)
+@Database(entities = {Tarefa.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
