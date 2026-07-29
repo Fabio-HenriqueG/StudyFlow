@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Tarefa;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -120,8 +121,8 @@ public class TarefasFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
 
                     // CHAMA O SEU ADAPTER PRONTO!
-                    // Passamos a lista do banco para o construtor do seu TarefaAdapter
-                    TarefaAdapter adapter = new TarefaAdapter(listaDoBanco);
+                    // Passamos a lista do banco envolvida em ArrayList para ser mutável
+                    TarefaAdapter adapter = new TarefaAdapter(new ArrayList<>(listaDoBanco));
 
                     // Conecta o seu adapter ao RecyclerView da tela
                     recyclerTarefas.setAdapter(adapter);

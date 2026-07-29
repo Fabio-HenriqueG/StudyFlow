@@ -56,8 +56,9 @@ public class NotificacaoWorker extends Worker {
 
             // --- NOVIDADE: SE A TAREFA FOR PARA HOJE ---
             if (DateUtils.isToday(tarefa.dataLimite)) {
-                // Para tarefas de hoje, avisar a cada 30 minutos independente do horário exato.
-                if (tempoDesdeUltimoAlerta > (30 * 60 * 1000)) {
+                // Para tarefas de hoje, avisar a cada 30 minutos.
+                // Usamos o tempo absoluto desde o último alerta.
+                if (tempoDesdeUltimoAlerta >= (30 * 60 * 1000)) {
                     deveNotificar = true;
                     urgencia = "Lembrete: Esta tarefa vence HOJE!";
                 }

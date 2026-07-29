@@ -96,12 +96,15 @@ public class CriaTarefaFragment extends Fragment {
         calendarioTarefa = view.findViewById(R.id.calendario_tarefa);
 
         // Define a data selecionada inicialmente como a data atual (hoje)
-        dataSelecionada = calendarioTarefa.getDate();
+        Calendar cal = Calendar.getInstance();
+        configurarFimDoDia(cal);
+        dataSelecionada = cal.getTimeInMillis();
 
         // Escuta quando o usuário clica em outro dia no calendário
         calendarioTarefa.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
+            configurarFimDoDia(calendar);
             dataSelecionada = calendar.getTimeInMillis();
         });
 
@@ -210,5 +213,16 @@ public class CriaTarefaFragment extends Fragment {
                 }
             });
         }
+    }
+
+    /**
+     * Ajusta o horário do calendário para 23:59:59.
+     * Isso garante que a tarefa dure o dia_todo.
+     */
+    private void configurarFimDoDia(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
     }
 }

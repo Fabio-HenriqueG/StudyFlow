@@ -35,16 +35,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/em_breve_metas"
-            android:textColor="?attr/colorOnSurfaceVariant"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMetas"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblMetas" />
+            app:layout_constraintTop_toBottomOf="@+id/lblMetas"
+            tools:listitem="@layout/item_meta" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

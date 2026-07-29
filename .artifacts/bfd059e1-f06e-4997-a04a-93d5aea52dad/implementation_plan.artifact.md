@@ -1,47 +1,39 @@
-# Modernização Visual e Responsividade com Material 3
+# Exibição de Metas na Home com Ordenação por Tempo
 
-Este plano detalha a reformulação completa da interface do StudyFlow para seguir os princípios do Material Design 3, garantindo um visual limpo, profissional e que se adapta automaticamente ao tema do sistema (Claro/Escuro).
+Este plano detalha a substituição do scroll estático de metas na tela inicial por uma lista dinâmica (RecyclerView) que exibe as metas reais do usuário, ordenadas pelas que estão ativas há mais tempo.
 
 ## User Review Required
 
-> [!IMPORTANT]
-> A mudança para Material 3 alterará significativamente o visual de botões e campos de texto para um estilo mais moderno e arredondado.
+> [!NOTE]
+> O visual das metas na Home será simplificado, exibindo apenas o título e a quantidade de dias ativos (ex: "5 dias"), sem o cronômetro de segundos para manter a tela limpa.
 
 ## Proposed Changes
 
-### [Componente] Temas e Estilos
+### [Componente] Layouts
 
-#### [MODIFY] [themes.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values/themes.xml)
-- Definir cores semânticas usando atributos do Material 3 (`colorPrimary`, `colorSurface`, etc.).
-- Configurar estilos globais para botões e campos de texto.
+#### [NEW] [item_meta_home.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_meta_home.xml)
+- Layout de card horizontal pequeno para a Home.
+- Inclui Título e um campo simplificado de "Dias Ativos".
 
-#### [MODIFY] [themes.xml (night)](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values-night/themes.xml)
-- Configurar as mesmas cores semânticas, mas com tons otimizados para o modo escuro.
+#### [MODIFY] [fragment_home.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_home.xml)
+- Substituir o `HorizontalScrollView` (metas principais) por um `androidx.recyclerview.widget.RecyclerView`.
+- Configurar o `layoutManager` como `LinearLayoutManager` horizontal.
 
-### [Componente] Layouts Principais
+### [Componente] Lógica e Dados
 
-#### [MODIFY] [activity_main.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/activity_main.xml)
-- Remover cores hardcoded do `BottomNavigationView`.
-- Ajustar para que ele use as cores do tema.
+#### [NEW] [MetaHomeAdapter.java](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/java/com/example/studyflow/MetaHomeAdapter.java)
+- Adapter especializado para os cards pequenos da Home.
+- Lógica para calcular apenas a diferença em dias.
 
-#### [MODIFY] [fragment_tarefas.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_tarefas.xml)
-- Refinar espaçamentos.
-- Usar cores de texto dinâmicas.
-
-#### [MODIFY] [fragment_cria_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_cria_tarefa.xml)
-- Substituir `EditText` simples por `TextInputLayout` com `MaterialTextInputEditText`.
-- Usar `MaterialButton`.
-- Melhorar a hierarquia visual.
-
-### [Componente] Itens de Lista
-
-#### [MODIFY] [item_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_tarefa.xml)
-- Usar `MaterialCardView`.
-- Ajustar cores de texto para `?attr/colorOnSurface` e `?attr/colorOnSurfaceVariant`.
+#### [MODIFY] [HomeFragment.java](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/java/com/example/studyflow/HomeFragment.java)
+- Buscar metas no banco de dados.
+- Ordenar a lista: as metas com `dataCriacao` mais antiga (mais tempo ativas) aparecem primeiro.
+- Inicializar o novo RecyclerView.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Tema Claro/Escuro**: Alternar o tema do sistema do celular e verificar se o app muda as cores corretamente.
-2. **Responsividade**: Testar em diferentes tamanhos de tela (se possível no emulador) para garantir que os elementos não fiquem cortados.
-3. **Usabilidade**: Verificar se os campos de texto e botões têm estados visuais claros (foco, clique).
+1. Criar várias metas com nomes diferentes.
+2. Ir para a tela inicial e verificar se elas aparecem no scroll horizontal.
+3. Verificar se a meta criada primeiro (que tem mais tempo) aparece na primeira posição da esquerda.
+4. Garantir que o texto exibe corretamente "X dias" ou "Hoje" caso tenha menos de 24h.

@@ -35,6 +35,10 @@ public class NotificacaoImediataWorker extends Worker {
                         "Início de Acompanhamento",
                         "Você começou a tarefa: " + tarefa.titulo + ". Estarei te lembrando!"
                 );
+
+                // Atualiza o ultimoAlerta no banco para que o Worker periódico comece a contar a partir daqui
+                tarefa.ultimoAlerta = System.currentTimeMillis();
+                AppDatabase.getInstance(getApplicationContext()).tarefaDao().atualizar(tarefa);
             }
         }
 

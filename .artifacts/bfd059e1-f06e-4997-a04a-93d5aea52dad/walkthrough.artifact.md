@@ -1,32 +1,25 @@
-# Modernização Visual com Material 3
+# Exibição de Metas Dinâmicas na Home
 
-Transformamos a interface do StudyFlow para um padrão moderno, limpo e totalmente adaptável ao tema do sistema (Claro e Escuro).
+Atualizamos o scroll de metas na tela inicial para exibir dados reais do banco de dados, com foco na longevidade de cada objetivo.
 
-## O que foi melhorado
+## O que mudou
 
-### 1. Sistema de Cores Dinâmico
-- **Material 3**: Implementamos o sistema de cores do Material Design 3.
-- **Modo Escuro**: O app agora muda todas as cores automaticamente conforme a configuração do celular do usuário.
-- **Cores Semânticas**: Substituímos cores fixas (como `#FFFFFF`) por atributos dinâmicos (como `?attr/colorSurface`), garantindo que o texto sempre seja legível em qualquer fundo.
+### 1. Scroll Dinâmico (RecyclerView)
+- Substituímos o componente estático por um `RecyclerView` horizontal. Agora, todas as metas que você cria aparecem automaticamente na tela inicial sem precisar de ajustes manuais.
 
-### 2. Componentes Modernizados
-- **Campos de Texto**: Na tela de criação, agora usamos o estilo "Outlined" do Material 3, que é muito mais elegante e funcional.
-- **Cartões de Tarefas**: Os itens da lista agora são `MaterialCardView`, com bordas arredondadas e um design mais leve.
-- **Botões**: Todos os botões foram atualizados para o padrão Material 3, com feedback visual aprimorado ao clicar.
+### 2. Ordenação por Tempo de Atividade
+- As metas são exibidas em ordem **decrescente de tempo**: os objetivos que você mantém há mais tempo aparecem primeiro (da esquerda para a direita). Isso destaca sua persistência nos hábitos de longa data.
 
-### 3. Layout Responsivo e Limpo
-- **Espaçamentos**: Ajustamos margens e paddings em todas as telas para dar mais "ar" ao design.
-- **Hierarquia Visual**: Títulos maiores e cores de destaque ajudam o usuário a focar no que é importante.
-- **Menu Inferior**: O menu de navegação foi simplificado para seguir o novo padrão visual.
+### 3. Visual Simplificado
+- Para manter a Home limpa e focada, removemos o cronômetro detalhado (segundos/minutos) e passamos a exibir apenas a contagem de **dias ativos**.
+- Se uma meta foi criada hoje, o card exibe "Começou hoje".
 
-## Arquivos Principais
-
-- [themes.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/values/themes.xml): Configuração central do novo estilo.
-- [fragment_cria_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/fragment_cria_tarefa.xml): Exemplo da nova interface de formulário.
-- [item_tarefa.xml](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/app/src/main/res/layout/item_tarefa.xml): O novo visual dos cards de tarefas.
+## Detalhes Técnicos
+- **item_meta_home.xml**: Novo layout de card compacto para a Home.
+- **MetaHomeAdapter.java**: Gerencia o cálculo simplificado de dias e a exibição dos títulos.
+- **HomeFragment.java**: Agora carrega a lista de metas do Room e realiza a ordenação cronológica antes de exibir.
 
 ## Como Testar
-1. Abra o app no **Tema Claro**.
-2. Vá nas configurações do seu Android e mude para o **Tema Escuro**.
-3. Volte para o StudyFlow e veja como ele se adaptou instantaneamente.
-4. Navegue pelas abas e note como os títulos e botões estão mais harmônicos.
+1. Crie uma nova meta.
+2. Volte para a Home e veja-a aparecer no final da lista (se for a mais recente).
+3. Verifique se as metas que você criou anteriormente continuam nas primeiras posições, exibindo a quantidade correta de dias.

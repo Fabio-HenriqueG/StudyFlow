@@ -48,6 +48,11 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
 
         btnMeta.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Abrindo criação de Meta...", Toast.LENGTH_SHORT).show();
+            CriaMetaFragment criaMetaFrag = new CriaMetaFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, criaMetaFrag)
+                    .addToBackStack(null)
+                    .commit();
             dismiss();
         });
 

@@ -9,7 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Meta;
+import com.example.studyflow.data.Tarefa;
+
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +30,9 @@ import java.util.Calendar;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+
+    private TextView txtAtrasadas, txtPendentes;
+    private RecyclerView recyclerMetasHome;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,6 +82,9 @@ public class HomeFragment extends Fragment {
 
 
         TextView lblSaudacao = view.findViewById(R.id.lblSaudacao);
+        txtAtrasadas = view.findViewById(R.id.text_home_atrasadas);
+        txtPendentes = view.findViewById(R.id.text_home_pendentes);
+        recyclerMetasHome = view.findViewById(R.id.recycler_metas_home);
 
 
         //Função para retornar bom dia/tarde/noite com base na hora (saudação)
@@ -80,5 +99,65 @@ public class HomeFragment extends Fragment {
         }
         lblSaudacao.setText(saudacao);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        carregarStatusTarefas();
+        carregarMetasHome();
+    }
+
+    /**
+     * Busca no banco de dados e conta quantas tarefas estão atrasadas
+     * e quantas estão pendentes (dentro do prazo).
+     */
+    private void carregarStatusTarefas() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Busca todas as tarefas
+            List<Tarefa> todasAsTarefas = AppDatabase.getInstance(getContext()).tarefaDao().buscarTodas();
+            
+            int atrasadas = 0;
+            int pendentes = 0;
+            long agora = System.currentTimeMillis();
+
+            for (Tarefa t : todasAsTarefas) {
+                if (t.dataLimite < agora) {
+                    atrasadas++;
+                } else {
+                    pendentes++;
+                }
+            }
+
+            // Atualiza a interface
+            final int countAtrasadas = atrasadas;
+            final int countPendentes = pendentes;
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    txtAtrasadas.setText("Atrasadas: " + countAtrasadas);
+                    txtPendentes.setText("Pendentes: " + countPendentes);
+                });
+            }
+        });
+    }
+
+    /**
+     * Carrega as metas no scroll horizontal da home, ordenando por tempo de atividade.
+     */
+    private void carregarMetasHome() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Meta> todasAsMetas = AppDatabase.getInstance(getContext()).metaDao().buscarTodas();
+
+            // Ordena pela data de criação mais antiga (quem tem mais tempo ativa)
+            Collections.sort(todasAsMetas, (m1, m2) -> Long.compare(m1.dataCriacao, m2.dataCriacao));
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    MetaHomeAdapter adapter = new MetaHomeAdapter(todasAsMetas);
+                    recyclerMetasHome.setAdapter(adapter);
+                });
+            }
+        });
     }
 }

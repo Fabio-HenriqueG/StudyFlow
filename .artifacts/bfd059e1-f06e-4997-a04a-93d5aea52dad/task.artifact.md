@@ -1,10 +1,7 @@
-# Tarefas para Modernização Visual e Estilização
+# Tarefas para Metas na Home
 
-- [x] Definir paleta de cores Material 3 (`colors.xml`)
-- [x] Configurar Temas Claro e Escuro (`themes.xml`)
-- [x] Modernizar o Layout Principal (`activity_main.xml`)
-- [x] Modernizar a Lista de Tarefas (`fragment_tarefas.xml`)
-- [x] Refatorar Item da Lista (`item_tarefa.xml`) com MaterialCardView
-- [x] Modernizar Tela de Criação (`fragment_cria_tarefa.xml`) com TextInputLayout
-- [x] Harmonizar outros fragmentos (Home, Anotações, Metas, Checklist)
-- [x] Validar suporte a Modo Escuro
+- [x] Criar layout do item reduzido (`item_meta_home.xml`)
+- [x] Criar adapter simplificado (`MetaHomeAdapter.java`)
+- [x] Trocar `HorizontalScrollView` por `RecyclerView` em `fragment_home.xml`
+- [x] Implementar carregamento e ordenação em `HomeFragment.java`
+- [x] Validar visual e lógica de dias

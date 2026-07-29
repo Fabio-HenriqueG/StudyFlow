@@ -23,9 +23,10 @@ public class NotificacaoHelper {
             NotificationChannel canal = new NotificationChannel(
                     CANAL_ID,
                     CANAL_NOME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH // IMPORTANCE_HIGH faz a notificação aparecer no topo da tela
             );
             canal.setDescription("Notificações para prazos de tarefas do StudyFlow");
+            canal.enableVibration(true); // Garante que o celular vibre se permitido
 
             NotificationManager manager = context.getSystemService(NotificationManager.class);
             if (manager != null) {
@@ -42,7 +43,8 @@ public class NotificacaoHelper {
                 .setSmallIcon(R.mipmap.ic_launcher) // Usa o ícone padrão do app
                 .setContentTitle(titulo)
                 .setContentText(mensagem)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // PRIORIDADE ALTA para aparecer na tela
+                .setDefaults(NotificationCompat.DEFAULT_ALL) // Ativa som, luz e vibração padrão
                 .setAutoCancel(true); // Remove a notificação quando o usuário clica nela
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

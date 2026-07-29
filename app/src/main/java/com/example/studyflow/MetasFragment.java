@@ -9,12 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Meta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MetasFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MetasFragment extends Fragment {
+
+    private RecyclerView recyclerMetas;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,5 +87,31 @@ public class MetasFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerMetas = view.findViewById(R.id.recyclerMetas);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        carregarMetas();
+    }
+
+    private void carregarMetas() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Meta> lista = AppDatabase.getInstance(getContext()).metaDao().buscarTodas();
+            
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    // Garantimos que a lista seja mutável para permitir exclusão
+                    MetaAdapter adapter = new MetaAdapter(new ArrayList<>(lista));
+                    recyclerMetas.setAdapter(adapter);
+                });
+            }
+        });
     }
 }

@@ -4,17 +4,21 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import com.example.studyflow.data.dao.MetaDao;
 import com.example.studyflow.data.dao.TarefaDao;
 
 
 // Se no futuro vocês criarem a entidade Anotacao, é só colocar uma vírgula aqui e adicionar: Anotacao.class
-@Database(entities = {Tarefa.class}, version = 2, exportSchema = false)
+@Database(entities = {Tarefa.class, Meta.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
 
     // Avisa ao banco que ele deve gerenciar os comandos da Tarefa
     public abstract TarefaDao tarefaDao();
+
+    // Gerencia os comandos da Meta
+    public abstract MetaDao metaDao();
 
     // Padrão Singleton: Garante que o app use apenas UMA conexão com o banco por vez (evita travar o celular)
     public static synchronized AppDatabase getInstance(Context context) {
