@@ -13,9 +13,15 @@ import java.util.concurrent.TimeUnit;
 public class MetaHomeAdapter extends RecyclerView.Adapter<MetaHomeAdapter.MetaHomeViewHolder> {
 
     private final List<Meta> listaMetas;
+    private final OnItemClickListener listener;
 
-    public MetaHomeAdapter(List<Meta> listaMetas) {
+    public interface OnItemClickListener {
+        void onItemClick(Meta meta);
+    }
+
+    public MetaHomeAdapter(List<Meta> listaMetas, OnItemClickListener listener) {
         this.listaMetas = listaMetas;
+        this.listener = listener;
     }
 
     @NonNull
@@ -41,6 +47,12 @@ public class MetaHomeAdapter extends RecyclerView.Adapter<MetaHomeAdapter.MetaHo
         } else {
             holder.textDias.setText(dias + " dias ativos");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(meta);
+            }
+        });
     }
 
     @Override

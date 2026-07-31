@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,8 @@ public class HomeFragment extends Fragment {
 
     private TextView txtAtrasadas, txtPendentes;
     private RecyclerView recyclerMetasHome;
+
+    private LinearLayout layoutStatus;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,8 +78,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -85,7 +87,7 @@ public class HomeFragment extends Fragment {
         txtAtrasadas = view.findViewById(R.id.text_home_atrasadas);
         txtPendentes = view.findViewById(R.id.text_home_pendentes);
         recyclerMetasHome = view.findViewById(R.id.recycler_metas_home);
-
+        layoutStatus = view.findViewById(R.id.layoutStatus);
 
         //Função para retornar bom dia/tarde/noite com base na hora (saudação)
         int hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -98,9 +100,19 @@ public class HomeFragment extends Fragment {
             saudacao = "Boa noite!";
         }
         lblSaudacao.setText(saudacao);
+
+
+        //Clique para lista de tarefas
+        layoutStatus.setOnClickListener(v -> navegarParaTarefas());
         return view;
     }
-
+    //Method para trocar o fragmento para a lista das tarefas
+    private void navegarParaTarefas() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new TarefasFragment())
+                .addToBackStack(null)
+                .commit();
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -154,7 +166,13 @@ public class HomeFragment extends Fragment {
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    MetaHomeAdapter adapter = new MetaHomeAdapter(todasAsMetas);
+                    MetaHomeAdapter adapter = new MetaHomeAdapter(todasAsMetas, meta -> {
+                        // Navega para o fragmento de Metas ao clicar
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new MetasFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    });
                     recyclerMetasHome.setAdapter(adapter);
                 });
             }
