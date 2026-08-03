@@ -38,7 +38,7 @@
             android:id="@+id/lblTituloTarefas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:text="Tarefas"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -100,7 +100,7 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:text="@string/anotacoes_recentes"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -108,55 +108,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutStatus" />
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_anotacoes_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant" />
-            </LinearLayout>
-        </HorizontalScrollView>
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            tools:listitem="@layout/item_anotacao_home" />
 
         <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:text="@string/metas_principais"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+            app:layout_constraintTop_toBottomOf="@+id/recycler_anotacoes_home" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_metas_home"
