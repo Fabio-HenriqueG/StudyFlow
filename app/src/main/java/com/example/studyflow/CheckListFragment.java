@@ -9,12 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Checklist;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CheckListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CheckListFragment extends Fragment {
+
+    private RecyclerView recyclerView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,6 +86,28 @@ public class CheckListFragment extends Fragment {
                         .commit();
             }
         });
+
+        recyclerView = view.findViewById(R.id.recyclerChecklists);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        carregarChecklists();
+    }
+
+    private void carregarChecklists() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Checklist> listas = AppDatabase.getInstance(getContext()).checklistDao().buscarTodas();
+            
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    ChecklistAdapter adapter = new ChecklistAdapter(new ArrayList<>(listas));
+                    recyclerView.setAdapter(adapter);
+                });
+            }
+        });
     }
 }

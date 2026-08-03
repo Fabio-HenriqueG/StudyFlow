@@ -58,6 +58,11 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
 
         btnChecklist.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Abrindo criação de Checklist...", Toast.LENGTH_SHORT).show();
+            CriaChecklistFragment criaChecklistFrag = new CriaChecklistFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, criaChecklistFrag)
+                    .addToBackStack(null)
+                    .commit();
             dismiss();
         });
     }

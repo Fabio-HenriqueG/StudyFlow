@@ -20,9 +20,12 @@ import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Meta;
 import com.example.studyflow.data.Tarefa;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 /**
@@ -84,6 +87,7 @@ public class HomeFragment extends Fragment {
 
 
         TextView lblSaudacao = view.findViewById(R.id.lblSaudacao);
+        TextView lblDataAtual = view.findViewById(R.id.lblDataAtual);
         txtAtrasadas = view.findViewById(R.id.text_home_atrasadas);
         txtPendentes = view.findViewById(R.id.text_home_pendentes);
         recyclerMetasHome = view.findViewById(R.id.recycler_metas_home);
@@ -100,6 +104,11 @@ public class HomeFragment extends Fragment {
             saudacao = "Boa noite!";
         }
         lblSaudacao.setText(saudacao);
+
+        // Exibe a data atual formatada (Ex: 3 de Agosto de 2026)
+        SimpleDateFormat sdf = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
+        String dataFormatada = sdf.format(new Date());
+        lblDataAtual.setText(dataFormatada);
 
 
         //Clique para lista de tarefas
