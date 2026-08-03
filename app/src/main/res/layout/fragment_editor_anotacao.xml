@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btnVoltarEditor"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/seta_voltar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
+
+    <EditText
+        android:id="@+id/editTituloNota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="Título da Nota"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVoltarEditor"
+        app:layout_constraintEnd_toStartOf="@+id/btnSalvarNota"
+        app:layout_constraintStart_toEndOf="@+id/btnVoltarEditor"
+        app:layout_constraintTop_toTopOf="@+id/btnVoltarEditor" />
+
+    <ImageButton
+        android:id="@+id/btnSalvarNota"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_check"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorPrimary" />
+
+    <HorizontalScrollView
+        android:id="@+id/toolbarFormatacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@+id/btnVoltarEditor">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNegrito"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="B"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnItalico"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I"
+                android:textStyle="italic" />
+
+            <!-- Futuros botões de cor, tamanho e imagem entrarão aqui -->
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <EditText
+        android:id="@+id/editConteudoNota"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="Comece a escrever..."
+        android:inputType="textMultiLine"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarFormatacao" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,9 @@
-# Tarefas para Metas na Home
+# Tarefas para Caderno Digital (Anotações Livres)
 
-- [x] Criar layout do item reduzido (`item_meta_home.xml`)
-- [x] Criar adapter simplificado (`MetaHomeAdapter.java`)
-- [x] Trocar `HorizontalScrollView` por `RecyclerView` em `fragment_home.xml`
-- [x] Implementar carregamento e ordenação em `HomeFragment.java`
-- [x] Validar visual e lógica de dias
+- [x] Fase 1: Banco de Dados e Listagem de Notas
+- [x] Fase 2: Formatação Básica (Negrito e Itálico)
+- [ ] Fase 3: Personalização (Cores e Tamanhos)
+- [ ] Fase 4: Multimídia (Inserção de Imagens)
+
+---
+*Histórico de tarefas anteriores pode ser consultado no documento de handover.*

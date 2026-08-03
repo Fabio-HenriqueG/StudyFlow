@@ -9,12 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studyflow.data.Anotacao;
+import com.example.studyflow.data.AppDatabase;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link AnotacoesFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento que exibe a lista de todas as anotações do usuário.
  */
 public class AnotacoesFragment extends Fragment {
+
+    private RecyclerView recyclerAnotacoes;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,6 +84,52 @@ public class AnotacoesFragment extends Fragment {
                         .commit();
             }
         });
+
+        recyclerAnotacoes = view.findViewById(R.id.recyclerAnotacoes);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Recarrega a lista sempre que voltamos para esta tela
+        carregarAnotacoes();
+    }
+
+    /**
+     * Busca as anotações no banco de dados Room.
+     */
+    private void carregarAnotacoes() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Anotacao> lista = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
+            
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    // Configura o Adapter com o clique para abrir o editor
+                    AnotacaoAdapter adapter = new AnotacaoAdapter(lista, anotacao -> {
+                        abrirEditor(anotacao);
+                    });
+                    recyclerAnotacoes.setAdapter(adapter);
+                });
+            }
+        });
+    }
+
+    /**
+     * Abre o fragmento do editor enviando a anotação selecionada.
+     */
+    private void abrirEditor(Anotacao anotacao) {
+        EditorAnotacaoFragment fragment = new EditorAnotacaoFragment();
+        if (anotacao != null) {
+            Bundle args = new Bundle();
+            args.putSerializable("anotacao", anotacao);
+            fragment.setArguments(args);
+        }
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

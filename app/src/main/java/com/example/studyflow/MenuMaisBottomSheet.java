@@ -43,6 +43,11 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
 
         btnAnotacao.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Abrindo criação de Anotação...", Toast.LENGTH_SHORT).show();
+            EditorAnotacaoFragment fragment = new EditorAnotacaoFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
             dismiss();
         });
 

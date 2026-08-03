@@ -1,35 +1,25 @@
-# Sistema de Checklist Hierárquico Completo
+# Caderno Digital: Fase 2 (Negrito e Itálico)
 
-Implementamos um sistema robusto de checklists que permite organizar suas tarefas em listas temáticas, com controle total sobre cada tópico.
+Implementamos a funcionalidade básica de formatação de texto para o seu Caderno Digital. Agora você já pode dar ênfase às suas anotações!
 
-## Novas Funcionalidades
+## Novidades
 
-### 1. Gerenciamento de Listas (Checklists)
-- **Criação Dinâmica**: Através do menu **+**, você pode criar novas listas (ex: "Compras", "Viagem").
-- **Organização em Cards**: Na aba de Checklists, suas listas aparecem em cartões limpos e modernos, seguindo o padrão das Tarefas e Metas.
-- **Edição e Exclusão**: Cada card possui o menu de três pontos (`⋮`) para renomear ou remover a lista completa.
+### 1. Formatação de Texto Selecionado
+- Adicionamos a lógica de `Spannables` no editor.
+- **Como funciona**: Você seleciona uma parte do texto e clica no botão **B** (Negrito) ou **I** (Itálico). O app aplica o estilo apenas naquele trecho.
+- **Toggle**: Se você clicar no botão em um texto que já está em negrito, o app remove o estilo automaticamente.
 
-### 2. Detalhes e Tópicos
-- **Tela Interna**: Ao clicar em uma lista, você entra em uma tela dedicada para gerenciar os itens daquela checklist.
-- **Adição Rápida**: Um campo na parte inferior permite adicionar novos tópicos instantaneamente.
-- **Interação Completa**: Cada tópico possui:
-    - **Check**: Marque ou desmarque itens. Itens marcados ganham um efeito visual de riscado.
-    - **Edição**: Corrija o texto de um tópico clicando no ícone de lápis.
-    - **Exclusão**: Remova tópicos individuais clicando no ícone de lixeira.
+### 2. Preservação de Estilo
+- O sistema de conversão HTML que criamos na Fase 1 foi testado com esses novos estilos.
+- Quando você salva e reabre a nota, o **negrito** e o *itálico* permanecem exatamente onde você os deixou.
 
-### 3. Persistência de Dados
-- **Banco de Dados Room**: Todas as listas e itens são salvos localmente. Mesmo que o app seja fechado, suas marcações e tópicos estarão lá quando você voltar.
-- **Cascata**: Ao excluir uma lista principal, todos os seus tópicos são removidos automaticamente do banco.
-
-## Detalhes Técnicos
-- **Checklist.java & ChecklistItem.java**: Novas entidades com relacionamento de Chave Estrangeira.
-- **ChecklistDao.java**: Gerencia as operações complexas de busca e atualização das duas tabelas.
-- **Adapters Especializados**: `ChecklistAdapter` para as listas e `ChecklistItemsAdapter` para a lógica interna dos tópicos.
+## Registro para Continuidade
+Criamos um documento especial chamado [TRANSFER_HANDOVER.artifact.md](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/.artifacts/bfd059e1-f06e-4997-a04a-93d5aea52dad/TRANSFER_HANDOVER.artifact.md).
+Este arquivo contém todo o histórico do projeto e os planos futuros. Se você mudar de computador, basta mostrar esse arquivo para a nova IA do Android Studio e ela saberá exatamente como continuar de onde paramos.
 
 ## Como Testar
-1. Vá no menu **+** e selecione **Novo Checklist**.
-2. Dê um nome para a lista e salve.
-3. Na aba **Checklist**, clique no card que você acabou de criar.
-4. Adicione alguns tópicos no campo inferior (ex: "Comprar pão", "Comprar leite").
-5. Marque um item e veja o efeito visual.
-6. Edite o texto de um item usando o ícone lateral.
+1. Crie ou abra uma Anotação.
+2. Escreva uma frase.
+3. Selecione uma palavra (clique duplo nela).
+4. Clique no botão **B** no topo do teclado.
+5. Salve a nota e abra-a novamente para ver o resultado.
