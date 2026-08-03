@@ -3,14 +3,22 @@ package com.example.studyflow;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studyflow.data.Anotacao;
+import com.example.studyflow.data.AppDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 /**
  * Adapter para exibir a lista de anotações na tela principal de Anotações.
@@ -50,6 +58,38 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onAnotacaoClick(anotacao);
         });
+
+        // Configura o botão de opções (três pontinhos)
+        holder.btnOpcoes.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(v.getContext(), v);
+            popup.getMenu().add("Editar");
+            popup.getMenu().add("Excluir");
+
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getTitle().equals("Editar")) {
+                    if (listener != null) listener.onAnotacaoClick(anotacao);
+                    return true;
+                } else if (item.getTitle().equals("Excluir")) {
+                    confirmarExclusao(v, anotacao, position);
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
+        });
+    }
+
+    private void confirmarExclusao(View view, Anotacao anotacao, int position) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase.getInstance(view.getContext()).anotacaoDao().excluir(anotacao);
+            
+            view.post(() -> {
+                listaAnotacoes.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, listaAnotacoes.size());
+                Toast.makeText(view.getContext(), "Anotação excluída", Toast.LENGTH_SHORT).show();
+            });
+        });
     }
 
     @Override
@@ -59,11 +99,13 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
 
     static class AnotacaoViewHolder extends RecyclerView.ViewHolder {
         TextView textTitulo, textData;
+        ImageButton btnOpcoes;
 
         public AnotacaoViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitulo = itemView.findViewById(R.id.text_anotacao_titulo);
             textData = itemView.findViewById(R.id.text_anotacao_data);
+            btnOpcoes = itemView.findViewById(R.id.btn_opcoes_anotacao);
         }
     }
 }

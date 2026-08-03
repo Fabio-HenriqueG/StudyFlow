@@ -13,6 +13,10 @@ Implementamos a funcionalidade básica de formatação de texto para o seu Cader
 - O sistema de conversão HTML que criamos na Fase 1 foi testado com esses novos estilos.
 - Quando você salva e reabre a nota, o **negrito** e o *itálico* permanecem exatamente onde você os deixou.
 
+### 3. Gerenciamento Completo
+- **Editar e Excluir**: Adicionamos o botão de três pontos (`⋮`) em cada nota da lista. Agora você pode excluir anotações que não precisa mais ou clicar em "Editar" para abrir o caderno.
+- **Efeito Visual**: A exclusão é imediata e possui uma animação suave na lista.
+
 ## Registro para Continuidade
 Criamos um documento especial chamado [TRANSFER_HANDOVER.artifact.md](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/.artifacts/bfd059e1-f06e-4997-a04a-93d5aea52dad/TRANSFER_HANDOVER.artifact.md).
 Este arquivo contém todo o histórico do projeto e os planos futuros. Se você mudar de computador, basta mostrar esse arquivo para a nova IA do Android Studio e ela saberá exatamente como continuar de onde paramos.

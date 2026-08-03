@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -106,8 +107,8 @@ public class AnotacoesFragment extends Fragment {
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    // Configura o Adapter com o clique para abrir o editor
-                    AnotacaoAdapter adapter = new AnotacaoAdapter(lista, anotacao -> {
+                    // Configura o Adapter com o clique para abrir o editor e lista mutável
+                    AnotacaoAdapter adapter = new AnotacaoAdapter(new ArrayList<>(lista), anotacao -> {
                         abrirEditor(anotacao);
                     });
                     recyclerAnotacoes.setAdapter(adapter);
