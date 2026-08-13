@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/lblSaudacao"
@@ -78,12 +78,13 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#19FFA500"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="#19FFA500"
                 app:strokeWidth="0dp">
+
                 <TextView
                     android:id="@+id/text_home_pendentes"
                     android:layout_width="match_parent"
@@ -91,8 +92,8 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Pendentes: 0"
-                    android:textStyle="bold"
-                    android:textColor="#A06000" />
+                    android:textColor="#A06000"
+                    android:textStyle="bold" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
@@ -110,12 +111,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_anotacoes_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="144dp"
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView9"
             tools:listitem="@layout/item_anotacao_home" />
 
