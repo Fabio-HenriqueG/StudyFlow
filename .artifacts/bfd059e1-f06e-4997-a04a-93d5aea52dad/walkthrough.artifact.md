@@ -1,29 +1,29 @@
-# Caderno Digital: Fase 2 (Negrito e Itálico)
+# Caderno Digital: Fase 7 (Objetos Livres e Manipulação Total)
 
-Implementamos a funcionalidade básica de formatação de texto para o seu Caderno Digital. Agora você já pode dar ênfase às suas anotações!
+Transformamos o Caderno Digital em uma mesa criativa completa. Agora você tem controle absoluto sobre cada elemento da sua anotação.
 
-## Novidades
+## Grandes Mudanças nesta Fase:
 
-### 1. Formatação de Texto Selecionado
-- Adicionamos a lógica de `Spannables` no editor.
-- **Como funciona**: Você seleciona uma parte do texto e clica no botão **B** (Negrito) ou **I** (Itálico). O app aplica o estilo apenas naquele trecho.
-- **Toggle**: Se você clicar no botão em um texto que já está em negrito, o app remove o estilo automaticamente.
+### 1. Manipulação com Gestos (Multitoque)
+- **Arrastar**: Use um dedo para mover qualquer texto ou imagem para qualquer lugar da folha.
+- **Redimensionar (Zoom)**: Use dois dedos ("beliscar") sobre um objeto para aumentá-lo ou diminuí-lo.
+- **Girar**: Use dois dedos para rotacionar textos e imagens em qualquer ângulo (360 graus).
 
-### 2. Preservação de Estilo
-- O sistema de conversão HTML que criamos na Fase 1 foi testado com esses novos estilos.
-- Quando você salva e reabre a nota, o **negrito** e o *itálico* permanecem exatamente onde você os deixou.
+### 2. Edição de Texto Dinâmica
+- **Caixas de Texto**: Agora você adiciona blocos de texto independentes através do menu Ferramentas.
+- **Reedição**: Se quiser mudar o que escreveu, basta fazer um **Clique Longo** sobre o texto no canvas para abrir o diálogo de edição.
 
-### 3. Gerenciamento Completo
-- **Editar e Excluir**: Adicionamos o botão de três pontos (`⋮`) em cada nota da lista. Agora você pode excluir anotações que não precisa mais ou clicar em "Editar" para abrir o caderno.
-- **Efeito Visual**: A exclusão é imediata e possui uma animação suave na lista.
-
-## Registro para Continuidade
-Criamos um documento especial chamado [TRANSFER_HANDOVER.artifact.md](file:///C:/Users/GABINETE-04/StudioProjects/StudyFlow/.artifacts/bfd059e1-f06e-4997-a04a-93d5aea52dad/TRANSFER_HANDOVER.artifact.md).
-Este arquivo contém todo o histórico do projeto e os planos futuros. Se você mudar de computador, basta mostrar esse arquivo para a nova IA do Android Studio e ela saberá exatamente como continuar de onde paramos.
+### 3. Novo Sistema de Salvamento (JSON)
+- Abandonamos o formato linear de texto. Agora, o StudyFlow salva as coordenadas (X, Y), o tamanho e o ângulo de cada adesivo que você coloca na tela.
+- **Persistência Perfeita**: Quando você fecha e abre uma nota, os textos e imagens aparecem exatamente no lugar, tamanho e rotação que você definiu.
 
 ## Como Testar
-1. Crie ou abra uma Anotação.
-2. Escreva uma frase.
-3. Selecione uma palavra (clique duplo nela).
-4. Clique no botão **B** no topo do teclado.
-5. Salve a nota e abra-a novamente para ver o resultado.
+1. Crie uma nova anotação.
+2. No menu **Ferramentas**, escolha "Adicionar Texto" e escreva algo.
+3. Insira uma imagem da galeria.
+4. **Com dois dedos**: Tente girar a imagem ou o texto e aumentá-los de tamanho.
+5. **Com um dedo**: Arraste-os para montar um layout criativo.
+6. Salve e reabra a nota para ver que tudo foi preservado!
+
+---
+*Dica: O desenho livre continua funcionando por cima de tudo e também vira um objeto móvel após ser concluído!*

@@ -20,12 +20,14 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigationrail.NavigationRailView;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottom_menu;
+    NavigationBarView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        bottom_menu = findViewById(R.id.bottom_menu);
+        navView = findViewById(R.id.nav_view);
 
         // 1. Criar o canal de notificações logo que o app abre
         NotificacaoHelper.criarCanalNotificacao(this);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // 3. Agendar o verificador de tarefas em segundo plano para rodar a cada 15 minutos
         agendarVerificadorTarefas();
 
-        bottom_menu.setOnItemSelectedListener(item -> {
+        navView.setOnItemSelectedListener(item -> {
             // Reabilita a seleção visual quando um item é clicado
             item.setCheckable(true);
             
@@ -82,6 +84,15 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    /**
+     * Mostra ou oculta o menu inferior/lateral para ganhar mais espaço na tela.
+     */
+    public void setBottomNavigationVisibility(int visibility) {
+        if (navView != null) {
+            navView.setVisibility(visibility);
+        }
     }
 
     /**

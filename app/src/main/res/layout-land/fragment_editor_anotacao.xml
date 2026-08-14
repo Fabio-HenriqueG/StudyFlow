@@ -6,21 +6,21 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- Top Bar fixa -->
+    <!-- Top Bar compacta para modo Paisagem -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="4dp"
         android:gravity="center_vertical"
         android:background="?attr/colorSurface"
-        android:elevation="4dp"
+        android:elevation="2dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnVoltarEditor"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/seta_voltar"
             app:tint="?attr/colorOnSurface" />
@@ -34,46 +34,47 @@
             android:background="@null"
             android:hint="Título"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAbrirFerramentas"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Ferramentas"
+            android:textSize="12sp"
+            app:iconSize="16dp"
+            app:icon="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/btnSalvarNota"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_check"
             app:tint="?attr/colorPrimary" />
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAbrirFerramentas"
-        style="@style/Widget.Material3.Button.TonalButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:text="Ferramentas"
-        app:icon="@android:drawable/ic_menu_edit"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Área Principal de Edição -->
     <FrameLayout
         android:id="@+id/containerEditor"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@android:color/white"
         android:clipChildren="true"
-        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAbrirFerramentas">
+        app:layout_constraintBottom_toTopOf="@+id/seekBarNavX"
+        app:layout_constraintEnd_toStartOf="@+id/seekBarZoomCanvas"
+        app:layout_constraintStart_toEndOf="@+id/seekBarNavY"
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
 
         <RelativeLayout
             android:id="@+id/canvasNotas"
             android:layout_width="2000dp"
-            android:layout_height="3000dp" />
+            android:layout_height="3000dp"
+            android:background="@android:color/transparent" />
 
         <com.example.studyflow.DesenhoView
             android:id="@+id/desenhoViewSobreposto"
@@ -82,15 +83,14 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- Controles Flutuantes de Navegação -->
+    <!-- Barras de Controle Reduzidas para Paisagem -->
 
-    <!-- Eixo Y (Esquerda) -->
     <SeekBar
         android:id="@+id/seekBarNavY"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="-80dp"
-        android:alpha="0.7"
+        android:layout_width="150dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="-60dp"
+        android:alpha="0.5"
         android:max="3000"
         android:progress="0"
         android:rotation="270"
@@ -98,90 +98,83 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/containerEditor" />
 
-    <!-- Zoom (Direita) -->
     <SeekBar
         android:id="@+id/seekBarZoomCanvas"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="-80dp"
+        android:layout_width="150dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="-60dp"
         android:alpha="0.5"
-        android:max="300"
-        android:progress="50"
+        android:max="400"
+        android:progress="100"
         android:rotation="270"
         app:layout_constraintBottom_toBottomOf="@+id/containerEditor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/containerEditor" />
 
-    <!-- Eixo X (Baixo) -->
     <SeekBar
         android:id="@+id/seekBarNavX"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="4dp"
         android:alpha="0.5"
         android:max="2000"
         android:progress="0"
-        app:layout_constraintBottom_toBottomOf="@+id/containerEditor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
+        app:layout_constraintEnd_toEndOf="@+id/containerEditor"
+        app:layout_constraintStart_toStartOf="@+id/containerEditor" />
 
-    <!-- Controles de Desenho (Ficam no rodapé quando ativos) -->
+    <!-- Barra de Desenho (Sobreposta ao rodapé em paisagem) -->
     <LinearLayout
         android:id="@+id/layoutControlesDesenho"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurfaceVariant"
-        android:orientation="vertical"
-        android:padding="8dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
         android:visibility="gone"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginEnd="4dp"
+            android:text="T:"
+            android:textSize="10sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Tamanho:"
-                android:textSize="12sp" />
-
-            <SeekBar
-                android:id="@+id/seekBarEspessura"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="50"
-                android:progress="10" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLimparCanvas"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Limpar" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConcluirDesenho"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="OK" />
-        </LinearLayout>
+        <SeekBar
+            android:id="@+id/seekBarEspessura"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:progress="10" />
 
         <HorizontalScrollView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_weight="1"
+            android:scrollbars="none">
             <LinearLayout
                 android:id="@+id/layoutCoresDesenho"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" />
         </HorizontalScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLimparCanvas"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Limpar"
+            android:textSize="10sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConcluirDesenho"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
