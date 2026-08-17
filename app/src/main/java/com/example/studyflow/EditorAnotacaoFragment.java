@@ -70,7 +70,15 @@ public class EditorAnotacaoFragment extends Fragment {
         canvasNotas = view.findViewById(R.id.canvasNotas);
         canvasNotas.setPivotX(0);
         canvasNotas.setPivotY(0);
-        canvasNotas.setBackground(new GridDrawable());
+        
+        // Aplica Estilo do Caderno e Fonte Padrão das Configurações
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", android.content.Context.MODE_PRIVATE);
+        String estiloStr = prefs.getString("notebook_style", "GRID");
+        GridDrawable.Style estilo = GridDrawable.Style.valueOf(estiloStr);
+        canvasNotas.setBackground(new GridDrawable(estilo));
+        
+        int defaultFontSize = prefs.getInt("default_font_size", 24);
+
         canvasNotas.setOnTouchListener(null);
 
         SeekBar zoomBar = view.findViewById(R.id.seekBarZoomCanvas);
@@ -196,9 +204,12 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void adicionarTextoAoCanvas(String texto) {
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", android.content.Context.MODE_PRIVATE);
+        int fontSize = prefs.getInt("default_font_size", 24);
+
         TextView textView = new TextView(getContext());
         textView.setText(texto);
-        textView.setTextSize(24);
+        textView.setTextSize(fontSize);
         textView.setTextColor(Color.BLACK);
         textView.setPadding(20, 20, 20, 20);
         textView.setOnTouchListener(new MultiTouchListener(getContext()));

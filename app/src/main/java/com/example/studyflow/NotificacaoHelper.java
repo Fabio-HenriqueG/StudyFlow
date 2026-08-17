@@ -23,10 +23,15 @@ public class NotificacaoHelper {
             NotificationChannel canal = new NotificationChannel(
                     CANAL_ID,
                     CANAL_NOME,
-                    NotificationManager.IMPORTANCE_HIGH // IMPORTANCE_HIGH faz a notificação aparecer no topo da tela
+                    NotificationManager.IMPORTANCE_HIGH
             );
             canal.setDescription("Notificações para prazos de tarefas do StudyFlow");
-            canal.enableVibration(true); // Garante que o celular vibre se permitido
+
+            // Carrega configurações
+            android.content.SharedPreferences prefs = context.getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+            boolean vibrate = prefs.getBoolean("notification_vibration", true);
+            
+            canal.enableVibration(vibrate);
 
             NotificationManager manager = context.getSystemService(NotificationManager.class);
             if (manager != null) {
@@ -39,17 +44,24 @@ public class NotificacaoHelper {
      * Mostra uma notificação na tela.
      */
     public static void enviarNotificacao(Context context, int id, String titulo, String mensagem) {
+        android.content.SharedPreferences prefs = context.getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+        boolean sound = prefs.getBoolean("notification_sound", true);
+        boolean vibrate = prefs.getBoolean("notification_vibration", true);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CANAL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher) // Usa o ícone padrão do app
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(titulo)
                 .setContentText(mensagem)
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // PRIORIDADE ALTA para aparecer na tela
-                .setDefaults(NotificationCompat.DEFAULT_ALL) // Ativa som, luz e vibração padrão
-                .setAutoCancel(true); // Remove a notificação quando o usuário clica nela
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        int defaults = 0;
+        if (sound) defaults |= NotificationCompat.DEFAULT_SOUND;
+        if (vibrate) defaults |= NotificationCompat.DEFAULT_VIBRATE;
+        builder.setDefaults(defaults);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null) {
-            // O ID permite que cada tarefa tenha sua própria notificação ativa
             manager.notify(id, builder.build());
         }
     }

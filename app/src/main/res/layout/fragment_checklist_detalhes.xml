@@ -15,9 +15,20 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/btnVoltarChecklist"
+        app:layout_constraintEnd_toStartOf="@+id/btnResetarLista"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnResetarLista"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Reiniciar Lista"
+        android:src="@drawable/ic_reset"
+        app:layout_constraintEnd_toStartOf="@+id/btnVoltarChecklist"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
     <ImageButton
         android:id="@+id/btnVoltarChecklist"

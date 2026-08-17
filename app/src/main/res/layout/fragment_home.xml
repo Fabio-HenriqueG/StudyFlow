@@ -13,15 +13,42 @@
         android:layout_height="wrap_content"
         android:padding="15dp">
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgPerfilHome"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toBottomOf="@+id/lblDataAtual"
+            app:layout_constraintEnd_toStartOf="@+id/btnConfiguracoes"
+            app:layout_constraintTop_toTopOf="@+id/lblSaudacao"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="1dp"
+            android:layout_marginEnd="8dp"/>
+
         <TextView
             android:id="@+id/lblSaudacao"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="@string/bom_dia"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@+id/imgPerfilHome"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnConfiguracoes"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="Configurações"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

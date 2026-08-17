@@ -1,9 +1,12 @@
 package com.example.studyflow;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,16 +48,31 @@ public class HomeFragment extends Fragment {
         // Vinculação de componentes
         TextView lblSaudacao = view.findViewById(R.id.lblSaudacao);
         TextView lblDataAtual = view.findViewById(R.id.lblDataAtual);
+        android.widget.ImageView imgPerfil = view.findViewById(R.id.imgPerfilHome);
         txtAtrasadas = view.findViewById(R.id.text_home_atrasadas);
         txtPendentes = view.findViewById(R.id.text_home_pendentes);
         recyclerMetasHome = view.findViewById(R.id.recycler_metas_home);
         recyclerAnotacoesHome = view.findViewById(R.id.recycler_anotacoes_home);
         layoutStatus = view.findViewById(R.id.layoutStatus);
+        ImageButton btnConfig = view.findViewById(R.id.btnConfiguracoes);
 
-        // Configuração de Saudação
+        // Configuração de Saudação Personalizada e Foto
+        SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+        String nomeUsuario = prefs.getString("user_name", "");
+        String fotoPath = prefs.getString("user_profile_pic", "");
+
+        if (!fotoPath.isEmpty()) {
+            imgPerfil.setImageURI(android.net.Uri.parse(fotoPath));
+        }
+
         int hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        String saudacao = (hora < 12) ? "Bom dia!" : (hora < 18) ? "Boa tarde!" : "Boa noite!";
-        lblSaudacao.setText(saudacao);
+        String saudacaoBase = (hora < 12) ? "Bom dia" : (hora < 18) ? "Boa tarde" : "Boa noite";
+        
+        if (!nomeUsuario.isEmpty()) {
+            lblSaudacao.setText(saudacaoBase + ", " + nomeUsuario + "!");
+        } else {
+            lblSaudacao.setText(saudacaoBase + "!");
+        }
 
         // Configuração de Data Atual
         SimpleDateFormat sdf = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
@@ -62,6 +80,9 @@ public class HomeFragment extends Fragment {
 
         // Navegação ao clicar no status das tarefas
         layoutStatus.setOnClickListener(v -> navegarPara(new TarefasFragment()));
+
+        // Abrir Configurações
+        btnConfig.setOnClickListener(v -> navegarPara(new ConfiguracoesFragment()));
 
         return view;
     }

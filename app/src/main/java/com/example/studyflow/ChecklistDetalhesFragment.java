@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,9 @@ public class ChecklistDetalhesFragment extends Fragment {
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltarChecklist);
         btnVoltar.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
+        ImageButton btnReset = view.findViewById(R.id.btnResetarLista);
+        btnReset.setOnClickListener(v -> resetarLista());
+
         recyclerView = view.findViewById(R.id.recyclerItensChecklist);
         editNovoItem = view.findViewById(R.id.editNovoItem);
         Button btnAdd = view.findViewById(R.id.btnAdicionarItem);
@@ -79,6 +83,25 @@ public class ChecklistDetalhesFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void resetarLista() {
+        if (checklist == null) return;
+        
+        new AlertDialog.Builder(getContext())
+                .setTitle("Reiniciar Lista")
+                .setMessage("Deseja desmarcar todos os itens desta lista?")
+                .setPositiveButton("Sim", (d, w) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        for (ChecklistItem item : listaItens) {
+                            item.isChecked = false;
+                            AppDatabase.getInstance(getContext()).checklistDao().atualizarItem(item);
+                        }
+                        getActivity().runOnUiThread(() -> carregarItens());
+                    });
+                })
+                .setNegativeButton("Não", null)
+                .show();
     }
 
     private void salvarOuAtualizarItem() {

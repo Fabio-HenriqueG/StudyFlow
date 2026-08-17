@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardChecklist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
@@ -16,16 +17,29 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/img_pin"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_pin"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_checklist_titulo"
+            app:layout_constraintBottom_toBottomOf="@+id/text_checklist_titulo"
+            app:tint="?attr/colorPrimary" />
+
         <TextView
             android:id="@+id/text_checklist_titulo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            app:layout_goneMarginStart="0dp"
             android:text="Lista de Compras"
             android:textColor="?attr/colorOnSurface"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/btn_opcoes_checklist"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_pin"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -39,6 +53,43 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_checklist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/text_checklist_porcentagem"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_checklist_titulo"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp" />
+
+        <TextView
+            android:id="@+id/text_checklist_porcentagem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="0%"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/progress_checklist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progress_checklist"
+            app:layout_constraintTop_toTopOf="@+id/progress_checklist" />
+
+        <TextView
+            android:id="@+id/text_checklist_validade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Expira em: --/--"
+            android:textColor="?attr/colorError"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progress_checklist" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

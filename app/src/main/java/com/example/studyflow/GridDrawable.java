@@ -17,11 +17,19 @@ import androidx.annotation.Nullable;
  */
 public class GridDrawable extends Drawable {
 
+    public enum Style { BLANK, GRID, LINES, DOTTED }
+
     private final Paint paintGrid = new Paint();
     private final Paint paintBackground = new Paint();
     private final int cellSize = 60;
+    private Style style = Style.GRID;
 
     public GridDrawable() {
+        this(Style.GRID);
+    }
+
+    public GridDrawable(Style style) {
+        this.style = style;
         paintGrid.setColor(Color.parseColor("#E0E0E0"));
         paintGrid.setStrokeWidth(1.2f);
         paintGrid.setStyle(Paint.Style.STROKE);
@@ -31,19 +39,32 @@ public class GridDrawable extends Drawable {
         paintBackground.setAntiAlias(true);
     }
 
+    public void setStyle(Style style) {
+        this.style = style;
+        invalidateSelf();
+    }
+
     @Override
     public void draw(@NonNull Canvas canvas) {
         Rect bounds = getBounds();
         
-        // 1. Desenha o fundo branco (sem cantos arredondados)
+        // 1. Desenha o fundo branco
         canvas.drawRect(bounds, paintBackground);
 
-        // 2. Desenha as linhas da grade
+        if (style == Style.BLANK) return;
+
+        // 2. Desenha o estilo selecionado
         for (int x = bounds.left; x < bounds.right; x += cellSize) {
-            canvas.drawLine(x, bounds.top, x, bounds.bottom, paintGrid);
-        }
-        for (int y = bounds.top; y < bounds.bottom; y += cellSize) {
-            canvas.drawLine(bounds.left, y, bounds.right, y, paintGrid);
+            for (int y = bounds.top; y < bounds.bottom; y += cellSize) {
+                if (style == Style.GRID) {
+                    canvas.drawLine(x, bounds.top, x, bounds.bottom, paintGrid);
+                    canvas.drawLine(bounds.left, y, bounds.right, y, paintGrid);
+                } else if (style == Style.LINES) {
+                    canvas.drawLine(bounds.left, y, bounds.right, y, paintGrid);
+                } else if (style == Style.DOTTED) {
+                    canvas.drawPoint(x, y, paintGrid);
+                }
+            }
         }
     }
 

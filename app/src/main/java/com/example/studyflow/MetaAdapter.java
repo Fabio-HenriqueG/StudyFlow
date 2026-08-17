@@ -1,6 +1,11 @@
 package com.example.studyflow;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import java.util.Calendar;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.format.DateUtils;
@@ -72,8 +77,8 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
         String tempoFormatado = String.format("Ativa há: %dd %02d:%02d:%02d", dias, horas, minutos, segundos);
         holder.textContador.setText(tempoFormatado);
 
-        // Lógica do Check-in Diário
-        boolean jaFezCheckinHoje = DateUtils.isToday(meta.ultimoCheckin);
+        // Lógica do Check-in Diário respeitando o Horário de Reset
+        boolean jaFezCheckinHoje = verificarCheckin(holder.itemView.getContext(), meta.ultimoCheckin);
         
         if (jaFezCheckinHoje) {
             holder.btnCheckin.setText("Meta Cumprida!");
@@ -149,6 +154,35 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
     @Override
     public int getItemCount() {
         return listaMetas.size();
+    }
+
+    /**
+     * Verifica se o check-in ainda é válido para o período atual
+     * com base no horário de reset definido pelo usuário.
+     */
+    private boolean verificarCheckin(Context context, long ultimoCheckin) {
+        if (ultimoCheckin == 0) return false;
+
+        SharedPreferences prefs = context.getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+        String resetTime = prefs.getString("goal_reset_time", "00:00");
+        String[] parts = resetTime.split(":");
+        int resetHour = Integer.parseInt(parts[0]);
+        int resetMin = Integer.parseInt(parts[1]);
+
+        Calendar agora = Calendar.getInstance();
+        Calendar limiteReset = Calendar.getInstance();
+        limiteReset.set(Calendar.HOUR_OF_DAY, resetHour);
+        limiteReset.set(Calendar.MINUTE, resetMin);
+        limiteReset.set(Calendar.SECOND, 0);
+        limiteReset.set(Calendar.MILLISECOND, 0);
+
+        // Se agora ainda não passou do horário de reset de hoje, o "limite" foi ontem
+        if (agora.before(limiteReset)) {
+            limiteReset.add(Calendar.DAY_OF_YEAR, -1);
+        }
+
+        // Se o último check-in foi DEPOIS do último momento de reset, ele ainda é válido
+        return ultimoCheckin > limiteReset.getTimeInMillis();
     }
 
     static class MetaViewHolder extends RecyclerView.ViewHolder {

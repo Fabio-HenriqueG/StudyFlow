@@ -1,11 +1,12 @@
-# Tarefas para Caderno Digital (Anotações Livres)
+# Tarefas para Tela de Configurações
 
-- [x] Fase 1: Banco de Dados e Listagem de Notas
-- [x] Fase 2: Formatação Básica (Negrito e Itálico)
-- [x] Fase 3: Personalização (Cores e Tamanhos)
-- [x] Fase 7: Objetos Livres (Arrastar, Girar e Redimensionar)
-- [x] Implementar Salvamento JSON (Persistência de Objetos Móveis)
-- [ ] Fase 8: Melhorias de Usabilidade e Estilos de Objetos
+- [x] Criar ícone de engrenagem (`ic_settings.xml`)
+- [x] Adicionar botão de config na Home (`fragment_home.xml`)
+- [x] Criar layout de configurações (`fragment_configuracoes.xml`)
+- [x] Implementar lógica de preferências (`ConfiguracoesFragment.java`)
+- [x] Personalizar saudação na Home com nome do usuário
+- [x] Implementar troca dinâmica de tema (Claro/Escuro/Sistema)
+- [ ] Validar persistência após reiniciar o app
 
 ---
 *Histórico de tarefas anteriores pode ser consultado no documento de handover.*

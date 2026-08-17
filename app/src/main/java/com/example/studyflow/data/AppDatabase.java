@@ -11,7 +11,7 @@ import com.example.studyflow.data.dao.TarefaDao;
 
 
 // Se no futuro vocês criarem outras entidades, adicionem aqui
-@Database(entities = {Tarefa.class, Meta.class, Checklist.class, ChecklistItem.class, Anotacao.class}, version = 5, exportSchema = false)
+@Database(entities = {Tarefa.class, Meta.class, Checklist.class, ChecklistItem.class, Anotacao.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;

@@ -21,7 +21,7 @@ public interface ChecklistDao {
     @Delete
     void excluir(Checklist checklist);
 
-    @Query("SELECT * FROM checklists ORDER BY id DESC")
+    @Query("SELECT * FROM checklists ORDER BY isPinned DESC, id DESC")
     List<Checklist> buscarTodas();
 
     // --- Lógica para os Tópicos (ChecklistItems) ---

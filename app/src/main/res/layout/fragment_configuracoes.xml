@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnVoltarConfig"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/seta_voltar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/lblTituloConfig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Configurações"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btnVoltarConfig"
+            app:layout_constraintStart_toEndOf="@+id/btnVoltarConfig"
+            app:layout_constraintTop_toTopOf="@+id/btnVoltarConfig" />
+
+        <!-- Seção: Perfil -->
+        <TextView
+            android:id="@+id/lblSecaoPerfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Perfil"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnVoltarConfig" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgPerfilConfig"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="16dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoPerfil"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="2dp" />
+
+        <Button
+            android:id="@+id/btnAlterarFoto"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Alterar Foto"
+            app:layout_constraintBottom_toBottomOf="@+id/imgPerfilConfig"
+            app:layout_constraintStart_toEndOf="@+id/imgPerfilConfig"
+            app:layout_constraintTop_toTopOf="@+id/imgPerfilConfig" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutNomeUsuario"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Seu Nome"
+            app:layout_constraintTop_toBottomOf="@+id/imgPerfilConfig">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editNomeUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Seção: Aparência -->
+        <TextView
+            android:id="@+id/lblSecaoAparencia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Aparência"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutNomeUsuario" />
+
+        <TextView
+            android:id="@+id/lblTema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Tema do Aplicativo"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoAparencia" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroupTema"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/lblTema"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <Button
+                android:id="@+id/btnTemaClaro"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Claro" />
+
+            <Button
+                android:id="@+id/btnTemaEscuro"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Escuro" />
+
+            <Button
+                android:id="@+id/btnTemaSistema"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sistema" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/lblEstiloCaderno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Estilo do Caderno"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggleGroupTema" />
+
+        <Spinner
+            android:id="@+id/spinnerEstiloCaderno"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/lblEstiloCaderno" />
+
+        <TextView
+            android:id="@+id/lblTamanhoFonte"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Tamanho de Fonte Padrão"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerEstiloCaderno" />
+
+        <SeekBar
+            android:id="@+id/seekBarFontSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="40"
+            android:min="12"
+            android:progress="24"
+            app:layout_constraintEnd_toStartOf="@+id/txtFontSizeValue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTamanhoFonte" />
+
+        <TextView
+            android:id="@+id/txtFontSizeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/seekBarFontSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/seekBarFontSize" />
+
+        <!-- Seção: Notificações -->
+        <TextView
+            android:id="@+id/lblSecaoNotificacoes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Notificações"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seekBarFontSize" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchNotificacoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Ativar Alertas de Tarefas"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoNotificacoes" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchSom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Som"
+            app:layout_constraintTop_toBottomOf="@+id/switchNotificacoes" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchVibracao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vibração"
+            app:layout_constraintTop_toBottomOf="@+id/switchSom" />
+
+        <TextView
+            android:id="@+id/lblSilencio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Horário de Silêncio"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switchVibracao" />
+
+        <LinearLayout
+            android:id="@+id/layoutHorarioSilencio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/lblSilencio">
+
+            <Button
+                android:id="@+id/btnSilencioInicio"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Início: 22:00" />
+
+            <View
+                android:layout_width="16dp"
+                android:layout_height="0dp" />
+
+            <Button
+                android:id="@+id/btnSilencioFim"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fim: 07:00" />
+        </LinearLayout>
+
+        <!-- Seção: Metas -->
+        <TextView
+            android:id="@+id/lblSecaoMetas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Metas"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutHorarioSilencio" />
+
+        <Button
+            android:id="@+id/btnResetMetas"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Horário de Reset: 00:00"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoMetas" />
+
+        <TextView
+            android:id="@+id/lblFreqMetas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Frequência de Lembretes de Metas"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnResetMetas" />
+
+        <LinearLayout
+            android:id="@+id/layoutFreqMetas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/lblFreqMetas">
+
+            <SeekBar
+                android:id="@+id/seekBarFreqMetas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="16"
+                android:progress="0" />
+
+            <TextView
+                android:id="@+id/txtFreqMetasValor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="4 vezes"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Seção: Alertas de Checklists (Novo) -->
+        <TextView
+            android:id="@+id/lblSecaoChecklistAlertas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Lembretes de Checklists"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutFreqMetas" />
+
+        <TextView
+            android:id="@+id/lblFreqChecklistDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Número de lembretes diários para checklists incompletos"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoChecklistAlertas" />
+
+        <LinearLayout
+            android:id="@+id/layoutFreqChecklist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/lblFreqChecklistDesc">
+
+            <SeekBar
+                android:id="@+id/seekBarFreqChecklist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="16"
+                android:progress="0" />
+
+            <TextView
+                android:id="@+id/txtFreqChecklistValor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 vezes"
+                android:layout_marginStart="8dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Seção: Dados -->
+        <TextView
+            android:id="@+id/lblSecaoDados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Gerenciamento de Dados"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutFreqChecklist" />
+
+        <Button
+            android:id="@+id/btnExportarDados"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Exportar Dados (JSON)"
+            android:textAlignment="viewStart"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoDados" />
+
+        <Button
+            android:id="@+id/btnLimparTudo"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Limpar Tudo (Reset de Fábrica)"
+            android:textAlignment="viewStart"
+            android:textColor="?attr/colorError"
+            app:layout_constraintTop_toBottomOf="@+id/btnExportarDados" />
+
+        <!-- Seção: Sobre -->
+        <TextView
+            android:id="@+id/lblSecaoSobre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Sobre"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLimparTudo" />
+
+        <TextView
+            android:id="@+id/txtVersao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Versão 1.0.0"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoSobre" />
+
+        <TextView
+            android:id="@+id/txtCreditos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desenvolvido por StudyFlow Team"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtVersao" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSalvarConfig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="24dp"
+            android:padding="16dp"
+            android:text="Salvar Alterações"
+            app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtCreditos" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+

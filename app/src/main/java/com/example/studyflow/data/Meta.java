@@ -18,9 +18,13 @@ public class Meta implements Serializable {
     // Timestamp da última vez que o usuário confirmou o cumprimento no dia
     public long ultimoCheckin;
 
+    // Timestamp do último alerta enviado para esta meta
+    public long ultimoAlerta;
+
     public Meta(String titulo, long dataCriacao) {
         this.titulo = titulo;
         this.dataCriacao = dataCriacao;
-        this.ultimoCheckin = 0; // 0 significa que nunca fez check-in
+        this.ultimoCheckin = 0;
+        this.ultimoAlerta = 0;
     }
 }
