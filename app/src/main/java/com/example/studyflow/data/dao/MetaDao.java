@@ -22,4 +22,7 @@ public interface MetaDao {
 
     @Query("SELECT * FROM metas ORDER BY id DESC")
     List<Meta> buscarTodas();
+
+    @Query("SELECT COUNT(*) FROM metas")
+    int contarTodas();
 }

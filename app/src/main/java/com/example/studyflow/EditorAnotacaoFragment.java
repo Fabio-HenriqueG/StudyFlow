@@ -132,7 +132,7 @@ public class EditorAnotacaoFragment extends Fragment {
             }
         }
 
-        btnVoltar.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        btnVoltar.setOnClickListener(v -> voltarOuHome());
         btnSalvar.setOnClickListener(v -> salvarNota());
 
         desenhoView = view.findViewById(R.id.desenhoViewSobreposto);
@@ -442,11 +442,21 @@ public class EditorAnotacaoFragment extends Fragment {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+    private void voltarOuHome() {
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+            getParentFragmentManager().popBackStack();
+        } else {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
+    }
+
     private void voltarComFeedback(String msg) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                getParentFragmentManager().popBackStack();
+                voltarOuHome();
             });
         }
     }

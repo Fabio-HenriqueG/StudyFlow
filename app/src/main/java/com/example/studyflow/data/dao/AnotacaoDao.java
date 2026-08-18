@@ -26,4 +26,7 @@ public interface AnotacaoDao {
 
     @Query("SELECT * FROM anotacoes WHERE id = :id")
     Anotacao buscarPorId(int id);
+
+    @Query("SELECT COUNT(*) FROM anotacoes")
+    int contarTodas();
 }

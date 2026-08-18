@@ -24,6 +24,9 @@ public interface ChecklistDao {
     @Query("SELECT * FROM checklists ORDER BY isPinned DESC, id DESC")
     List<Checklist> buscarTodas();
 
+    @Query("SELECT COUNT(*) FROM checklists")
+    int contarTodas();
+
     // --- Lógica para os Tópicos (ChecklistItems) ---
     @Insert
     void inserirItem(ChecklistItem item);

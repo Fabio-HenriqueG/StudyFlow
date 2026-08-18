@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 /**
- * Listener avançado com Zoom e Arraste estabilizados.
+ * Listener avançado que corrige o "disparo" (pulo) dos itens ao soltar o dedo.
  */
 public class MultiTouchListener implements OnTouchListener {
 
@@ -44,52 +44,51 @@ public class MultiTouchListener implements OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_POINTER_DOWN:
-                // Quando o segundo dedo toca, reseta a distância inicial de referência
                 mOldDist = calcularDistancia(event);
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 if (event.getPointerCount() == 1) {
-                    // ARRASTAR (1 dedo) - Movimento livre
                     float currRawX = event.getRawX();
                     float currRawY = event.getRawY();
                     float deltaX = currRawX - mPrevRawX;
                     float deltaY = currRawY - mPrevRawY;
 
-                    view.setTranslationX(view.getTranslationX() + deltaX);
-                    view.setTranslationY(view.getTranslationY() + deltaY);
+                    if (Math.abs(deltaX) > 0.1f || Math.abs(deltaY) > 0.1f) {
+                        view.setTranslationX(view.getTranslationX() + deltaX);
+                        view.setTranslationY(view.getTranslationY() + deltaY);
+                    }
 
                     mPrevRawX = currRawX;
                     mPrevRawY = currRawY;
                 } else if (event.getPointerCount() == 2 && isZoomEnabled) {
-                    // ZOOM (Apenas se habilitado)
                     float newDist = calcularDistancia(event);
                     if (newDist > 10f) {
                         float scaleFactor = newDist / mOldDist;
-                        
-                        // Aplica a escala gradualmente para não perder o controle
                         float currentScale = view.getScaleX() * scaleFactor;
-                        
-                        // Limites: não deixa ficar menor que 20% nem maior que 500%
                         if (currentScale > 0.2f && currentScale < 5.0f) {
                             view.setScaleX(currentScale);
                             view.setScaleY(currentScale);
                         }
                         mOldDist = newDist;
                     }
-                    
-                    // Rotação: Removida do fundo para evitar que a folha inteira gire por acidente
-                    // mas mantida nos objetos individuais se necessário.
                 }
                 break;
 
             case MotionEvent.ACTION_POINTER_UP:
-                // Sincroniza ao levantar um dos dedos para evitar "pulos"
-                mPrevRawX = event.getRawX();
-                mPrevRawY = event.getRawY();
+                // SOLUÇÃO PARA O DISPARO:
+                // Identifica qual dedo continuará na tela (o que NÃO é o 'actionIndex')
+                int pointerIndex = (event.getActionIndex() == 0) ? 1 : 0;
+                
+                // Atualiza a posição anterior usando as coordenadas do dedo que SOBROU
+                // Como não podemos usar getRawX(index) em APIs < 29 de forma direta, 
+                // usamos a diferença entre a coordenada local e a absoluta.
+                mPrevRawX = event.getX(pointerIndex) + (event.getRawX() - event.getX());
+                mPrevRawY = event.getY(pointerIndex) + (event.getRawY() - event.getY());
                 break;
                 
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 view.performClick();
                 break;
         }

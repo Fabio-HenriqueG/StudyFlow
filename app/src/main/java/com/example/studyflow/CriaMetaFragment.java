@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,8 +33,10 @@ public class CriaMetaFragment extends Fragment {
 
         txtTituloMeta = view.findViewById(R.id.txtTituloMeta);
         btnSalvarMeta = view.findViewById(R.id.btnSalvarMeta);
+        ImageButton btnVoltar = view.findViewById(R.id.btnVoltar);
 
-        // Verifica se recebemos uma meta para editar
+        btnVoltar.setOnClickListener(v -> voltarOuHome());
+
         if (getArguments() != null && getArguments().containsKey("meta_editar")) {
             metaEmEdicao = (Meta) getArguments().getSerializable("meta_editar");
             if (metaEmEdicao != null) {
@@ -45,40 +48,42 @@ public class CriaMetaFragment extends Fragment {
         btnSalvarMeta.setOnClickListener(v -> salvarMeta());
     }
 
+    private void voltarOuHome() {
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+            getParentFragmentManager().popBackStack();
+        } else {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
+    }
+
     private void salvarMeta() {
         String titulo = txtTituloMeta.getText().toString().trim();
-
         if (titulo.isEmpty()) {
             txtTituloMeta.setError("Digite o título da meta");
             return;
         }
 
         if (metaEmEdicao != null) {
-            // Modo Edição
             metaEmEdicao.titulo = titulo;
-            
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(getContext()).metaDao().atualizar(metaEmEdicao);
-                
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Meta atualizada!", Toast.LENGTH_SHORT).show();
-                        getParentFragmentManager().popBackStack();
+                        voltarOuHome();
                     });
                 }
             });
         } else {
-            // Modo Criação
-            long dataCriacao = System.currentTimeMillis();
-            Meta novaMeta = new Meta(titulo, dataCriacao);
-
+            Meta novaMeta = new Meta(titulo, System.currentTimeMillis());
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(getContext()).metaDao().inserir(novaMeta);
-                
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Meta iniciada!", Toast.LENGTH_SHORT).show();
-                        getParentFragmentManager().popBackStack();
+                        voltarOuHome();
                     });
                 }
             });

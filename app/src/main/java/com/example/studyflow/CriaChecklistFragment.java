@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +42,9 @@ public class CriaChecklistFragment extends Fragment {
         switchFixar = view.findViewById(R.id.switchFixar);
         btnData = view.findViewById(R.id.btnDataValidade);
         Button btnSalvar = view.findViewById(R.id.btnSalvarChecklist);
+        ImageButton btnVoltar = view.findViewById(R.id.btnVoltar);
+
+        btnVoltar.setOnClickListener(v -> voltarOuHome());
 
         if (getArguments() != null && getArguments().containsKey("checklist_editar")) {
             checklistEmEdicao = (Checklist) getArguments().getSerializable("checklist_editar");
@@ -48,9 +52,7 @@ public class CriaChecklistFragment extends Fragment {
                 editTitulo.setText(checklistEmEdicao.titulo);
                 switchFixar.setChecked(checklistEmEdicao.isPinned);
                 dataSelecionada = checklistEmEdicao.dataValidade;
-                if (dataSelecionada > 0) {
-                    atualizarBotaoData();
-                }
+                if (dataSelecionada > 0) atualizarBotaoData();
             }
         }
 
@@ -58,17 +60,25 @@ public class CriaChecklistFragment extends Fragment {
         btnSalvar.setOnClickListener(v -> salvarChecklist());
     }
 
+    private void voltarOuHome() {
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+            getParentFragmentManager().popBackStack();
+        } else {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
+    }
+
     private void abrirDatePicker() {
         MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Data de Validade")
                 .setSelection(dataSelecionada > 0 ? dataSelecionada : MaterialDatePicker.todayInUtcMilliseconds())
                 .build();
-
         picker.addOnPositiveButtonClickListener(selection -> {
             dataSelecionada = selection;
             atualizarBotaoData();
         });
-
         picker.show(getParentFragmentManager(), "DATE_PICKER");
     }
 
@@ -96,11 +106,10 @@ public class CriaChecklistFragment extends Fragment {
                 novo.dataValidade = dataSelecionada;
                 AppDatabase.getInstance(getContext()).checklistDao().inserir(novo);
             }
-
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "Checklist salvo!", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
+                    voltarOuHome();
                 });
             }
         });
