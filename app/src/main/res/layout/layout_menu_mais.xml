@@ -26,7 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nova Tarefa"
-        app:icon="@drawable/ic_launcher_foreground"
         android:layout_marginBottom="12dp"
         android:padding="16dp"
         app:cornerRadius="12dp"/>

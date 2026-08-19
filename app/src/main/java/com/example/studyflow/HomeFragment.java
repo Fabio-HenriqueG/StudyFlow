@@ -33,9 +33,11 @@ import java.util.concurrent.Executors;
  */
 public class HomeFragment extends Fragment {
 
-    private TextView txtAtrasadas, txtPendentes;
+    private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas;
     private RecyclerView recyclerMetasHome, recyclerAnotacoesHome;
     private LinearLayout layoutStatus;
+    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas;
+    private int countMetas = -1, countAnotacoes = -1, countTarefas = -1;
 
     public HomeFragment() {
         // Construtor vazio obrigatório
@@ -55,6 +57,17 @@ public class HomeFragment extends Fragment {
         recyclerAnotacoesHome = view.findViewById(R.id.recycler_anotacoes_home);
         layoutStatus = view.findViewById(R.id.layoutStatus);
         ImageButton btnConfig = view.findViewById(R.id.btnConfiguracoes);
+        
+        lblTituloAnotacoes = view.findViewById(R.id.textView9);
+        lblTituloMetas = view.findViewById(R.id.textView10);
+        lblTituloTarefas = view.findViewById(R.id.lblTituloTarefas);
+        
+        cardEmptyState = view.findViewById(R.id.cardEmptyStateHome);
+        cardEmptyTarefas = view.findViewById(R.id.cardEmptyTarefas);
+        cardEmptyAnotacoes = view.findViewById(R.id.cardEmptyAnotacoes);
+        cardEmptyMetas = view.findViewById(R.id.cardEmptyMetas);
+        
+        View btnComecar = view.findViewById(R.id.btnComecarHome);
 
         // Configuração de Saudação Personalizada e Foto
         SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
@@ -84,12 +97,26 @@ public class HomeFragment extends Fragment {
         // Abrir Configurações
         btnConfig.setOnClickListener(v -> navegarPara(new ConfiguracoesFragment()));
 
+        // Abrir Menu Adicionar pelo Card de Estado Vazio
+        btnComecar.setOnClickListener(v -> {
+            MenuMaisBottomSheet bottomSheet = new MenuMaisBottomSheet();
+            bottomSheet.show(getParentFragmentManager(), "MenuMaisBottomSheet");
+        });
+
+        // Configurar cliques nos cards de estado vazio para direcionar à criação
+        cardEmptyTarefas.setOnClickListener(v -> navegarPara(new CriaTarefaFragment()));
+        cardEmptyAnotacoes.setOnClickListener(v -> navegarPara(new EditorAnotacaoFragment()));
+        cardEmptyMetas.setOnClickListener(v -> navegarPara(new CriaMetaFragment()));
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        countMetas = -1;
+        countAnotacoes = -1;
+        countTarefas = -1;
         carregarStatusTarefas();
         carregarMetasHome();
         carregarAnotacoesHome();
@@ -105,6 +132,8 @@ public class HomeFragment extends Fragment {
                 if (t.dataLimite < agora) atrasadas++;
                 else pendentes++;
             }
+            
+            countTarefas = tarefas.size();
 
             final int fAtrasadas = atrasadas;
             final int fPendentes = pendentes;
@@ -112,6 +141,7 @@ public class HomeFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     txtAtrasadas.setText("Atrasadas: " + fAtrasadas);
                     txtPendentes.setText("Pendentes: " + fPendentes);
+                    atualizarVisibilidadeEstadoVazio();
                 });
             }
         });
@@ -121,11 +151,14 @@ public class HomeFragment extends Fragment {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Meta> metas = AppDatabase.getInstance(getContext()).metaDao().buscarTodas();
             Collections.sort(metas, (m1, m2) -> Long.compare(m1.dataCriacao, m2.dataCriacao));
+            
+            countMetas = metas.size();
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     MetaHomeAdapter adapter = new MetaHomeAdapter(metas, meta -> navegarPara(new MetasFragment()));
                     recyclerMetasHome.setAdapter(adapter);
+                    atualizarVisibilidadeEstadoVazio();
                 });
             }
         });
@@ -134,6 +167,8 @@ public class HomeFragment extends Fragment {
     private void carregarAnotacoesHome() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Anotacao> anotacoes = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
+            
+            countAnotacoes = anotacoes.size();
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
@@ -145,9 +180,65 @@ public class HomeFragment extends Fragment {
                         navegarPara(fragment);
                     });
                     recyclerAnotacoesHome.setAdapter(adapter);
+                    atualizarVisibilidadeEstadoVazio();
                 });
             }
         });
+    }
+
+    /**
+     * Gerencia o que deve ser mostrado na Home com base na existência de dados.
+     */
+    private void atualizarVisibilidadeEstadoVazio() {
+        // Só executa quando todos os carregamentos terminarem
+        if (countMetas == -1 || countAnotacoes == -1 || countTarefas == -1) return;
+
+        if (countMetas == 0 && countAnotacoes == 0 && countTarefas == 0) {
+            // TUDO VAZIO: Mostra o card de boas-vindas gigante e esconde o resto
+            cardEmptyState.setVisibility(View.VISIBLE);
+            
+            lblTituloTarefas.setVisibility(View.GONE);
+            layoutStatus.setVisibility(View.GONE);
+            cardEmptyTarefas.setVisibility(View.GONE);
+            
+            lblTituloAnotacoes.setVisibility(View.GONE);
+            recyclerAnotacoesHome.setVisibility(View.GONE);
+            cardEmptyAnotacoes.setVisibility(View.GONE);
+            
+            lblTituloMetas.setVisibility(View.GONE);
+            recyclerMetasHome.setVisibility(View.GONE);
+            cardEmptyMetas.setVisibility(View.GONE);
+        } else {
+            // TEM ALGO: Esconde o card geral e gerencia as seções individualmente
+            cardEmptyState.setVisibility(View.GONE);
+            
+            lblTituloTarefas.setVisibility(View.VISIBLE);
+            if (countTarefas > 0) {
+                layoutStatus.setVisibility(View.VISIBLE);
+                cardEmptyTarefas.setVisibility(View.GONE);
+            } else {
+                layoutStatus.setVisibility(View.GONE);
+                cardEmptyTarefas.setVisibility(View.VISIBLE);
+            }
+
+            lblTituloAnotacoes.setVisibility(View.VISIBLE);
+            if (countAnotacoes > 0) {
+                recyclerAnotacoesHome.setVisibility(View.VISIBLE);
+                cardEmptyAnotacoes.setVisibility(View.GONE);
+            } else {
+                recyclerAnotacoesHome.setVisibility(View.GONE);
+                cardEmptyAnotacoes.setVisibility(View.VISIBLE);
+            }
+
+            lblTituloMetas.setVisibility(View.VISIBLE);
+            if (countMetas > 0) {
+                recyclerMetasHome.setVisibility(View.VISIBLE);
+                cardEmptyMetas.setVisibility(View.GONE);
+            } else {
+                recyclerMetasHome.setVisibility(View.GONE);
+                cardEmptyMetas.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void navegarPara(Fragment fragment) {

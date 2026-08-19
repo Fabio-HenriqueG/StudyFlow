@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -61,6 +62,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         configurarBotaoVoltar();
+
+        // Vigia o ciclo de vida dos fragmentos para sincronizar o menu automaticamente
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            @Override
+            public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                super.onFragmentResumed(fm, f);
+                if (f instanceof HomeFragment) {
+                    desmarcarMenu();
+                }
+            }
+        }, false);
 
         // Inicializações de suporte
         NotificacaoHelper.criarCanalNotificacao(this);
@@ -133,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (!isFinishing() && !isDestroyed()) {
                     if (isVazio) {
-                        Toast.makeText(this, "Nenhum item encontrado. Abrindo criação...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Nenhum item criado.\nVamos criar!", Toast.LENGTH_SHORT).show();
                     }
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction()
@@ -145,20 +157,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Técnica oficial para desmarcar todos os itens do menu inferior.
+     * Técnica para desmarcar todos os itens do menu inferior.
+     * Agora pública para que fragmentos possam chamar se necessário.
      */
-    private void desmarcarMenu() {
+    public void desmarcarMenu() {
         if (navView != null) {
             Menu menu = navView.getMenu();
+            // Usa o ID do grupo definido no XML para desativar a exclusividade temporariamente
+            menu.setGroupCheckable(R.id.group_main, true, false);
             for (int i = 0; i < menu.size(); i++) {
-                menu.getItem(i).setCheckable(false);
+                menu.getItem(i).setChecked(false);
             }
-            // Pequeno delay e volta a ser checkable para o próximo clique funcionar
-            navView.postDelayed(() -> {
-                for (int i = 0; i < menu.size(); i++) {
-                    menu.getItem(i).setCheckable(true);
-                }
-            }, 100);
+            // Restaura a exclusividade para que os próximos cliques funcionem corretamente
+            menu.setGroupCheckable(R.id.group_main, true, true);
         }
     }
 
