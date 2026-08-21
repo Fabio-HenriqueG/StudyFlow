@@ -38,6 +38,14 @@
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/btnExportarNota"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_share"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
             android:id="@+id/btnSalvarNota"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -65,7 +73,7 @@
         android:layout_marginTop="8dp"
         android:background="@android:color/white"
         android:clipChildren="true"
-        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAbrirFerramentas">
@@ -79,7 +87,7 @@
             android:id="@+id/desenhoViewSobreposto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </FrameLayout>
 
     <!-- Controles Flutuantes de Navegação -->
@@ -117,71 +125,146 @@
         android:id="@+id/seekBarNavX"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:alpha="0.5"
         android:max="2000"
         android:progress="0"
-        app:layout_constraintBottom_toBottomOf="@+id/containerEditor"
+        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Controles de Desenho (Ficam no rodapé quando ativos) -->
+    <!-- Controles de Desenho (Ficam no rodapé) -->
     <LinearLayout
         android:id="@+id/layoutControlesDesenho"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceVariant"
+        android:background="@drawable/cantos_arredondados_up"
         android:orientation="vertical"
         android:padding="8dp"
-        android:visibility="gone"
+        android:elevation="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Barra de Ferramentas Fixa (Sempre visível) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/btnDesfazer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btnRefazer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                android:rotationY="180"
+                app:tint="?attr/colorOnSurface" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Tamanho:"
-                android:textSize="12sp" />
+                android:background="?attr/colorOutlineVariant" />
 
-            <SeekBar
-                android:id="@+id/seekBarEspessura"
+            <ImageButton
+                android:id="@+id/btnPincel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btnBorracha"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="?attr/colorOnSurface" />
+
+            <View
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="50"
-                android:progress="10" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLimparCanvas"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Limpar" />
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnConcluirDesenho"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OK" />
+                android:minWidth="0dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="OK"
+                android:textSize="12sp"
+                android:visibility="gone" />
         </LinearLayout>
 
-        <HorizontalScrollView
+        <!-- Seção de Opções Expandida (Só aparece ao selecionar Pincel/Borracha) -->
+        <LinearLayout
+            android:id="@+id/layoutOpcoesFerramenta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="4dp">
+
             <LinearLayout
-                android:id="@+id/layoutCoresDesenho"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Tamanho:"
+                    android:textSize="11sp" />
+
+                <SeekBar
+                    android:id="@+id/seekBarEspessura"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="50"
+                    android:progress="10" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLimparCanvas"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="Limpar"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+                <LinearLayout
+                    android:id="@+id/layoutCoresDesenho"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,16 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -41,6 +37,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.Executors;
 
 /**
@@ -53,8 +50,20 @@ public class EditorAnotacaoFragment extends Fragment {
     private RelativeLayout canvasNotas;
     private Anotacao anotacaoExistente = null;
     private DesenhoView desenhoView;
-    private View layoutControlesDesenho;
+    private View layoutOpcoesFerramenta, btnConcluirDesenho;
     private View btnFerramentas;
+    private boolean modoDesenhoAtivo = false;
+    private boolean modoBorrachaAtivo = false;
+
+    private final ActivityResultLauncher<String> pdfExportLauncher =
+            registerForActivityResult(new ActivityResultContracts.CreateDocument("application/pdf"), uri -> {
+                if (uri != null) gravarPDF(uri);
+            });
+
+    private final ActivityResultLauncher<String> pngExportLauncher =
+            registerForActivityResult(new ActivityResultContracts.CreateDocument("image/png"), uri -> {
+                if (uri != null) gravarPNG(uri);
+            });
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -71,14 +80,11 @@ public class EditorAnotacaoFragment extends Fragment {
         canvasNotas.setPivotX(0);
         canvasNotas.setPivotY(0);
         
-        // Aplica Estilo do Caderno e Fonte Padrão das Configurações
         android.content.SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", android.content.Context.MODE_PRIVATE);
         String estiloStr = prefs.getString("notebook_style", "GRID");
         GridDrawable.Style estilo = GridDrawable.Style.valueOf(estiloStr);
         canvasNotas.setBackground(new GridDrawable(estilo));
         
-        int defaultFontSize = prefs.getInt("default_font_size", 24);
-
         canvasNotas.setOnTouchListener(null);
 
         SeekBar zoomBar = view.findViewById(R.id.seekBarZoomCanvas);
@@ -134,9 +140,30 @@ public class EditorAnotacaoFragment extends Fragment {
 
         btnVoltar.setOnClickListener(v -> voltarOuHome());
         btnSalvar.setOnClickListener(v -> salvarNota());
+        view.findViewById(R.id.btnExportarNota).setOnClickListener(v -> iniciarExportacao());
 
         desenhoView = view.findViewById(R.id.desenhoViewSobreposto);
-        layoutControlesDesenho = view.findViewById(R.id.layoutControlesDesenho);
+        layoutOpcoesFerramenta = view.findViewById(R.id.layoutOpcoesFerramenta);
+        btnConcluirDesenho = view.findViewById(R.id.btnConcluirDesenho);
+        
+        ImageButton btnPincel = view.findViewById(R.id.btnPincel);
+        ImageButton btnBorracha = view.findViewById(R.id.btnBorracha);
+        ImageButton btnDesfazer = view.findViewById(R.id.btnDesfazer);
+        ImageButton btnRefazer = view.findViewById(R.id.btnRefazer);
+
+        btnPincel.setOnClickListener(v -> {
+            if (modoDesenhoAtivo && !modoBorrachaAtivo) desativarModoDesenho();
+            else ativarModoDesenho(false);
+        });
+
+        btnBorracha.setOnClickListener(v -> {
+            if (modoDesenhoAtivo && modoBorrachaAtivo) desativarModoDesenho();
+            else ativarModoDesenho(true);
+        });
+
+        btnDesfazer.setOnClickListener(v -> desenhoView.desfazer());
+        btnRefazer.setOnClickListener(v -> desenhoView.refazer());
+
         view.findViewById(R.id.btnLimparCanvas).setOnClickListener(v -> desenhoView.limpar());
         view.findViewById(R.id.btnConcluirDesenho).setOnClickListener(v -> concluirDesenho());
 
@@ -153,6 +180,8 @@ public class EditorAnotacaoFragment extends Fragment {
         adicionarBotoesDeCores(view.findViewById(R.id.layoutCoresDesenho));
         btnFerramentas.setOnClickListener(this::mostrarMenuFerramentas);
 
+        desativarModoDesenho();
+
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).setBottomNavigationVisibility(View.GONE);
         }
@@ -168,11 +197,65 @@ public class EditorAnotacaoFragment extends Fragment {
         }
     }
 
+    private void iniciarExportacao() {
+        String[] opcoes = {"Exportar como PDF", "Exportar como PNG"};
+        new AlertDialog.Builder(getContext())
+                .setTitle("Escolha o formato")
+                .setItems(opcoes, (dialog, which) -> {
+                    String nomeSugerido = "Anotacao_" + System.currentTimeMillis();
+                    if (which == 0) {
+                        pdfExportLauncher.launch(nomeSugerido + ".pdf");
+                    } else {
+                        pngExportLauncher.launch(nomeSugerido + ".png");
+                    }
+                })
+                .show();
+    }
+
+    private void gravarPDF(Uri uri) {
+        try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
+            if (os == null) return;
+            PdfDocument document = new PdfDocument();
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(canvasNotas.getWidth(), canvasNotas.getHeight(), 1).create();
+            PdfDocument.Page page = document.startPage(pageInfo);
+            canvasNotas.draw(page.getCanvas());
+            document.finishPage(page);
+            document.writeTo(os);
+            document.close();
+            Toast.makeText(getContext(), "PDF Exportado!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Erro ao exportar PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void gravarPNG(Uri uri) {
+        if (canvasNotas.getWidth() <= 0 || canvasNotas.getHeight() <= 0) {
+            Toast.makeText(getContext(), "Área de desenho vazia", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(canvasNotas.getWidth(), canvasNotas.getHeight(), Bitmap.Config.ARGB_8888);
+        try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
+            if (os == null) return;
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE); // Fundo branco
+            canvasNotas.draw(canvas);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            Toast.makeText(getContext(), "Imagem Exportada!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Erro ao exportar PNG", Toast.LENGTH_SHORT).show();
+        } finally {
+            bitmap.recycle();
+        }
+    }
+
     private void mostrarMenuFerramentas(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
         popup.getMenu().add("Adicionar Texto");
         popup.getMenu().add("Inserir Imagem");
-        popup.getMenu().add("Desenhar Livre");
+        popup.getMenu().add("Inserir Forma");
+        popup.getMenu().add("Biblioteca de Stickers");
 
         popup.setOnMenuItemClickListener(item -> {
             String title = item.getTitle().toString();
@@ -182,11 +265,60 @@ public class EditorAnotacaoFragment extends Fragment {
                     pickMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
                     break;
-                case "Desenhar Livre": ativarModoDesenho(); break;
+                case "Inserir Forma": mostrarMenuFormas(v); break;
+                case "Biblioteca de Stickers": mostrarDialogoStickers(); break;
             }
             return true;
         });
         popup.show();
+    }
+
+    private void mostrarMenuFormas(View v) {
+        PopupMenu popup = new PopupMenu(getContext(), v);
+        popup.getMenu().add("Retângulo");
+        popup.getMenu().add("Círculo");
+        popup.getMenu().add("Quadrado");
+        popup.setOnMenuItemClickListener(item -> {
+            String title = item.getTitle().toString();
+            ShapeDrawableHelper.ShapeType type = ShapeDrawableHelper.ShapeType.RECTANGLE;
+            if (title.equals("Círculo")) type = ShapeDrawableHelper.ShapeType.CIRCLE;
+            else if (title.equals("Quadrado")) type = ShapeDrawableHelper.ShapeType.SQUARE;
+            adicionarFormaAoCanvas(type);
+            return true;
+        });
+        popup.show();
+    }
+
+    private void adicionarFormaAoCanvas(ShapeDrawableHelper.ShapeType type) {
+        View shapeView = new View(getContext());
+        shapeView.setBackground(ShapeDrawableHelper.createShape(type, Color.BLACK));
+        shapeView.setTag(type.name());
+        int w = 200, h = 200;
+        if (type == ShapeDrawableHelper.ShapeType.RECTANGLE) w = 400;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
+        shapeView.setLayoutParams(params);
+        shapeView.setOnTouchListener(new MultiTouchListener(getContext()));
+        shapeView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(shapeView); return true; });
+        canvasNotas.addView(shapeView);
+    }
+
+    private void mostrarDialogoStickers() {
+        String[] emojis = {"📌", "❓", "✅", "💡", "⭐", "🔥", "📚", "🎯"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Escolha um Sticker");
+        builder.setItems(emojis, (dialog, which) -> adicionarStickerAoCanvas(emojis[which]));
+        builder.show();
+    }
+
+    private void adicionarStickerAoCanvas(String emoji) {
+        TextView textView = new TextView(getContext());
+        textView.setText(emoji);
+        textView.setTextSize(50);
+        textView.setTag("sticker:" + emoji);
+        textView.setOnTouchListener(new MultiTouchListener(getContext()));
+        textView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(textView); return true; });
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        canvasNotas.addView(textView, params);
     }
 
     private void mostrarDialogoNovoTexto() {
@@ -204,19 +336,14 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void adicionarTextoAoCanvas(String texto) {
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", android.content.Context.MODE_PRIVATE);
-        int fontSize = prefs.getInt("default_font_size", 24);
-
         TextView textView = new TextView(getContext());
         textView.setText(texto);
-        textView.setTextSize(fontSize);
+        textView.setTextSize(24);
         textView.setTextColor(Color.BLACK);
         textView.setPadding(20, 20, 20, 20);
         textView.setOnTouchListener(new MultiTouchListener(getContext()));
         textView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(textView); return true; });
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         canvasNotas.addView(textView, params);
     }
 
@@ -231,10 +358,14 @@ public class EditorAnotacaoFragment extends Fragment {
         builder.show();
     }
 
-    private void ativarModoDesenho() {
-        desenhoView.setVisibility(View.VISIBLE);
-        layoutControlesDesenho.setVisibility(View.VISIBLE);
-        btnFerramentas.setVisibility(View.GONE);
+    private void ativarModoDesenho(boolean isBorracha) {
+        modoDesenhoAtivo = true;
+        modoBorrachaAtivo = isBorracha;
+        desenhoView.setDrawingEnabled(true);
+        desenhoView.setBorracha(isBorracha);
+        layoutOpcoesFerramenta.setVisibility(View.VISIBLE);
+        btnConcluirDesenho.setVisibility(View.VISIBLE);
+        atualizarHighlightBotoes();
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
@@ -242,25 +373,56 @@ public class EditorAnotacaoFragment extends Fragment {
         }
     }
 
+    private void desativarModoDesenho() {
+        modoDesenhoAtivo = false;
+        desenhoView.setDrawingEnabled(false);
+        layoutOpcoesFerramenta.setVisibility(View.GONE);
+        btnConcluirDesenho.setVisibility(View.GONE);
+        atualizarHighlightBotoes();
+    }
+
+    private void atualizarHighlightBotoes() {
+        View root = getView();
+        if (root == null) return;
+        ImageButton btnPincel = root.findViewById(R.id.btnPincel);
+        ImageButton btnBorracha = root.findViewById(R.id.btnBorracha);
+        if (btnPincel == null || btnBorracha == null) return;
+
+        int corPadraoSetas = Color.GRAY;
+        android.util.TypedValue typedValue = new android.util.TypedValue();
+        if (requireContext().getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)) {
+            corPadraoSetas = typedValue.data;
+        }
+
+        if (modoDesenhoAtivo) {
+            if (modoBorrachaAtivo) {
+                btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(Color.RED));
+                btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+            } else {
+                btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
+                btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+            }
+        } else {
+            btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+            btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+        }
+        btnPincel.setBackgroundTintList(null);
+        btnBorracha.setBackgroundTintList(null);
+    }
+
     private void concluirDesenho() {
         Bitmap drawingBitmap = desenhoView.getBitmap();
         Bitmap bitmapCortado = cortarEspacosVazios(drawingBitmap);
         Bitmap finalBitmap = Bitmap.createBitmap(bitmapCortado.getWidth(), bitmapCortado.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(finalBitmap);
-        canvas.drawBitmap(bitmapCortado, 0, 0, null);
-
+        new Canvas(finalBitmap).drawBitmap(bitmapCortado, 0, 0, null);
         Uri uri = salvarFinalBitmap(finalBitmap);
         if (uri != null) exibirImagemNoCanvas(uri, finalBitmap.getWidth(), finalBitmap.getHeight());
-
         desenhoView.limpar();
-        desenhoView.setVisibility(View.GONE);
-        layoutControlesDesenho.setVisibility(View.GONE);
-        btnFerramentas.setVisibility(View.VISIBLE);
+        desativarModoDesenho();
     }
 
     private Bitmap cortarEspacosVazios(Bitmap source) {
-        int width = source.getWidth();
-        int height = source.getHeight();
+        int width = source.getWidth(), height = source.getHeight();
         int minX = width, minY = height, maxX = -1, maxY = -1;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -309,14 +471,12 @@ public class EditorAnotacaoFragment extends Fragment {
     private void exibirImagemNoCanvas(Uri fileUri, int w, int h) {
         Bitmap bitmap = carregarBitmapOtimizado(fileUri, 1000, 1000);
         if (bitmap == null) return;
-
         ImageView imageView = new ImageView(getContext());
         imageView.setImageBitmap(bitmap);
         imageView.setAdjustViewBounds(true);
         imageView.setOnTouchListener(new MultiTouchListener(getContext()));
         imageView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(imageView); return true; });
         imageView.setTag(fileUri.getPath());
-
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
         canvasNotas.addView(imageView, params);
     }
@@ -348,11 +508,19 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void mostrarMenuOpcoesObjeto(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
-        if (v instanceof TextView) popup.getMenu().add("Editar Texto");
+        if (v instanceof TextView && !(v.getTag() != null && v.getTag().toString().startsWith("sticker:"))) popup.getMenu().add("Editar Texto");
+        popup.getMenu().add("Trazer para Frente");
+        popup.getMenu().add("Enviar para Trás");
         popup.getMenu().add("Excluir");
         popup.setOnMenuItemClickListener(item -> {
-            if (item.getTitle().equals("Editar Texto")) mostrarDialogoEditarTexto((TextView) v);
-            else if (item.getTitle().equals("Excluir")) canvasNotas.removeView(v);
+            String t = item.getTitle().toString();
+            if (t.equals("Editar Texto")) mostrarDialogoEditarTexto((TextView) v);
+            else if (t.equals("Excluir")) canvasNotas.removeView(v);
+            else if (t.equals("Trazer para Frente")) v.bringToFront();
+            else if (t.equals("Enviar para Trás")) {
+                canvasNotas.removeView(v);
+                canvasNotas.addView(v, 0);
+            }
             return true;
         });
         popup.show();
@@ -364,7 +532,11 @@ public class EditorAnotacaoFragment extends Fragment {
             View v = new View(getContext());
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(80, 80);
             p.setMargins(8, 0, 8, 0); v.setLayoutParams(p);
-            v.setBackgroundColor(cor); v.setOnClickListener(view -> desenhoView.setCor(cor));
+            v.setBackgroundColor(cor); 
+            v.setOnClickListener(view -> {
+                desenhoView.setCor(cor);
+                if (!modoDesenhoAtivo || modoBorrachaAtivo) ativarModoDesenho(false);
+            });
             layout.addView(v);
         }
     }
@@ -395,14 +567,25 @@ public class EditorAnotacaoFragment extends Fragment {
             for (int i = 0; i < canvasNotas.getChildCount(); i++) {
                 View child = canvasNotas.getChildAt(i);
                 JSONObject obj = new JSONObject();
+                String tag = child.getTag() != null ? child.getTag().toString() : "";
                 if (child instanceof TextView) {
-                    obj.put("tipo", "texto"); obj.put("conteudo", ((TextView) child).getText().toString());
+                    if (tag.startsWith("sticker:")) {
+                        obj.put("tipo", "sticker");
+                        obj.put("conteudo", tag.substring(8));
+                    } else {
+                        obj.put("tipo", "texto"); 
+                        obj.put("conteudo", ((TextView) child).getText().toString());
+                    }
                 } else if (child instanceof ImageView) {
-                    obj.put("tipo", "imagem"); obj.put("conteudo", child.getTag() != null ? child.getTag().toString() : "");
+                    obj.put("tipo", "imagem"); 
+                    obj.put("conteudo", tag);
+                } else {
+                    obj.put("tipo", "forma");
+                    obj.put("conteudo", tag.isEmpty() ? "RECTANGLE" : tag);
                 }
                 obj.put("x", child.getTranslationX()); obj.put("y", child.getTranslationY());
                 obj.put("scale", child.getScaleX()); obj.put("rotation", child.getRotation());
-                obj.put("w", child.getWidth()); obj.put("h", child.getHeight()); // Salva largura e altura reais
+                obj.put("w", child.getWidth()); obj.put("h", child.getHeight());
                 array.put(obj);
             }
             return array.toString();
@@ -416,24 +599,31 @@ public class EditorAnotacaoFragment extends Fragment {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 String tipo = obj.getString("tipo"), conteudo = obj.getString("conteudo");
-                int w = obj.getInt("w"), h = obj.getInt("h"); // Recupera largura e altura
+                int w = obj.getInt("w"), h = obj.getInt("h");
                 View v;
                 if (tipo.equals("texto")) {
                     TextView tv = new TextView(getContext());
                     tv.setText(conteudo); tv.setTextSize(24); tv.setTextColor(Color.BLACK);
                     tv.setPadding(20, 20, 20, 20);
-                    tv.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(tv); return true; });
                     v = tv;
+                } else if (tipo.equals("sticker")) {
+                    TextView tv = new TextView(getContext());
+                    tv.setText(conteudo); tv.setTextSize(50); tv.setTag("sticker:" + conteudo);
+                    v = tv;
+                } else if (tipo.equals("forma")) {
+                    v = new View(getContext());
+                    v.setBackground(ShapeDrawableHelper.createShape(ShapeDrawableHelper.ShapeType.valueOf(conteudo), Color.BLACK));
+                    v.setTag(conteudo);
                 } else {
                     ImageView iv = new ImageView(getContext());
                     Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), 1000, 1000);
                     if (b != null) iv.setImageBitmap(b);
                     iv.setAdjustViewBounds(true); iv.setTag(conteudo);
-                    iv.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(iv); return true; });
                     v = iv;
                 }
                 v.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
                 v.setOnTouchListener(new MultiTouchListener(getContext()));
+                v.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(v); return true; });
                 v.setTranslationX((float) obj.getDouble("x")); v.setTranslationY((float) obj.getDouble("y"));
                 v.setScaleX((float) obj.getDouble("scale")); v.setScaleY((float) obj.getDouble("scale"));
                 v.setRotation((float) obj.getDouble("rotation"));
@@ -443,21 +633,14 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void voltarOuHome() {
-        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-            getParentFragmentManager().popBackStack();
-        } else {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
-        }
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) getParentFragmentManager().popBackStack();
+        else getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 
     private void voltarComFeedback(String msg) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                voltarOuHome();
-            });
-        }
+        if (getActivity() != null) getActivity().runOnUiThread(() -> {
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            voltarOuHome();
+        });
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Usando Surface Variant para destacar do fundo principal -->
+    <solid android:color="?attr/colorSurfaceVariant" />
+
+    <!-- Arredonda apenas os cantos superiores -->
+    <corners
+        android:topLeftRadius="28dp"
+        android:topRightRadius="28dp" />
+</shape>
