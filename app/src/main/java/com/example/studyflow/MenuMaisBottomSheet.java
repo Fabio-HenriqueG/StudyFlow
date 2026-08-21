@@ -26,8 +26,10 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
         // Vincular os botões
         Button btnTarefa = view.findViewById(R.id.btn_menu_tarefa);
         Button btnAnotacao = view.findViewById(R.id.btn_menu_anotacao);
+        Button btnBlocoNotas = view.findViewById(R.id.btn_menu_bloco_notas);
         Button btnMeta = view.findViewById(R.id.btn_menu_meta);
         Button btnChecklist = view.findViewById(R.id.btn_menu_checklist);
+
 
         // Configurar a ação de clique para cada um
         btnTarefa.setOnClickListener(v -> {
@@ -42,7 +44,7 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
         });
 
         btnAnotacao.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Abrindo criação de Anotação...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Abrindo Caderno Livre...", Toast.LENGTH_SHORT).show();
             EditorAnotacaoFragment fragment = new EditorAnotacaoFragment();
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -50,6 +52,17 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
                     .commit();
             dismiss();
         });
+
+        btnBlocoNotas.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Abrindo Bloco de Notas...", Toast.LENGTH_SHORT).show();
+            EditorTextoFragment fragment = new EditorTextoFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            dismiss();
+        });
+
 
         btnMeta.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Abrindo criação de Meta...", Toast.LENGTH_SHORT).show();

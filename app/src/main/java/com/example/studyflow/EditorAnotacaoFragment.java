@@ -54,6 +54,8 @@ public class EditorAnotacaoFragment extends Fragment {
     private View btnFerramentas;
     private boolean modoDesenhoAtivo = false;
     private boolean modoBorrachaAtivo = false;
+    private boolean isModoNavegacao = false;
+    private float lastX, lastY;
 
     private final ActivityResultLauncher<String> pdfExportLauncher =
             registerForActivityResult(new ActivityResultContracts.CreateDocument("application/pdf"), uri -> {
@@ -88,43 +90,111 @@ public class EditorAnotacaoFragment extends Fragment {
         canvasNotas.setOnTouchListener(null);
 
         SeekBar zoomBar = view.findViewById(R.id.seekBarZoomCanvas);
-        SeekBar navXBar = view.findViewById(R.id.seekBarNavX);
-        SeekBar navYBar = view.findViewById(R.id.seekBarNavY);
+        View btnModoNavegacao = view.findViewById(R.id.btnModoNavegacao);
 
         zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float scale = 0.5f + (progress / 100.0f);
-                canvasNotas.setScaleX(scale);
-                canvasNotas.setScaleY(scale);
+                float oldScale = canvasNotas.getScaleX();
+                float newScale = 0.5f + (progress / 100.0f);
+                
+                View parent = (View) canvasNotas.getParent();
+                if (parent != null && oldScale != newScale) {
+                    // Centro da tela (onde o usuário está olhando)
+                    float cx = parent.getWidth() / 2f;
+                    float cy = parent.getHeight() / 2f;
+                    
+                    // Ponto exato no "papel" que está no centro da tela antes do zoom
+                    float px = (cx - canvasNotas.getTranslationX()) / oldScale;
+                    float py = (cy - canvasNotas.getTranslationY()) / oldScale;
+                    
+                    // Aplica o novo zoom
+                    canvasNotas.setScaleX(newScale);
+                    canvasNotas.setScaleY(newScale);
+                    
+                    // Calcula a nova translação para manter o mesmo ponto (px, py) centralizado
+                    float newTx = cx - (px * newScale);
+                    float newTy = cy - (py * newScale);
+                    
+                    canvasNotas.setTranslationX(newTx);
+                    canvasNotas.setTranslationY(newTy);
+                } else {
+                    canvasNotas.setScaleX(newScale);
+                    canvasNotas.setScaleY(newScale);
+                }
+                
+                // Garante que o ajuste não mostre o fundo branco
+                reajustarPosicaoSeNecessario();
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        navXBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                canvasNotas.setTranslationX(-progress);
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        btnModoNavegacao.setOnClickListener(v -> toggleModoNavegacao());
 
-        navYBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                canvasNotas.setTranslationY(-progress);
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        View containerEditor = view.findViewById(R.id.containerEditor);
+        if (containerEditor != null) {
+            containerEditor.setOnTouchListener((v, event) -> {
+                if (!isModoNavegacao) return false;
+                
+                float x = event.getRawX();
+                float y = event.getRawY();
+
+                switch (event.getAction()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        lastX = x;
+                        lastY = y;
+                        break;
+                    case android.view.MotionEvent.ACTION_MOVE:
+                        float dx = x - lastX;
+                        float dy = y - lastY;
+                        
+                        float novoX = canvasNotas.getTranslationX() + dx;
+                        float novoY = canvasNotas.getTranslationY() + dy;
+
+                        // Aplica limites para não mostrar o fundo branco
+                        View parentView = (View) canvasNotas.getParent();
+                        if (parentView != null) {
+                            float scale = canvasNotas.getScaleX();
+                            float larguraReal = canvasNotas.getWidth() * scale;
+                            float alturaReal = canvasNotas.getHeight() * scale;
+
+                            // Limite Esquerda/Direita (impede que o papel saia da moldura)
+                            float minX = parentView.getWidth() - larguraReal;
+                            float maxX = 0;
+                            if (novoX > maxX) novoX = maxX;
+                            if (novoX < minX) novoX = minX;
+
+                            // Limite Cima/Baixo
+                            float minY = parentView.getHeight() - alturaReal;
+                            float maxY = 0;
+                            if (novoY > maxY) novoY = maxY;
+                            if (novoY < minY) novoY = minY;
+                        }
+
+                        canvasNotas.setTranslationX(novoX);
+                        canvasNotas.setTranslationY(novoY);
+                        lastX = x;
+                        lastY = y;
+                        break;
+                }
+                return true;
+            });
+        }
 
         canvasNotas.post(() -> {
             zoomBar.setProgress(50);
-            navXBar.setProgress(0);
-            navYBar.setProgress(0);
+            
+            // Centraliza o canvas 3000x3000 dentro do container
+            View parent = (View) canvasNotas.getParent();
+            if (parent != null) {
+                float centerX = (parent.getWidth() - canvasNotas.getWidth()) / 2f;
+                float centerY = (parent.getHeight() - canvasNotas.getHeight()) / 2f;
+                canvasNotas.setTranslationX(centerX);
+                canvasNotas.setTranslationY(centerY);
+            }
         });
+
 
         ImageButton btnSalvar = view.findViewById(R.id.btnSalvarNota);
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltarEditor);
@@ -178,6 +248,15 @@ public class EditorAnotacaoFragment extends Fragment {
         });
 
         adicionarBotoesDeCores(view.findViewById(R.id.layoutCoresDesenho));
+        
+        SeekBar rainbowBarDesenho = view.findViewById(R.id.seekBarCorArcoIrisDesenho);
+        if (rainbowBarDesenho != null) {
+            configurarSeekBarArcoIris(rainbowBarDesenho, cor -> {
+                desenhoView.setCor(cor);
+                if (!modoDesenhoAtivo || modoBorrachaAtivo) ativarModoDesenho(false);
+            });
+        }
+
         btnFerramentas.setOnClickListener(this::mostrarMenuFerramentas);
 
         desativarModoDesenho();
@@ -275,32 +354,95 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void mostrarMenuFormas(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
-        popup.getMenu().add("Retângulo");
-        popup.getMenu().add("Círculo");
-        popup.getMenu().add("Quadrado");
+        popup.getMenu().add("Retângulo (Vazado)");
+        popup.getMenu().add("Retângulo (Preenchido)");
+        popup.getMenu().add("Círculo (Vazado)");
+        popup.getMenu().add("Círculo (Preenchido)");
+        popup.getMenu().add("Seta");
+        
         popup.setOnMenuItemClickListener(item -> {
             String title = item.getTitle().toString();
             ShapeDrawableHelper.ShapeType type = ShapeDrawableHelper.ShapeType.RECTANGLE;
-            if (title.equals("Círculo")) type = ShapeDrawableHelper.ShapeType.CIRCLE;
-            else if (title.equals("Quadrado")) type = ShapeDrawableHelper.ShapeType.SQUARE;
-            adicionarFormaAoCanvas(type);
+            boolean filled = title.contains("Preenchido");
+            
+            if (title.contains("Círculo")) type = ShapeDrawableHelper.ShapeType.CIRCLE;
+            else if (title.contains("Seta")) {
+                type = ShapeDrawableHelper.ShapeType.ARROW;
+                filled = true;
+            }
+            
+            final ShapeDrawableHelper.ShapeType finalType = type;
+            final boolean finalFilled = filled;
+            
+            // Abrir diálogo de cor antes de adicionar
+            mostrarDialogoCorForma(finalType, finalFilled);
             return true;
         });
         popup.show();
     }
 
-    private void adicionarFormaAoCanvas(ShapeDrawableHelper.ShapeType type) {
+    private void mostrarDialogoCorForma(ShapeDrawableHelper.ShapeType type, boolean filled) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Cor da Forma");
+        
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_shape, null);
+        SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIrisShape);
+        LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresShape);
+        
+        final int[] corSelecionada = {Color.BLACK};
+        configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
+        adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("Adicionar", (dialog, which) -> {
+            adicionarFormaAoCanvas(type, corSelecionada[0], filled);
+        });
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
+
+    private void adicionarFormaAoCanvas(ShapeDrawableHelper.ShapeType type, int color, boolean filled) {
         View shapeView = new View(getContext());
-        shapeView.setBackground(ShapeDrawableHelper.createShape(type, Color.BLACK));
-        shapeView.setTag(type.name());
+        shapeView.setBackground(ShapeDrawableHelper.createShape(type, color, filled));
+        
+        JSONObject meta = new JSONObject();
+        try {
+            meta.put("type", type.name());
+            meta.put("color", color);
+            meta.put("filled", filled);
+        } catch (Exception ignored) {}
+        shapeView.setTag(meta.toString());
+        
         int w = 200, h = 200;
         if (type == ShapeDrawableHelper.ShapeType.RECTANGLE) w = 400;
+        else if (type == ShapeDrawableHelper.ShapeType.ARROW) { w = 300; h = 150; }
+        
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
         shapeView.setLayoutParams(params);
         shapeView.setOnTouchListener(new MultiTouchListener(getContext()));
         shapeView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(shapeView); return true; });
+        
+        posicionarNoCentroDaVisao(shapeView);
         canvasNotas.addView(shapeView);
     }
+
+    private void posicionarNoCentroDaVisao(View v) {
+        View parent = (View) canvasNotas.getParent();
+        if (parent == null) return;
+        
+        float scale = canvasNotas.getScaleX();
+        // Calcula o centro da tela em relação às coordenadas do canvas
+        float centroX = (parent.getWidth() / 2f - canvasNotas.getTranslationX()) / scale;
+        float centroY = (parent.getHeight() / 2f - canvasNotas.getTranslationY()) / scale;
+        
+        // Ajusta para o item não ficar com o canto no centro, mas sim o seu próprio meio
+        v.post(() -> {
+            v.setTranslationX(centroX - v.getWidth() / 2f);
+            v.setTranslationY(centroY - v.getHeight() / 2f);
+        });
+    }
+
 
     private void mostrarDialogoStickers() {
         String[] emojis = {"📌", "❓", "✅", "💡", "⭐", "🔥", "📚", "🎯"};
@@ -318,48 +460,167 @@ public class EditorAnotacaoFragment extends Fragment {
         textView.setOnTouchListener(new MultiTouchListener(getContext()));
         textView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(textView); return true; });
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        
+        posicionarNoCentroDaVisao(textView);
         canvasNotas.addView(textView, params);
     }
 
     private void mostrarDialogoNovoTexto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Novo Texto");
-        final EditText input = new EditText(getContext());
-        input.setHint("Escreva algo...");
-        builder.setView(input);
+
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_text_custom, null);
+        EditText input = dialogView.findViewById(R.id.editTextoDialog);
+        SeekBar barSize = dialogView.findViewById(R.id.seekBarTamanhoTexto);
+        SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIris);
+        LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresTexto);
+        
+        final int[] corSelecionada = {Color.BLACK};
+        configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
+        adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
+
+        builder.setView(dialogView);
         builder.setPositiveButton("Adicionar", (dialog, which) -> {
             String texto = input.getText().toString();
-            if (!texto.isEmpty()) adicionarTextoAoCanvas(texto);
+            if (!texto.isEmpty()) {
+                adicionarTextoAoCanvas(texto, corSelecionada[0], barSize.getProgress() + 12);
+            }
         });
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
-    private void adicionarTextoAoCanvas(String texto) {
+    private void adicionarTextoAoCanvas(String texto, int cor, int tamanho) {
         TextView textView = new TextView(getContext());
         textView.setText(texto);
-        textView.setTextSize(24);
-        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(tamanho);
+        textView.setTextColor(cor);
         textView.setPadding(20, 20, 20, 20);
         textView.setOnTouchListener(new MultiTouchListener(getContext()));
         textView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(textView); return true; });
+        
+        JSONObject meta = new JSONObject();
+        try {
+            meta.put("type", "text");
+            meta.put("color", cor);
+            meta.put("size", tamanho);
+        } catch (Exception ignored) {}
+        textView.setTag(meta.toString());
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        
+        posicionarNoCentroDaVisao(textView);
         canvasNotas.addView(textView, params);
     }
 
     private void mostrarDialogoEditarTexto(TextView textView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Editar Texto");
-        final EditText input = new EditText(getContext());
+
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_text_custom, null);
+        EditText input = dialogView.findViewById(R.id.editTextoDialog);
+        SeekBar barSize = dialogView.findViewById(R.id.seekBarTamanhoTexto);
+        SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIris);
+        LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresTexto);
+
         input.setText(textView.getText().toString());
-        builder.setView(input);
-        builder.setPositiveButton("Salvar", (dialog, which) -> textView.setText(input.getText().toString()));
+        barSize.setProgress((int) textView.getTextSize() - 12);
+        
+        final int[] corSelecionada = {textView.getCurrentTextColor()};
+        configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
+        adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("Salvar", (dialog, which) -> {
+            textView.setText(input.getText().toString());
+            textView.setTextColor(corSelecionada[0]);
+            textView.setTextSize(barSize.getProgress() + 12);
+            
+            JSONObject meta = new JSONObject();
+            try {
+                meta.put("type", "text");
+                meta.put("color", corSelecionada[0]);
+                meta.put("size", barSize.getProgress() + 12);
+            } catch (Exception ignored) {}
+            textView.setTag(meta.toString());
+        });
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
+    private void adicionarSelecaoDeCores(LinearLayout layout, ColorSelectionListener listener) {
+        int[] cores = {Color.BLACK, Color.RED, Color.BLUE, Color.GREEN, Color.GRAY, Color.MAGENTA};
+        for (int cor : cores) {
+            View v = new View(getContext());
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(60, 60);
+            p.setMargins(8, 0, 8, 0); v.setLayoutParams(p);
+            v.setBackgroundColor(cor);
+            v.setOnClickListener(view -> listener.onColorSelected(cor));
+            layout.addView(v);
+        }
+    }
+
+    private void configurarSeekBarArcoIris(SeekBar seekBar, ColorSelectionListener listener) {
+        if (seekBar == null) return;
+        int[] rainbowColors = {
+            Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED
+        };
+        android.graphics.drawable.GradientDrawable gradient = new android.graphics.drawable.GradientDrawable(
+            android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowColors
+        );
+        seekBar.setBackground(gradient);
+        
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float[] hsv = {progress, 1f, 1f};
+                int color = Color.HSVToColor(hsv);
+                listener.onColorSelected(color);
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+    }
+
+    interface ColorSelectionListener {
+        void onColorSelected(int color);
+    }
+
+
+    private void toggleModoNavegacao() {
+        isModoNavegacao = !isModoNavegacao;
+        
+        View view = getView();
+        if (view == null) return;
+        
+        com.google.android.material.button.MaterialButton btn = view.findViewById(R.id.btnModoNavegacao);
+        if (btn == null) return;
+
+        if (isModoNavegacao) {
+            try {
+                btn.setIconTint(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
+            } catch (Exception ignored) {}
+            btn.setBackgroundColor(Color.LTGRAY);
+            Toast.makeText(getContext(), "Modo Navegação Ativo (Arraste a tela)", Toast.LENGTH_SHORT).show();
+            desativarModoDesenho();
+        } else {
+            btn.setIconTint(android.content.res.ColorStateList.valueOf(Color.GRAY));
+            btn.setBackgroundColor(Color.TRANSPARENT);
+        }
+        
+        // Bloqueia/Desbloqueia objetos
+        for (int i = 0; i < canvasNotas.getChildCount(); i++) {
+            View child = canvasNotas.getChildAt(i);
+            child.setEnabled(!isModoNavegacao);
+        }
+        
+        // Desativa o DesenhoView se estiver navegando
+        desenhoView.setVisibility(isModoNavegacao ? View.GONE : View.VISIBLE);
+    }
+
     private void ativarModoDesenho(boolean isBorracha) {
         modoDesenhoAtivo = true;
+
         modoBorrachaAtivo = isBorracha;
         desenhoView.setDrawingEnabled(true);
         desenhoView.setBorracha(isBorracha);
@@ -379,6 +640,29 @@ public class EditorAnotacaoFragment extends Fragment {
         layoutOpcoesFerramenta.setVisibility(View.GONE);
         btnConcluirDesenho.setVisibility(View.GONE);
         atualizarHighlightBotoes();
+    }
+
+    private void reajustarPosicaoSeNecessario() {
+        float x = canvasNotas.getTranslationX();
+        float y = canvasNotas.getTranslationY();
+        float scale = canvasNotas.getScaleX();
+        
+        View parent = (View) canvasNotas.getParent();
+        if (parent == null) return;
+
+        float larguraReal = canvasNotas.getWidth() * scale;
+        float alturaReal = canvasNotas.getHeight() * scale;
+
+        float minX = parent.getWidth() - larguraReal;
+        float minY = parent.getHeight() - alturaReal;
+
+        if (x > 0) x = 0;
+        if (x < minX) x = minX;
+        if (y > 0) y = 0;
+        if (y < minY) y = minY;
+
+        canvasNotas.setTranslationX(x);
+        canvasNotas.setTranslationY(y);
     }
 
     private void atualizarHighlightBotoes() {
@@ -478,6 +762,8 @@ public class EditorAnotacaoFragment extends Fragment {
         imageView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(imageView); return true; });
         imageView.setTag(fileUri.getPath());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
+        
+        posicionarNoCentroDaVisao(imageView);
         canvasNotas.addView(imageView, params);
     }
 
@@ -508,13 +794,19 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void mostrarMenuOpcoesObjeto(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
-        if (v instanceof TextView && !(v.getTag() != null && v.getTag().toString().startsWith("sticker:"))) popup.getMenu().add("Editar Texto");
+        if (v instanceof TextView && !(v.getTag() != null && v.getTag().toString().startsWith("sticker:"))) {
+            popup.getMenu().add("Editar Texto");
+        } else if (!(v instanceof ImageView) && !(v instanceof TextView)) {
+            popup.getMenu().add("Trocar Cor");
+        }
         popup.getMenu().add("Trazer para Frente");
+
         popup.getMenu().add("Enviar para Trás");
         popup.getMenu().add("Excluir");
         popup.setOnMenuItemClickListener(item -> {
             String t = item.getTitle().toString();
             if (t.equals("Editar Texto")) mostrarDialogoEditarTexto((TextView) v);
+            else if (t.equals("Trocar Cor")) mostrarDialogoTrocarCorForma(v);
             else if (t.equals("Excluir")) canvasNotas.removeView(v);
             else if (t.equals("Trazer para Frente")) v.bringToFront();
             else if (t.equals("Enviar para Trás")) {
@@ -525,6 +817,39 @@ public class EditorAnotacaoFragment extends Fragment {
         });
         popup.show();
     }
+
+    private void mostrarDialogoTrocarCorForma(View shapeView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Trocar Cor da Forma");
+        
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_shape, null);
+        SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIrisShape);
+        LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresShape);
+        
+        final int[] corSelecionada = {Color.BLACK};
+        configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
+        adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("Salvar", (dialog, which) -> {
+            String tag = shapeView.getTag() != null ? shapeView.getTag().toString() : "";
+            if (tag.startsWith("{")) {
+                try {
+                    JSONObject meta = new JSONObject(tag);
+                    ShapeDrawableHelper.ShapeType type = ShapeDrawableHelper.ShapeType.valueOf(meta.getString("type"));
+                    boolean filled = meta.getBoolean("filled");
+                    
+                    shapeView.setBackground(ShapeDrawableHelper.createShape(type, corSelecionada[0], filled));
+                    
+                    meta.put("color", corSelecionada[0]);
+                    shapeView.setTag(meta.toString());
+                } catch (Exception ignored) {}
+            }
+        });
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
 
     private void adicionarBotoesDeCores(LinearLayout layout) {
         int[] cores = {Color.BLACK, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA, Color.CYAN};
@@ -568,6 +893,7 @@ public class EditorAnotacaoFragment extends Fragment {
                 View child = canvasNotas.getChildAt(i);
                 JSONObject obj = new JSONObject();
                 String tag = child.getTag() != null ? child.getTag().toString() : "";
+                
                 if (child instanceof TextView) {
                     if (tag.startsWith("sticker:")) {
                         obj.put("tipo", "sticker");
@@ -575,13 +901,26 @@ public class EditorAnotacaoFragment extends Fragment {
                     } else {
                         obj.put("tipo", "texto"); 
                         obj.put("conteudo", ((TextView) child).getText().toString());
+                        // Salva atributos extras se disponíveis na tag JSON
+                        if (tag.startsWith("{")) {
+                            JSONObject meta = new JSONObject(tag);
+                            obj.put("color", meta.optInt("color", Color.BLACK));
+                            obj.put("size", meta.optInt("size", 24));
+                        }
                     }
                 } else if (child instanceof ImageView) {
                     obj.put("tipo", "imagem"); 
                     obj.put("conteudo", tag);
                 } else {
                     obj.put("tipo", "forma");
-                    obj.put("conteudo", tag.isEmpty() ? "RECTANGLE" : tag);
+                    if (tag.startsWith("{")) {
+                        JSONObject meta = new JSONObject(tag);
+                        obj.put("conteudo", meta.optString("type", "RECTANGLE"));
+                        obj.put("color", meta.optInt("color", Color.BLACK));
+                        obj.put("filled", meta.optBoolean("filled", false));
+                    } else {
+                        obj.put("conteudo", tag.isEmpty() ? "RECTANGLE" : tag);
+                    }
                 }
                 obj.put("x", child.getTranslationX()); obj.put("y", child.getTranslationY());
                 obj.put("scale", child.getScaleX()); obj.put("rotation", child.getRotation());
@@ -603,8 +942,16 @@ public class EditorAnotacaoFragment extends Fragment {
                 View v;
                 if (tipo.equals("texto")) {
                     TextView tv = new TextView(getContext());
-                    tv.setText(conteudo); tv.setTextSize(24); tv.setTextColor(Color.BLACK);
+                    tv.setText(conteudo); 
+                    int size = obj.optInt("size", 24);
+                    int color = obj.optInt("color", Color.BLACK);
+                    tv.setTextSize(size); 
+                    tv.setTextColor(color);
                     tv.setPadding(20, 20, 20, 20);
+                    
+                    JSONObject meta = new JSONObject();
+                    meta.put("type", "text"); meta.put("color", color); meta.put("size", size);
+                    tv.setTag(meta.toString());
                     v = tv;
                 } else if (tipo.equals("sticker")) {
                     TextView tv = new TextView(getContext());
@@ -612,8 +959,17 @@ public class EditorAnotacaoFragment extends Fragment {
                     v = tv;
                 } else if (tipo.equals("forma")) {
                     v = new View(getContext());
-                    v.setBackground(ShapeDrawableHelper.createShape(ShapeDrawableHelper.ShapeType.valueOf(conteudo), Color.BLACK));
-                    v.setTag(conteudo);
+                    int color = obj.optInt("color", Color.BLACK);
+                    boolean filled = obj.optBoolean("filled", false);
+                    try {
+                        v.setBackground(ShapeDrawableHelper.createShape(ShapeDrawableHelper.ShapeType.valueOf(conteudo), color, filled));
+                    } catch (Exception e) {
+                        v.setBackground(ShapeDrawableHelper.createShape(ShapeDrawableHelper.ShapeType.RECTANGLE, color, filled));
+                    }
+                    
+                    JSONObject meta = new JSONObject();
+                    meta.put("type", conteudo); meta.put("color", color); meta.put("filled", filled);
+                    v.setTag(meta.toString());
                 } else {
                     ImageView iv = new ImageView(getContext());
                     Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), 1000, 1000);
@@ -631,6 +987,7 @@ public class EditorAnotacaoFragment extends Fragment {
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
+
 
     private void voltarOuHome() {
         if (getParentFragmentManager().getBackStackEntryCount() > 0) getParentFragmentManager().popBackStack();

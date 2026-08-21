@@ -6,13 +6,22 @@ import android.graphics.drawable.GradientDrawable;
 public class ShapeDrawableHelper {
 
     public enum ShapeType {
-        RECTANGLE, CIRCLE, SQUARE
+        RECTANGLE, CIRCLE, SQUARE, ARROW
     }
 
-    public static GradientDrawable createShape(ShapeType type, int color) {
+    public static android.graphics.drawable.Drawable createShape(ShapeType type, int color, boolean filled) {
+        if (type == ShapeType.ARROW) {
+            return new ArrowDrawable(color);
+        }
+        
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.TRANSPARENT);
-        gd.setStroke(5, color);
+        if (filled) {
+            gd.setColor(color);
+            gd.setStroke(0, android.graphics.Color.TRANSPARENT);
+        } else {
+            gd.setColor(android.graphics.Color.TRANSPARENT);
+            gd.setStroke(8, color);
+        }
         
         switch (type) {
             case RECTANGLE:

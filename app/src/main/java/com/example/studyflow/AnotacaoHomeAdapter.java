@@ -45,6 +45,13 @@ public class AnotacaoHomeAdapter extends RecyclerView.Adapter<AnotacaoHomeAdapte
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         holder.textData.setText(sdf.format(new Date(anotacao.dataUltimaEdicao)));
 
+        // Identifica e exibe o tipo da anotação
+        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+            holder.textTipo.setText("DESENHO");
+        } else {
+            holder.textTipo.setText("TEXTO");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(anotacao);
         });
@@ -56,12 +63,14 @@ public class AnotacaoHomeAdapter extends RecyclerView.Adapter<AnotacaoHomeAdapte
     }
 
     static class AnotacaoHomeViewHolder extends RecyclerView.ViewHolder {
-        TextView textTitulo, textData;
+        TextView textTitulo, textData, textTipo;
 
         public AnotacaoHomeViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitulo = itemView.findViewById(R.id.text_anotacao_home_titulo);
             textData = itemView.findViewById(R.id.text_anotacao_home_data);
+            textTipo = itemView.findViewById(R.id.text_anotacao_home_tipo);
         }
     }
+
 }

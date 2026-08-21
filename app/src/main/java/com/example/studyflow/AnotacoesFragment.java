@@ -121,7 +121,13 @@ public class AnotacoesFragment extends Fragment {
      * Abre o fragmento do editor enviando a anotação selecionada.
      */
     private void abrirEditor(Anotacao anotacao) {
-        EditorAnotacaoFragment fragment = new EditorAnotacaoFragment();
+        Fragment fragment;
+        if (anotacao != null && anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+            fragment = new EditorAnotacaoFragment();
+        } else {
+            fragment = new EditorTextoFragment();
+        }
+
         if (anotacao != null) {
             Bundle args = new Bundle();
             args.putSerializable("anotacao", anotacao);
@@ -133,4 +139,5 @@ public class AnotacoesFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+
 }

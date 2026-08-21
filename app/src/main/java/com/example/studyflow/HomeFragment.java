@@ -173,7 +173,13 @@ public class HomeFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     AnotacaoHomeAdapter adapter = new AnotacaoHomeAdapter(anotacoes, anotacao -> {
-                        EditorAnotacaoFragment fragment = new EditorAnotacaoFragment();
+                        Fragment fragment;
+                        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+                            fragment = new EditorAnotacaoFragment();
+                        } else {
+                            fragment = new EditorTextoFragment();
+                        }
+                        
                         Bundle args = new Bundle();
                         args.putSerializable("anotacao", anotacao);
                         fragment.setArguments(args);
@@ -182,6 +188,7 @@ public class HomeFragment extends Fragment {
                     recyclerAnotacoesHome.setAdapter(adapter);
                     atualizarVisibilidadeEstadoVazio();
                 });
+
             }
         });
     }

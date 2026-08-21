@@ -54,5 +54,20 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/text_anotacao_tipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="Tipo"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:background="@drawable/cantos_arredondados_up"
+            android:backgroundTint="?attr/colorSurfaceVariant"/>
+
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

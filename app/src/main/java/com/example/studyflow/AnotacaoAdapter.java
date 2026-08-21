@@ -54,7 +54,15 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
         String dataFormatada = "Editado em: " + sdf.format(new Date(anotacao.dataUltimaEdicao));
         holder.textData.setText(dataFormatada);
 
+        // Identifica e exibe o tipo da anotação
+        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+            holder.textTipo.setText("CADERNO LIVRE");
+        } else {
+            holder.textTipo.setText("BLOCO DE NOTAS");
+        }
+
         // Clique para abrir o editor
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onAnotacaoClick(anotacao);
         });
@@ -98,14 +106,16 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
     }
 
     static class AnotacaoViewHolder extends RecyclerView.ViewHolder {
-        TextView textTitulo, textData;
+        TextView textTitulo, textData, textTipo;
         ImageButton btnOpcoes;
 
         public AnotacaoViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitulo = itemView.findViewById(R.id.text_anotacao_titulo);
             textData = itemView.findViewById(R.id.text_anotacao_data);
+            textTipo = itemView.findViewById(R.id.text_anotacao_tipo);
             btnOpcoes = itemView.findViewById(R.id.btn_opcoes_anotacao);
         }
     }
+
 }
