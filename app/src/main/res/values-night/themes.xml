@@ -1,27 +1,49 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme for Dark Mode. -->
-    <style name="Base.Theme.StudyFlow" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#A1C9FF</item>
-        <item name="colorOnPrimary">#003258</item>
-        <item name="colorPrimaryContainer">#00497D</item>
-        <item name="colorOnPrimaryContainer">#D1E4FF</item>
+<?xml version="1.0" encoding="utf-8"?>
 
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">#BBC7DB</item>
-        <item name="colorOnSecondary">#253140</item>
-        <item name="colorSecondaryContainer">#3B4858</item>
-        <item name="colorOnSecondaryContainer">#D7E3F9</item>
+<resources>
 
-        <!-- Background and Surface colors. -->
-        <item name="android:windowBackground">#1B1B1F</item>
-        <item name="colorSurface">#1B1B1F</item>
-        <item name="colorOnSurface">#E3E2E6</item>
-        <item name="colorSurfaceVariant">#44474E</item>
-        <item name="colorOnSurfaceVariant">#C4C6D0</item>
+    <!-- Tema escuro -->
 
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
+    <color name="primary">#B9C4FF</color>
+    <color name="onPrimary">#002A77</color>
+    <color name="primaryContainer">#163EAC</color>
+    <color name="onPrimaryContainer">#DCE3FF</color>
+
+    <color name="secondary">#C2C6D9</color>
+    <color name="onSecondary">#2B3042</color>
+    <color name="secondaryContainer">#414659</color>
+    <color name="onSecondaryContainer">#DEE2F2</color>
+
+    <color name="background">#232222</color>
+    <color name="onBackground">#E5E1E1</color>
+
+    <color name="surface">#232222</color>
+    <color name="onSurface">#E5E1E1</color>
+
+    <color name="surfaceVariant">#444347</color>
+    <color name="onSurfaceVariant">#C8C5CC</color>
+
+    <color name="error">#FFB4AB</color>
+    <color name="onError">#690005</color>
+
+    <!-- Cores próprias -->
+    <color name="studyflow_blue">#B9C4FF</color>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#232222</color>
+    <color name="azul_secundario">#B8B3FF</color>
+
+    <!-- Status -->
+    <color name="errorContainer">#4A2020</color>
+    <color name="warning">#FFD18A</color>
+    <color name="warningContainer">#493615</color>
+
+    <!-- Status das tarefas - Modo Escuro -->
+
+    <!-- Atrasadas -->
+    <color name="fundo_atrasadas">#4A2024</color>
+    <color name="atrasadas">#FFB4AB</color>
+
+    <!-- Pendentes -->
+    <color name="fundo_pendentes">#493615</color>
+    <color name="pendentes">#FFD18A</color>
 </resources>

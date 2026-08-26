@@ -1,31 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <!-- Cores Primárias Modernas -->
-    <color name="primary">#2196F3</color>
+
+    <!-- Tema claro -->
+
+    <color name="primary">#2F52E0</color>
     <color name="onPrimary">#FFFFFF</color>
-    <color name="primaryContainer">#D1E4FF</color>
-    <color name="onPrimaryContainer">#001D36</color>
+    <color name="primaryContainer">#deedff</color>
+    <color name="onPrimaryContainer">#10256E</color>
 
-    <!-- Cores Secundárias -->
-    <color name="secondary">#545F71</color>
+    <color name="secondary">#5A647C</color>
     <color name="onSecondary">#FFFFFF</color>
-    <color name="secondaryContainer">#D7E3F9</color>
-    <color name="onSecondaryContainer">#101C2B</color>
+    <color name="secondaryContainer">#DEE2F2</color>
+    <color name="onSecondaryContainer">#171C2B</color>
 
-    <!-- Superfícies e Fundos -->
-    <color name="background">#FEFBFF</color>
+    <color name="background">#ebf2fa</color>
     <color name="onBackground">#1B1B1F</color>
-    <color name="surface">#FEFBFF</color>
-    <color name="onSurface">#1B1B1F</color>
-    <color name="surfaceVariant">#E1E2EC</color>
-    <color name="onSurfaceVariant">#44474E</color>
 
-    <!-- Erros e Urgências -->
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#1B1B1F</color>
+
+    <color name="surfaceVariant">#E2E4EC</color>
+    <color name="onSurfaceVariant">#45464F</color>
+
     <color name="error">#BA1A1A</color>
     <color name="onError">#FFFFFF</color>
 
-    <!-- Cores Originais Mantidas/Ajustadas -->
+    <!-- Cores próprias -->
+    <color name="studyflow_blue">#2F52E0</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="azul_secundario">#27187E</color>
+
+    <!-- Status -->
+    <color name="errorContainer">#FDECEC</color>
+    <color name="warning">#A06000</color>
+    <color name="warningContainer">#FFF3D6</color>
+
+    <!-- Tarefas atrasadas -->
+    <color name="atrasadas">#D94A4A</color>
+    <color name="fundo_atrasadas">#FBE7E7</color>
+
+    <!-- Tarefas pendentes -->
+    <color name="pendentes">#C77A18</color>
+    <color name="fundo_pendentes">#FFF1DC</color>
 </resources>

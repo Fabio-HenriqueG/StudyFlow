@@ -11,20 +11,22 @@
         android:id="@+id/bottom_menu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_inferior"
-        app:labelVisibilityMode="labeled" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container"
-        android:name="com.example.studyflow.HomeFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/surface"
+
+        app:itemIconTint="@color/menu_cores_selector"
+        app:itemTextColor="@color/menu_cores_selector"
+        app:itemIconSize="24dp"
+
+        app:itemActiveIndicatorColor="@color/primaryContainer"
+
+        app:itemRippleColor="@android:color/transparent"
+        app:labelVisibilityMode="labeled"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:menu="@menu/menu_inferior" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
