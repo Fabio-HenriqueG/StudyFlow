@@ -50,12 +50,9 @@ public class NotificacaoWorker extends Worker {
             return Result.success();
         }
 
-        // Pega o nível de frequência escolhido (0=Baixa, 1=Média, 2=Alta)
-        int freqLevel = prefs.getInt("notification_frequency", 2);
-
-        // 1. Pega o banco de dados e a lista de todas as tarefas
+        // 1. Pega o banco de dados e a lista apenas das tarefas ativas
         AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-        List<Tarefa> tarefas = db.tarefaDao().buscarTodas();
+        List<Tarefa> tarefas = db.tarefaDao().buscarAtivas();
 
         long tempoAtual = System.currentTimeMillis();
 
@@ -65,53 +62,60 @@ public class NotificacaoWorker extends Worker {
             // Se a tarefa já passou do prazo, não precisamos mais notificar aqui
             if (tarefa.dataLimite < tempoAtual) continue;
 
+            // Pega o perfil de insistência ESPECÍFICO DESTA TAREFA
+            int insistencePerfil = tarefa.insistencia;
+
             // Calcula quanto tempo falta para o prazo (em milissegundos)
             long tempoRestante = tarefa.dataLimite - tempoAtual;
             
             // Calcula quanto tempo passou desde a última notificação que enviamos
             long tempoDesdeUltimoAlerta = tempoAtual - tarefa.ultimoAlerta;
 
-            // Lógica de FREQUÊNCIA
+            // Lógica de FREQUÊNCIA DINÂMICA
             boolean deveNotificar = false;
             String urgencia = "";
 
-            long[][] intervalos = {
-                {120 * 60 * 1000, 360 * 60 * 1000, 720 * 60 * 1000, 1440 * 60 * 1000}, // Baixa
-                {60 * 60 * 1000, 240 * 60 * 1000, 480 * 60 * 1000, 720 * 60 * 1000},  // Média
-                {30 * 60 * 1000, 120 * 60 * 1000, 360 * 60 * 1000, 1440 * 60 * 1000} // Alta
-            };
+            // Matriz de intervalos [Perfil][Fase]: 0=Discreto, 1=Equilibrado, 2=Chato
+            // Fases (ms): 0=Crítica(<24h), 1=Atenção(2-7 dias), 2=Planejamento(>7 dias)
+            long[][] intervalosBase;
+            
+            if (insistencePerfil == 0) { // DISCRETO
+                intervalosBase = new long[][]{
+                    {4 * 60 * 60 * 1000, 8 * 60 * 60 * 1000, 12 * 60 * 60 * 1000}, // Crítica
+                    {48 * 60 * 60 * 1000, 48 * 60 * 60 * 1000, 48 * 60 * 60 * 1000}, // Atenção
+                    {7 * 24 * 60 * 60 * 1000L, 7 * 24 * 60 * 60 * 1000L, 7 * 24 * 60 * 60 * 1000L} // Planejamento
+                };
+            } else if (insistencePerfil == 2) { // NÃO ME DEIXE ESQUECER (Chato)
+                intervalosBase = new long[][]{
+                    {30 * 60 * 1000, 60 * 60 * 1000, 90 * 60 * 1000}, // Crítica
+                    {12 * 60 * 60 * 1000, 12 * 60 * 60 * 1000, 12 * 60 * 60 * 1000}, // Atenção (2x por dia)
+                    {24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000} // Planejamento (Todo dia!)
+                };
+            } else { // EQUILIBRADO (Padrão)
+                intervalosBase = new long[][]{
+                    {2 * 60 * 60 * 1000, 4 * 60 * 60 * 1000, 6 * 60 * 60 * 1000}, // Crítica
+                    {24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000}, // Atenção
+                    {3 * 24 * 60 * 60 * 1000L, 3 * 24 * 60 * 60 * 1000L, 3 * 24 * 60 * 60 * 1000L} // Planejamento
+                };
+            }
 
-            long[] configAtual = intervalos[freqLevel];
+            // Seleciona o intervalo final baseado na PRIORIDADE da tarefa e PROXIMIDADE
+            long intervaloFinal;
+            int prioridadeIdx = 2 - tarefa.prioridade; // Alta(2)->0, Média(1)->1, Baixa(0)->2
+            
+            if (tempoRestante < (24 * 60 * 60 * 1000)) { // FASE CRÍTICA
+                intervaloFinal = intervalosBase[0][prioridadeIdx];
+                urgencia = "URGENTE: Prazo final chegando!";
+            } else if (tempoRestante < (7 * 24 * 60 * 60 * 1000L)) { // FASE ATENÇÃO
+                intervaloFinal = intervalosBase[1][prioridadeIdx];
+                urgencia = "Lembrete: Tarefa para esta semana.";
+            } else { // FASE PLANEJAMENTO
+                intervaloFinal = intervalosBase[2][prioridadeIdx];
+                urgencia = "Lembrete de longo prazo.";
+            }
 
-            if (DateUtils.isToday(tarefa.dataLimite)) {
-                if (tempoDesdeUltimoAlerta >= configAtual[0]) {
-                    deveNotificar = true;
-                    urgencia = "Lembrete: Esta tarefa vence HOJE!";
-                }
-            }
-            else if (tempoRestante < (2 * 60 * 60 * 1000)) {
-                if (tempoDesdeUltimoAlerta >= configAtual[0]) {
-                    deveNotificar = true;
-                    urgencia = "URGENTE: Falta pouco tempo!";
-                }
-            } 
-            else if (tempoRestante < (12 * 60 * 60 * 1000)) {
-                if (tempoDesdeUltimoAlerta >= configAtual[1]) {
-                    deveNotificar = true;
-                    urgencia = "Atenção: O prazo está chegando.";
-                }
-            }
-            else if (tempoRestante < (24 * 60 * 60 * 1000)) {
-                if (tempoDesdeUltimoAlerta >= configAtual[2]) {
-                    deveNotificar = true;
-                    urgencia = "Lembrete: Sua tarefa vence em breve.";
-                }
-            }
-            else {
-                if (tempoDesdeUltimoAlerta >= configAtual[3]) {
-                    deveNotificar = true;
-                    urgencia = "Lembrete de tarefa programada.";
-                }
+            if (tempoDesdeUltimoAlerta >= intervaloFinal) {
+                deveNotificar = true;
             }
 
             if (deveNotificar) {
@@ -126,6 +130,7 @@ public class NotificacaoWorker extends Worker {
                 db.tarefaDao().atualizar(tarefa);
             }
         }
+
 
         // --- NOVIDADE: VERIFICAÇÃO DE METAS ---
         processarNotificacoesMetas(prefs, db, tempoAtual);

@@ -69,7 +69,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Novo Checklist"
+        android:layout_marginBottom="12dp"
         android:padding="16dp"
         app:cornerRadius="12dp"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_menu_flashcard"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Novo Flashcard (Estudo)"
+        android:padding="16dp"
+        app:cornerRadius="12dp"
+        app:icon="@android:drawable/ic_menu_help" />
+
 </LinearLayout>
+

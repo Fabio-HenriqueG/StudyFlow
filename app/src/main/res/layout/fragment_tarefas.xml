@@ -20,9 +20,36 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@+id/btn_voltar"
+            app:layout_constraintEnd_toStartOf="@+id/btn_calendario"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_calendario"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/calendario"
+            android:src="@android:drawable/ic_menu_my_calendar"
+            app:tint="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@+id/btn_historico"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_historico"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/historico"
+            android:src="@android:drawable/ic_menu_recent_history"
+            app:tint="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@+id/btn_voltar"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageButton
             android:id="@+id/btn_voltar"

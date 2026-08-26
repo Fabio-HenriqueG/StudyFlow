@@ -26,8 +26,10 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.Tarefa;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 
@@ -78,7 +80,33 @@ public class MainActivity extends AppCompatActivity {
         NotificacaoHelper.criarCanalNotificacao(this);
         pedirPermissaoNotificacao();
         agendarVerificadorTarefas();
+        
+        processarLimpezaTarefas();
     }
+
+    private void processarLimpezaTarefas() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase db = AppDatabase.getInstance(this);
+            long agora = System.currentTimeMillis();
+
+            // 1. Move expiradas para o histórico ou deleta (Baixa)
+            List<Tarefa> expiradas = db.tarefaDao().buscarExpiradas(agora);
+            for (Tarefa t : expiradas) {
+                if (t.prioridade == 0) {
+                    db.tarefaDao().excluir(t);
+                } else {
+                    t.concluida = true;
+                    t.dataConclusao = agora;
+                    db.tarefaDao().atualizar(t);
+                }
+            }
+
+            // 2. Deleta Médias antigas (ex: mais de 7 dias)
+            long seteDiasAtras = agora - (7L * 24 * 60 * 60 * 1000);
+            db.tarefaDao().deletarMediasAntigas(seteDiasAtras);
+        });
+    }
+
 
     private void configurarNavegacao() {
         navView.setOnItemSelectedListener(item -> {

@@ -22,8 +22,20 @@ public interface TarefaDao {
     @Delete
     void excluir(Tarefa tarefa); // Esse método vai excluir a tarefa
 
+    @Query("SELECT * FROM tarefas WHERE concluida = 0 ORDER BY dataLimite ASC")
+    List<Tarefa> buscarAtivas(); 
+
+    @Query("SELECT * FROM tarefas WHERE concluida = 1 ORDER BY dataConclusao DESC")
+    List<Tarefa> buscarNoHistorico();
+
+    @Query("SELECT * FROM tarefas WHERE concluida = 0 AND dataLimite < :agora")
+    List<Tarefa> buscarExpiradas(long agora);
+
+    @Query("DELETE FROM tarefas WHERE concluida = 1 AND prioridade = 1 AND dataConclusao < :limite")
+    void deletarMediasAntigas(long limite);
+
     @Query("SELECT * FROM tarefas ORDER BY dataLimite ASC")
-    List<Tarefa> buscarTodas(); // Esse método vai puxar todas as tarefas salvas para mostrar na tela inicial
+    List<Tarefa> buscarTodas();
 
     @Query("SELECT * FROM tarefas WHERE id = :id")
     Tarefa buscarPorId(int id);

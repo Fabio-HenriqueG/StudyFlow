@@ -76,6 +76,9 @@ public class TarefasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tarefas, container, false);
 
         ImageButton btnVoltar = view.findViewById(R.id.btn_voltar);
+        ImageButton btnCalendario = view.findViewById(R.id.btn_calendario);
+        ImageButton btnHistorico = view.findViewById(R.id.btn_historico);
+
         btnVoltar.setOnClickListener(v -> {
             // Volta para o fragmento anterior se existir na pilha, ou volta para Home
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
@@ -86,6 +89,22 @@ public class TarefasFragment extends Fragment {
                         .commit();
             }
         });
+
+        btnCalendario.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new CalendarioTarefasFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        btnHistorico.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HistoricoTarefasFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
         return view;
 
     }
@@ -114,7 +133,7 @@ public class TarefasFragment extends Fragment {
         Executors.newSingleThreadExecutor().execute(() -> {
 
             // Puxa a lista de tarefas do Room usando o contexto seguro
-            List<Tarefa> listaDoBanco = AppDatabase.getInstance(appContext).tarefaDao().buscarTodas();
+            List<Tarefa> listaDoBanco = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
 
             // 4. Volta para a Main Thread (linha principal) para desenhar na tela do celular
             if (getActivity() != null) {

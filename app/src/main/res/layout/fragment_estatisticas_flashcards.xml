@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnVoltarStats"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/seta_voltar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/lblTituloStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Seu Progresso"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btnVoltarStats"
+            app:layout_constraintStart_toEndOf="@+id/btnVoltarStats"
+            app:layout_constraintTop_toTopOf="@+id/btnVoltarStats" />
+
+        <!-- CARD DOMÍNIO GERAL -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardGeral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintTop_toBottomOf="@+id/lblTituloStats">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Domínio Total"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressGeral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:trackThickness="12dp"
+                    app:trackCornerRadius="6dp"
+                    android:progress="45" />
+
+                <TextView
+                    android:id="@+id/txtPercentualGeral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="end"
+                    android:text="45%"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtQtdDominados"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🔥 12 Dominados"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/txtQtdAprendendo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="📖 24 Estudando"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SEÇÃO: POR MATÉRIA -->
+        <TextView
+            android:id="@+id/lblMaterias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Desempenho por Matéria"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardGeral" />
+
+        <LinearLayout
+            android:id="@+id/layoutMateriasStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/lblMaterias" />
+
+        <!-- PREVISÃO DE CARGA -->
+        <TextView
+            android:id="@+id/lblPrevisao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Próximos 7 Dias (Carga de Estudo)"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutMateriasStats" />
+
+        <LinearLayout
+            android:id="@+id/layoutCargaSemana"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:weightSum="7"
+            app:layout_constraintTop_toBottomOf="@+id/lblPrevisao" />
+
+        <LinearLayout
+            android:id="@+id/layoutDiasCarga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="7"
+            app:layout_constraintTop_toBottomOf="@+id/layoutCargaSemana">
+            <TextView style="@style/DayStatsLabel" android:text="Dom" />
+            <TextView style="@style/DayStatsLabel" android:text="Seg" />
+            <TextView style="@style/DayStatsLabel" android:text="Ter" />
+            <TextView style="@style/DayStatsLabel" android:text="Qua" />
+            <TextView style="@style/DayStatsLabel" android:text="Qui" />
+            <TextView style="@style/DayStatsLabel" android:text="Sex" />
+            <TextView style="@style/DayStatsLabel" android:text="Sab" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/layoutDiasCarga" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

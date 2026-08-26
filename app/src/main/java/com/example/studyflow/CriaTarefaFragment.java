@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.chip.ChipGroup;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Tarefa;
 
@@ -33,6 +35,8 @@ public class CriaTarefaFragment extends Fragment {
     private EditText txtDescricaoTarefa;
     private Button btnSalvarTarefa;
     private CalendarView calendarioTarefa;
+    private ChipGroup chipGroupPrioridade;
+    private ChipGroup toggleGroupInsistencia;
     private Tarefa tarefaEmEdicao;
     private long dataSelecionada;
 
@@ -51,7 +55,13 @@ public class CriaTarefaFragment extends Fragment {
         txtDescricaoTarefa = view.findViewById(R.id.txtDescricaoTarefa);
         btnSalvarTarefa = view.findViewById(R.id.btnSalvarTarefa);
         calendarioTarefa = view.findViewById(R.id.calendario_tarefa);
+        chipGroupPrioridade = view.findViewById(R.id.chipGroupPrioridade);
+        toggleGroupInsistencia = view.findViewById(R.id.toggleGroupInsistenciaCria);
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltar);
+        
+        // Padrões
+        chipGroupPrioridade.check(R.id.chipMedia);
+        toggleGroupInsistencia.check(R.id.btnInsistEquilibrado);
 
         btnVoltar.setOnClickListener(v -> voltarOuHome());
 
@@ -71,6 +81,17 @@ public class CriaTarefaFragment extends Fragment {
             if (tarefaEmEdicao != null) {
                 txtTituloTarefa.setText(tarefaEmEdicao.titulo);
                 txtDescricaoTarefa.setText(tarefaEmEdicao.descricao);
+                
+                // Marca a prioridade correta
+                if (tarefaEmEdicao.prioridade == 0) chipGroupPrioridade.check(R.id.chipBaixa);
+                else if (tarefaEmEdicao.prioridade == 2) chipGroupPrioridade.check(R.id.chipAlta);
+                else chipGroupPrioridade.check(R.id.chipMedia);
+
+                // Marca a insistência correta
+                if (tarefaEmEdicao.insistencia == 0) toggleGroupInsistencia.check(R.id.btnInsistDiscreto);
+                else if (tarefaEmEdicao.insistencia == 2) toggleGroupInsistencia.check(R.id.btnInsistChato);
+                else toggleGroupInsistencia.check(R.id.btnInsistEquilibrado);
+
                 btnSalvarTarefa.setText("Atualizar");
             }
         }
@@ -100,10 +121,22 @@ public class CriaTarefaFragment extends Fragment {
 
         Context appContext = requireContext().getApplicationContext();
 
+        int prioridade = 1; // Média por padrão
+        int selectedId = chipGroupPrioridade.getCheckedChipId();
+        if (selectedId == R.id.chipBaixa) prioridade = 0;
+        else if (selectedId == R.id.chipAlta) prioridade = 2;
+
+        int insistencia = 1;
+        int checkedInsistId = toggleGroupInsistencia.getCheckedChipId();
+        if (checkedInsistId == R.id.btnInsistDiscreto) insistencia = 0;
+        else if (checkedInsistId == R.id.btnInsistChato) insistencia = 2;
+
         if (tarefaEmEdicao != null) {
             tarefaEmEdicao.titulo = titulo;
             tarefaEmEdicao.descricao = descricao;
             tarefaEmEdicao.dataLimite = dataSelecionada;
+            tarefaEmEdicao.prioridade = prioridade;
+            tarefaEmEdicao.insistencia = insistencia;
             
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(appContext).tarefaDao().atualizar(tarefaEmEdicao);
@@ -113,11 +146,12 @@ public class CriaTarefaFragment extends Fragment {
                 finalizarEDarFeedback(appContext, "Tarefa atualizada com sucesso!");
             });
         } else {
-            Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, 1);
+            Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, 1, prioridade, insistencia);
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(appContext).tarefaDao().inserir(novaTarefa);
-                List<Tarefa> todas = AppDatabase.getInstance(appContext).tarefaDao().buscarTodas();
+
+                List<Tarefa> todas = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
                 if (!todas.isEmpty()) {
                     Tarefa inserida = todas.get(todas.size() - 1);
                     if (DateUtils.isToday(inserida.dataLimite)) {

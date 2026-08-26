@@ -33,11 +33,11 @@ import java.util.concurrent.Executors;
  */
 public class HomeFragment extends Fragment {
 
-    private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas;
+    private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas, txtFlashcardsCount;
     private RecyclerView recyclerMetasHome, recyclerAnotacoesHome;
     private LinearLayout layoutStatus;
-    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas;
-    private int countMetas = -1, countAnotacoes = -1, countTarefas = -1;
+    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards;
+    private int countMetas = -1, countAnotacoes = -1, countTarefas = -1, countFlashcards = -1;
 
     public HomeFragment() {
         // Construtor vazio obrigatório
@@ -66,6 +66,16 @@ public class HomeFragment extends Fragment {
         cardEmptyTarefas = view.findViewById(R.id.cardEmptyTarefas);
         cardEmptyAnotacoes = view.findViewById(R.id.cardEmptyAnotacoes);
         cardEmptyMetas = view.findViewById(R.id.cardEmptyMetas);
+        cardRevisaoFlashcards = view.findViewById(R.id.cardRevisaoFlashcards);
+        cardEmptyFlashcards = view.findViewById(R.id.cardEmptyFlashcards);
+        layoutSecaoFlashcards = view.findViewById(R.id.layoutSecaoFlashcards);
+        txtFlashcardsCount = view.findViewById(R.id.txtFlashcardsCount);
+        View btnIniciarRevisao = view.findViewById(R.id.btnIniciarRevisao);
+        View btnVerColecaoHome = view.findViewById(R.id.btnVerColecaoHome);
+        
+        btnIniciarRevisao.setOnClickListener(v -> navegarPara(new RevisaoFlashcardsFragment()));
+        btnVerColecaoHome.setOnClickListener(v -> navegarPara(new FlashcardsFragment()));
+
         
         View btnComecar = view.findViewById(R.id.btnComecarHome);
 
@@ -117,14 +127,16 @@ public class HomeFragment extends Fragment {
         countMetas = -1;
         countAnotacoes = -1;
         countTarefas = -1;
+        countFlashcards = -1;
         carregarStatusTarefas();
         carregarMetasHome();
         carregarAnotacoesHome();
+        carregarFlashcardsHome();
     }
 
     private void carregarStatusTarefas() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Tarefa> tarefas = AppDatabase.getInstance(getContext()).tarefaDao().buscarTodas();
+            List<Tarefa> tarefas = AppDatabase.getInstance(getContext()).tarefaDao().buscarAtivas();
             int atrasadas = 0, pendentes = 0;
             long agora = System.currentTimeMillis();
 
@@ -188,7 +200,35 @@ public class HomeFragment extends Fragment {
                     recyclerAnotacoesHome.setAdapter(adapter);
                     atualizarVisibilidadeEstadoVazio();
                 });
+            }
+        });
+    }
 
+    private void carregarFlashcardsHome() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            long hoje = System.currentTimeMillis();
+            int total = AppDatabase.getInstance(getContext()).flashcardDao().buscarTodos().size();
+            int paraRevisar = AppDatabase.getInstance(getContext()).flashcardDao().contarParaRevisarHoje(hoje);
+            
+            countFlashcards = total;
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (total > 0) {
+                        layoutSecaoFlashcards.setVisibility(View.VISIBLE);
+                        if (paraRevisar > 0) {
+                            cardRevisaoFlashcards.setVisibility(View.VISIBLE);
+                            cardEmptyFlashcards.setVisibility(View.GONE);
+                            txtFlashcardsCount.setText("Você tem " + paraRevisar + " cartões para estudar.");
+                        } else {
+                            cardRevisaoFlashcards.setVisibility(View.GONE);
+                            cardEmptyFlashcards.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        layoutSecaoFlashcards.setVisibility(View.GONE);
+                    }
+                    atualizarVisibilidadeEstadoVazio();
+                });
             }
         });
     }
@@ -198,9 +238,9 @@ public class HomeFragment extends Fragment {
      */
     private void atualizarVisibilidadeEstadoVazio() {
         // Só executa quando todos os carregamentos terminarem
-        if (countMetas == -1 || countAnotacoes == -1 || countTarefas == -1) return;
+        if (countMetas == -1 || countAnotacoes == -1 || countTarefas == -1 || countFlashcards == -1) return;
 
-        if (countMetas == 0 && countAnotacoes == 0 && countTarefas == 0) {
+        if (countMetas == 0 && countAnotacoes == 0 && countTarefas == 0 && countFlashcards == 0) {
             // TUDO VAZIO: Mostra o card de boas-vindas gigante e esconde o resto
             cardEmptyState.setVisibility(View.VISIBLE);
             

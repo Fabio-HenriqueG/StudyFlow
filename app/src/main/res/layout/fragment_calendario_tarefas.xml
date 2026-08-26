@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btn_voltar_calendario"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/seta_voltar"
+        android:contentDescription="@string/voltar"
+        app:tint="?attr/colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblCalendario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/calendario_tarefas"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_voltar_calendario"
+        app:layout_constraintStart_toEndOf="@+id/btn_voltar_calendario"
+        app:layout_constraintTop_toTopOf="@+id/btn_voltar_calendario" />
+
+    <LinearLayout
+        android:id="@+id/layoutMonthHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/btn_voltar_calendario">
+
+        <ImageButton
+            android:id="@+id/btnPrevMonth"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_previous"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/txtCurrentMonth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Agosto 2026"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnNextMonth"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_next"
+            app:tint="?attr/colorOnSurface" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutDaysOfWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/layoutMonthHeader">
+
+        <TextView style="@style/DayOfWeekStyle" android:text="D" />
+        <TextView style="@style/DayOfWeekStyle" android:text="S" />
+        <TextView style="@style/DayOfWeekStyle" android:text="T" />
+        <TextView style="@style/DayOfWeekStyle" android:text="Q" />
+        <TextView style="@style/DayOfWeekStyle" android:text="Q" />
+        <TextView style="@style/DayOfWeekStyle" android:text="S" />
+        <TextView style="@style/DayOfWeekStyle" android:text="S" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCalendarDays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="7"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDaysOfWeek" />
+
+    <TextView
+        android:id="@+id/lblTarefasDia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/tarefas_do_dia"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerCalendarDays" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTarefasDia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblTarefasDia"
+        tools:listitem="@layout/item_tarefa" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

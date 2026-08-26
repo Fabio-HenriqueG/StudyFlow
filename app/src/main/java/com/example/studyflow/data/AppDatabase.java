@@ -6,12 +6,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import com.example.studyflow.data.dao.AnotacaoDao;
 import com.example.studyflow.data.dao.ChecklistDao;
+import com.example.studyflow.data.dao.FlashcardDao;
+import com.example.studyflow.data.dao.MateriaDao;
 import com.example.studyflow.data.dao.MetaDao;
 import com.example.studyflow.data.dao.TarefaDao;
 
 
 // Se no futuro vocês criarem outras entidades, adicionem aqui
-@Database(entities = {Tarefa.class, Meta.class, Checklist.class, ChecklistItem.class, Anotacao.class}, version = 8, exportSchema = false)
+@Database(entities = {Tarefa.class, Meta.class, Checklist.class, ChecklistItem.class, Anotacao.class, Flashcard.class, Materia.class}, version = 13, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
@@ -27,6 +29,12 @@ public abstract class AppDatabase extends RoomDatabase {
 
     // Gerencia os comandos das Anotações
     public abstract AnotacaoDao anotacaoDao();
+
+    // Gerencia os comandos dos Flashcards
+    public abstract FlashcardDao flashcardDao();
+
+    // Gerencia os comandos das Matérias/Seções
+    public abstract MateriaDao materiaDao();
 
     // Padrão Singleton: Garante que o app use apenas UMA conexão com o banco por vez (evita travar o celular)
     public static synchronized AppDatabase getInstance(Context context) {

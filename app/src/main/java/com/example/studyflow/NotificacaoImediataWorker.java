@@ -27,8 +27,8 @@ public class NotificacaoImediataWorker extends Worker {
             // Busca a tarefa no banco para pegar o título e descrição
             Tarefa tarefa = AppDatabase.getInstance(getApplicationContext()).tarefaDao().buscarPorId(tarefaId);
             
-            if (tarefa != null) {
-                // Envia a notificação imediata
+            if (tarefa != null && !tarefa.concluida) {
+                // Envia a notificação imediata apenas se a tarefa ainda não foi concluída
                 NotificacaoHelper.enviarNotificacao(
                         getApplicationContext(),
                         tarefa.id,

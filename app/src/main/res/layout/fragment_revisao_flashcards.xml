@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:padding="24dp">
+
+    <ImageButton
+        android:id="@+id/btnVoltarRevisao"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/seta_voltar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
+
+    <TextView
+        android:id="@+id/lblProgressoRevisao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 / 10"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVoltarRevisao"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnVoltarRevisao" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardFlashcard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBotoesRevisao"
+        app:layout_constraintTop_toBottomOf="@+id/btnVoltarRevisao"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="2dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- Lado da Pergunta -->
+            <LinearLayout
+                android:id="@+id/layoutFrente"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PERGUNTA"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:alpha="0.6"/>
+
+                <TextView
+                    android:id="@+id/txtPerguntaRevisao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="Qual a capital da França?"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="(Toque para ver a resposta)"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp"
+                    android:alpha="0.5"/>
+            </LinearLayout>
+
+            <!-- Lado da Resposta -->
+            <LinearLayout
+                android:id="@+id/layoutVerso"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RESPOSTA"
+                    android:textColor="#4CAF50"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:alpha="0.6"/>
+
+                <TextView
+                    android:id="@+id/txtRespostaRevisao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="Paris"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/dividerExplicacao"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="24dp"
+                    android:background="?attr/colorSurfaceVariant"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/lblExplicacao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="POR QUÊ?"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:alpha="0.6"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/txtExplicacaoRevisao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Paris é a capital e a cidade mais populosa da França."
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <LinearLayout
+        android:id="@+id/layoutBotoesRevisao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnErrei"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Errei"
+            android:textColor="#F44336"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDificil"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Difícil"
+            android:textColor="#FF9800"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBom"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Bom"
+            android:textColor="#4CAF50"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFacil"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Fácil"
+            android:textColor="#2196F3"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

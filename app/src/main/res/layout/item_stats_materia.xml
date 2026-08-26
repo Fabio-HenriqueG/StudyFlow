@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtNomeMateriaStats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Matéria"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressMateriaStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:indicatorColor="?attr/colorPrimary"
+        app:trackThickness="8dp"
+        app:trackCornerRadius="4dp" />
+
+    <TextView
+        android:id="@+id/txtInfoMateriaStats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="0% concluído"
+        android:textSize="11sp"
+        android:textColor="?attr/colorOnSurfaceVariant" />
+
+</LinearLayout>

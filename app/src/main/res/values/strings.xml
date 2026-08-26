@@ -18,4 +18,9 @@
     <string name="checklist">Checklist</string>
     <string name="em_breve_metas">Em breve você poderá gerenciar suas metas aqui!</string>
     <string name="em_breve_checklist">Em breve você poderá gerenciar seu checklist aqui!</string>
+    <string name="calendario">Calendário</string>
+    <string name="calendario_tarefas">Calendário de Tarefas</string>
+    <string name="tarefas_do_dia">Tarefas do dia:</string>
+    <string name="historico">Histórico</string>
+    <string name="historico_tarefas">Histórico de Tarefas</string>
 </resources>

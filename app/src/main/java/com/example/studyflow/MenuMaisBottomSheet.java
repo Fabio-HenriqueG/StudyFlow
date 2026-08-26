@@ -29,6 +29,7 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
         Button btnBlocoNotas = view.findViewById(R.id.btn_menu_bloco_notas);
         Button btnMeta = view.findViewById(R.id.btn_menu_meta);
         Button btnChecklist = view.findViewById(R.id.btn_menu_checklist);
+        Button btnFlashcard = view.findViewById(R.id.btn_menu_flashcard);
 
 
         // Configurar a ação de clique para cada um
@@ -79,6 +80,16 @@ public class MenuMaisBottomSheet extends BottomSheetDialogFragment {
             CriaChecklistFragment criaChecklistFrag = new CriaChecklistFragment();
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, criaChecklistFrag)
+                    .addToBackStack(null)
+                    .commit();
+            dismiss();
+        });
+
+        btnFlashcard.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Abrindo criação de Flashcard...", Toast.LENGTH_SHORT).show();
+            CriaFlashcardFragment fragment = new CriaFlashcardFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
             dismiss();

@@ -24,11 +24,19 @@ import java.util.concurrent.Executors;
 public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaViewHolder> {
 
     private final List<Tarefa> listaTarefas;
+    private boolean modoHistorico = false;
 
     // Construtor: O Adapter exige receber a lista de tarefas do banco
     public TarefaAdapter(List<Tarefa> listaTarefas) {
         this.listaTarefas = listaTarefas;
     }
+
+    // Construtor para modo histórico
+    public TarefaAdapter(List<Tarefa> listaTarefas, boolean modoHistorico) {
+        this.listaTarefas = listaTarefas;
+        this.modoHistorico = modoHistorico;
+    }
+
 
     // 1. Cria o desenho da linha (infla o XML)
     @NonNull
@@ -46,22 +54,45 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         holder.textTitulo.setText(tarefa.titulo);
         holder.textDescricao.setText(tarefa.descricao);
 
-        // Formatando a data de milissegundos para DD/MM/AAAA
+        // Formatando a data
         SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String dataFormatada = formatador.format(new Date(tarefa.dataLimite));
+        String dataFormatada;
+        if (modoHistorico) {
+            dataFormatada = "Concluída em: " + formatador.format(new Date(tarefa.dataConclusao));
+        } else {
+            dataFormatada = formatador.format(new Date(tarefa.dataLimite));
+        }
         holder.textData.setText(dataFormatada);
+
+        // Cores de Prioridade
+        int cor;
+        switch (tarefa.prioridade) {
+            case 0: cor = android.graphics.Color.parseColor("#4CAF50"); break; // Baixa - Verde
+            case 2: cor = android.graphics.Color.parseColor("#F44336"); break; // Alta - Vermelha
+            default: cor = android.graphics.Color.parseColor("#FFC107"); break; // Média - Amarela
+        }
+        holder.viewPrioridade.setBackgroundColor(cor);
 
         // Configura o botão de opções
         holder.btnOpcoes.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(v.getContext(), v);
-            popup.getMenu().add("Editar");
-            popup.getMenu().add("Excluir");
+            if (modoHistorico) {
+                popup.getMenu().add("Excluir Permanentemente");
+            } else {
+                popup.getMenu().add("Concluir");
+                popup.getMenu().add("Editar");
+                popup.getMenu().add("Excluir");
+            }
 
             popup.setOnMenuItemClickListener(item -> {
-                if (item.getTitle().equals("Editar")) {
+                String titulo = item.getTitle().toString();
+                if (titulo.equals("Concluir")) {
+                    concluirTarefa(v, tarefa, position);
+                    return true;
+                } else if (titulo.equals("Editar")) {
                     abrirEdicao(v, tarefa);
                     return true;
-                } else if (item.getTitle().equals("Excluir")) {
+                } else if (titulo.equals("Excluir") || titulo.equals("Excluir Permanentemente")) {
                     confirmarExclusao(v, tarefa, position);
                     return true;
                 }
@@ -70,6 +101,33 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             popup.show();
         });
     }
+
+    private void concluirTarefa(View view, Tarefa tarefa, int position) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase db = AppDatabase.getInstance(view.getContext());
+            
+            if (tarefa.prioridade == 0) {
+                // Baixa Prioridade: Deleta na hora
+                db.tarefaDao().excluir(tarefa);
+            } else {
+                // Média ou Alta: Vai para o histórico
+                tarefa.concluida = true;
+                tarefa.dataConclusao = System.currentTimeMillis();
+                db.tarefaDao().atualizar(tarefa);
+            }
+
+            if (view.getContext() instanceof AppCompatActivity) {
+                ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
+                    listaTarefas.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, listaTarefas.size());
+                    String msg = tarefa.prioridade == 0 ? "Tarefa concluída e removida!" : "Tarefa movida para o histórico!";
+                    Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
 
     private void abrirEdicao(View view, Tarefa tarefa) {
         // Cria o fragmento de criação/edição e passa a tarefa
@@ -112,6 +170,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
     // Minha "Caixa de ferramentas": Segura as variáveis do XML de uma linha só
     static class TarefaViewHolder extends RecyclerView.ViewHolder {
         TextView textTitulo, textDescricao, textData;
+        View viewPrioridade;
         ImageButton btnOpcoes;
 
         public TarefaViewHolder(@NonNull View itemView) {
@@ -119,7 +178,9 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             textTitulo = itemView.findViewById(R.id.text_item_titulo);
             textDescricao = itemView.findViewById(R.id.text_item_descricao);
             textData = itemView.findViewById(R.id.text_item_data);
+            viewPrioridade = itemView.findViewById(R.id.view_prioridade);
             btnOpcoes = itemView.findViewById(R.id.btn_opcoes_tarefa);
         }
     }
+
 }
