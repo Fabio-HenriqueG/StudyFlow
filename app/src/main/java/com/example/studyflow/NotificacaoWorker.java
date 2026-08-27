@@ -138,7 +138,33 @@ public class NotificacaoWorker extends Worker {
         // --- NOVIDADE: VERIFICAÇÃO DE CHECKLISTS ---
         processarNotificacoesChecklists(prefs, db, tempoAtual);
 
+        // --- NOVIDADE: VERIFICAÇÃO DE FLASHCARDS (Padrão Científico) ---
+        processarNotificacoesFlashcards(db, tempoAtual);
+
         return Result.success();
+    }
+
+    private void processarNotificacoesFlashcards(AppDatabase db, long tempoAtual) {
+        int paraRevisar = db.flashcardDao().contarParaRevisarHoje(tempoAtual);
+        
+        if (paraRevisar > 0) {
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+            long ultimoAlertaFlashcards = prefs.getLong("flashcards_last_alert", 0);
+            
+            // Frequência: 2 vezes por dia (cada 12 horas) se houver pendências
+            long intervaloAlerta = 12 * 60 * 60 * 1000L;
+            
+            if (tempoAtual - ultimoAlertaFlashcards >= intervaloAlerta) {
+                NotificacaoHelper.enviarNotificacao(
+                        getApplicationContext(),
+                        40000, // ID único para lembrete de flashcards
+                        "Revisão de Flashcards",
+                        "Você tem " + paraRevisar + " cartões para revisar hoje pelo método científico!"
+                );
+                
+                prefs.edit().putLong("flashcards_last_alert", tempoAtual).apply();
+            }
+        }
     }
 
     private void processarNotificacoesChecklists(SharedPreferences prefs, AppDatabase db, long tempoAtual) {

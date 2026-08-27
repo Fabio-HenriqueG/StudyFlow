@@ -75,14 +75,27 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/text_item_descricao"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Descrição ou lembrete da tarefa aqui..."
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/colorOnSurfaceVariant"/>
+            <TextView
+                android:id="@+id/text_item_descricao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Descrição ou lembrete da tarefa aqui..."
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_concluir_tarefa"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:text="Concluir"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#4CAF50"
+                app:icon="@drawable/ic_check"
+                app:iconTint="#FFFFFF" />
 
         </LinearLayout>
     </LinearLayout>

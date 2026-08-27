@@ -118,21 +118,21 @@ public class ConfiguracoesFragment extends Fragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Configura SeekBar de Frequência de Metas (4 a 20)
+        // Configura SeekBar de Frequência de Metas (1 a 20)
         seekBarFreqMetas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFreqMetasValor.setText((progress + 4) + " vezes");
+                txtFreqMetasValor.setText((progress + 1) + " vezes");
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Configura SeekBar de Frequência de Checklists (4 a 20)
+        // Configura SeekBar de Frequência de Checklists (1 a 20)
         seekBarFreqChecklist.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFreqChecklistValor.setText((progress + 4) + " vezes");
+                txtFreqChecklistValor.setText((progress + 1) + " vezes");
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -206,11 +206,11 @@ public class ConfiguracoesFragment extends Fragment {
         txtFonteValor.setText(fontSize + "sp");
 
         int freqMetas = prefs.getInt("goal_notification_frequency", 4);
-        seekBarFreqMetas.setProgress(freqMetas - 4);
+        seekBarFreqMetas.setProgress(freqMetas - 1);
         txtFreqMetasValor.setText(freqMetas + " vezes");
 
         int freqChecklist = prefs.getInt("checklist_notification_frequency", 4);
-        seekBarFreqChecklist.setProgress(freqChecklist - 4);
+        seekBarFreqChecklist.setProgress(freqChecklist - 1);
         txtFreqChecklistValor.setText(freqChecklist + " vezes");
 
         switchNotificacoes.setChecked(prefs.getBoolean("notifications_enabled", true));
@@ -240,8 +240,8 @@ public class ConfiguracoesFragment extends Fragment {
                 .putInt("notification_insistence_perfil", perfil)
                 .putString("notebook_style", spinnerEstilo.getSelectedItem().toString())
                 .putInt("default_font_size", seekBarFonte.getProgress())
-                .putInt("goal_notification_frequency", seekBarFreqMetas.getProgress() + 4)
-                .putInt("checklist_notification_frequency", seekBarFreqChecklist.getProgress() + 4)
+                .putInt("goal_notification_frequency", seekBarFreqMetas.getProgress() + 1)
+                .putInt("checklist_notification_frequency", seekBarFreqChecklist.getProgress() + 1)
                 .putBoolean("notifications_enabled", switchNotificacoes.isChecked())
                 .putBoolean("notification_sound", switchSom.isChecked())
                 .putBoolean("notification_vibration", switchVibracao.isChecked())

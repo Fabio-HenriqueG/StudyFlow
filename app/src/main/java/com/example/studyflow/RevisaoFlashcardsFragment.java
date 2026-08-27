@@ -192,40 +192,42 @@ public class RevisaoFlashcardsFragment extends Fragment {
 
         long agora = System.currentTimeMillis();
         
-        // Algoritmo de Agendamento (SRS simplificado)
+        // Algoritmo de Repetição Espaçada Científico (1, 7, 15, 30, 30...)
         if (nota == 0) {
-            // Errou: Intervalo resetado, volta para a fila da sessão
+            // Errou: Reseta o progresso para o início do ciclo
             atual.intervalo = 0;
             atual.repeticoes = 0;
             atual.nivelDominio = Math.max(0, atual.nivelDominio - 1);
-            atual.dataProximaRevisao = agora; // Mantém para hoje
-            
+            atual.dataProximaRevisao = agora; // Mantém para hoje para nova tentativa
+
             // Adiciona ao final da lista para repetir na mesma sessão
             Flashcard repeticao = new Flashcard(atual.pergunta, atual.resposta, atual.explicacao, atual.materiaId);
-            repeticao.id = atual.id; // Mantém o mesmo ID para atualizar o registro correto depois
+            repeticao.id = atual.id;
             listaRevisao.add(repeticao);
         } else {
-            // Acertou: Calcula próximo intervalo
-            if (atual.repeticoes == 0) {
-                atual.intervalo = 1;
-            } else if (atual.repeticoes == 1) {
-                atual.intervalo = 6;
-            } else {
-                atual.intervalo = Math.round(atual.intervalo * atual.facilidade);
+            // Acertou: Define o próximo intervalo baseado no padrão científico
+            switch (atual.repeticoes) {
+                case 0:
+                    atual.intervalo = 1; // 1 dia depois
+                    break;
+                case 1:
+                    atual.intervalo = 7; // 7 dias depois
+                    break;
+                case 2:
+                    atual.intervalo = 15; // 15 dias depois
+                    break;
+                case 3:
+                default:
+                    atual.intervalo = 30; // 30 dias depois (e subsequentes)
+                    break;
             }
-            
-            // Ajusta o intervalo baseado na nota
-            if (nota == 1) { // Difícil
-                atual.intervalo = Math.max(1, atual.intervalo / 2);
-                atual.facilidade = Math.max(1.3f, atual.facilidade - 0.2f);
-            } else if (nota == 3) { // Fácil
-                atual.intervalo = (int) (atual.intervalo * 1.5);
-                atual.facilidade = Math.min(3.0f, atual.facilidade + 0.15f);
-            }
-            
+
             atual.repeticoes++;
-            atual.nivelDominio++;
+            atual.nivelDominio = Math.min(5, atual.nivelDominio + 1);
             atual.dataProximaRevisao = agora + (atual.intervalo * 24L * 60 * 60 * 1000);
+
+            // Registra a atividade no histórico
+            ProdutividadeManager.registrarAtividade(getContext(), "FLASHCARD", atual.id, atual.materiaId);
         }
 
         Executors.newSingleThreadExecutor().execute(() -> {

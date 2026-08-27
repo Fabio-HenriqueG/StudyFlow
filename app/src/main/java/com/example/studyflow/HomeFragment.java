@@ -33,10 +33,10 @@ import java.util.concurrent.Executors;
  */
 public class HomeFragment extends Fragment {
 
-    private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas, txtFlashcardsCount;
+    private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas, txtFlashcardsCount, txtStreakCount;
     private RecyclerView recyclerMetasHome, recyclerAnotacoesHome;
     private LinearLayout layoutStatus;
-    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards;
+    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards, cardStreak;
     private int countMetas = -1, countAnotacoes = -1, countTarefas = -1, countFlashcards = -1;
 
     public HomeFragment() {
@@ -70,11 +70,15 @@ public class HomeFragment extends Fragment {
         cardEmptyFlashcards = view.findViewById(R.id.cardEmptyFlashcards);
         layoutSecaoFlashcards = view.findViewById(R.id.layoutSecaoFlashcards);
         txtFlashcardsCount = view.findViewById(R.id.txtFlashcardsCount);
+        txtStreakCount = view.findViewById(R.id.txtStreakCount);
+        cardStreak = view.findViewById(R.id.cardStreak);
+        
         View btnIniciarRevisao = view.findViewById(R.id.btnIniciarRevisao);
         View btnVerColecaoHome = view.findViewById(R.id.btnVerColecaoHome);
         
         btnIniciarRevisao.setOnClickListener(v -> navegarPara(new RevisaoFlashcardsFragment()));
         btnVerColecaoHome.setOnClickListener(v -> navegarPara(new FlashcardsFragment()));
+        cardStreak.setOnClickListener(v -> navegarPara(new DashboardFragment()));
 
         
         View btnComecar = view.findViewById(R.id.btnComecarHome);
@@ -132,6 +136,20 @@ public class HomeFragment extends Fragment {
         carregarMetasHome();
         carregarAnotacoesHome();
         carregarFlashcardsHome();
+        carregarStreak();
+    }
+
+    private void carregarStreak() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int streak = ProdutividadeManager.calcularStreak(getContext());
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    txtStreakCount.setText(String.valueOf(streak));
+                    // Efeito visual: Se o streak for 0, deixa o card mais transparente
+                    cardStreak.setAlpha(streak > 0 ? 1.0f : 0.5f);
+                });
+            }
+        });
     }
 
     private void carregarStatusTarefas() {

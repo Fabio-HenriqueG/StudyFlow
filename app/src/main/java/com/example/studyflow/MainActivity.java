@@ -126,15 +126,23 @@ public class MainActivity extends AppCompatActivity {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Fragment atual = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (atual != null && !(atual instanceof HomeFragment)) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new HomeFragment())
-                            .commit();
-                    desmarcarMenu();
+                FragmentManager fm = getSupportFragmentManager();
+                // Primeiro, verifica se há algo no BackStack para voltar (Ex: Flashcards -> Lista)
+                if (fm.getBackStackEntryCount() > 0) {
+                    fm.popBackStack();
                 } else {
-                    setEnabled(false);
-                    onBackPressed();
+                    // Se não houver pilha, verifica se estamos fora da Home para voltar a ela
+                    Fragment atual = fm.findFragmentById(R.id.fragment_container);
+                    if (atual != null && !(atual instanceof HomeFragment)) {
+                        fm.beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment())
+                                .commit();
+                        desmarcarMenu();
+                    } else {
+                        // Caso contrário, fecha o app normalmente
+                        setEnabled(false);
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
                 }
             }
         };

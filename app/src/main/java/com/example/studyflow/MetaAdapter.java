@@ -93,6 +93,9 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
         holder.btnCheckin.setOnClickListener(v -> {
             meta.ultimoCheckin = System.currentTimeMillis();
             
+            // Registra a atividade no histórico
+            ProdutividadeManager.registrarAtividade(v.getContext(), "META", meta.id, 0);
+
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(v.getContext()).metaDao().atualizar(meta);
                 

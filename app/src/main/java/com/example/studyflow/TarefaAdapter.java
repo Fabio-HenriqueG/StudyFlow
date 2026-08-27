@@ -73,6 +73,14 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         }
         holder.viewPrioridade.setBackgroundColor(cor);
 
+        // Configura o botão "Concluir" direto no card
+        if (modoHistorico) {
+            holder.btnConcluir.setVisibility(View.GONE);
+        } else {
+            holder.btnConcluir.setVisibility(View.VISIBLE);
+            holder.btnConcluir.setOnClickListener(v -> concluirTarefa(v, tarefa, position));
+        }
+
         // Configura o botão de opções
         holder.btnOpcoes.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -115,6 +123,9 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
                 tarefa.dataConclusao = System.currentTimeMillis();
                 db.tarefaDao().atualizar(tarefa);
             }
+
+            // Registra a atividade no histórico (materiaId = 0 para geral)
+            ProdutividadeManager.registrarAtividade(view.getContext(), "TAREFA", tarefa.id, 0);
 
             if (view.getContext() instanceof AppCompatActivity) {
                 ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
@@ -172,6 +183,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         TextView textTitulo, textDescricao, textData;
         View viewPrioridade;
         ImageButton btnOpcoes;
+        View btnConcluir;
 
         public TarefaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -180,6 +192,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             textData = itemView.findViewById(R.id.text_item_data);
             viewPrioridade = itemView.findViewById(R.id.view_prioridade);
             btnOpcoes = itemView.findViewById(R.id.btn_opcoes_tarefa);
+            btnConcluir = itemView.findViewById(R.id.btn_concluir_tarefa);
         }
     }
 

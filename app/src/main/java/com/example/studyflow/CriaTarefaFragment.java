@@ -151,6 +151,9 @@ public class CriaTarefaFragment extends Fragment {
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(appContext).tarefaDao().inserir(novaTarefa);
 
+                // Registra a atividade de planejamento (criação) para o streak
+                ProdutividadeManager.registrarAtividade(appContext, "PLANEJAMENTO", 0, 0);
+
                 List<Tarefa> todas = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
                 if (!todas.isEmpty()) {
                     Tarefa inserida = todas.get(todas.size() - 1);

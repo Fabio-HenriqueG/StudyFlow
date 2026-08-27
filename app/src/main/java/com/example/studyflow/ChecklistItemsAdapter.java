@@ -48,6 +48,11 @@ public class ChecklistItemsAdapter extends RecyclerView.Adapter<ChecklistItemsAd
             item.isChecked = holder.checkBox.isChecked();
             atualizarEstiloTexto(holder.textView, item.isChecked);
             
+            if (item.isChecked) {
+                // Registra a atividade no histórico
+                ProdutividadeManager.registrarAtividade(v.getContext(), "CHECKLIST", item.id, 0);
+            }
+
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(v.getContext()).checklistDao().atualizarItem(item);
             });

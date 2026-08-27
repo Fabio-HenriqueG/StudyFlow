@@ -370,7 +370,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:max="16"
+                android:max="19"
                 android:progress="0" />
 
             <TextView
@@ -421,7 +421,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:max="16"
+                android:max="19"
                 android:progress="0" />
 
             <TextView
@@ -485,7 +485,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Versão 1.0.0"
+            android:text="Versão 1.2"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoSobre" />
@@ -494,7 +494,7 @@
             android:id="@+id/txtCreditos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Desenvolvido por StudyFlow Team"
+            android:text="Desenvolvido por Fábio, Bruno, Akin e Andrey"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
