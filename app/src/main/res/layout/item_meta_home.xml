@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
+
+    android:layout_width="160dp"
+    android:layout_height="145dp"
     android:layout_marginEnd="12dp"
+
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="20dp"
+
+    app:cardBackgroundColor="?attr/colorSecondaryContainer"
+    app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="?attr/colorSecondaryContainer">
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="18dp">
 
+        <!-- Título da meta -->
         <TextView
             android:id="@+id/text_meta_home_titulo"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Título"
+
+            android:fontFamily="@font/quicksand_semi_bold"
+
+            android:text="Estudar Matemática"
             android:textColor="?attr/colorOnSecondaryContainer"
             android:textSize="16sp"
-            android:textStyle="bold"
+
             android:ellipsize="end"
             android:maxLines="3"
+
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+
+        <!-- Informação de prazo -->
         <TextView
             android:id="@+id/text_meta_home_dias"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 dias"
+
+            android:fontFamily="@font/quicksand_regular"
+
+            android:text="3 dias restantes"
             android:textColor="?attr/colorOnSecondaryContainer"
-            android:textSize="14sp"
-            android:alpha="0.8"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="12sp"
+            android:alpha="0.7"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

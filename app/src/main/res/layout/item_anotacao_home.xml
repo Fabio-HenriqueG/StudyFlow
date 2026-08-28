@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="160dp"
-    android:layout_height="160dp"
+    android:layout_height="145dp"
     android:layout_marginEnd="12dp"
+
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="20dp"
+
+    app:cardBackgroundColor="?attr/colorSecondaryContainer"
+    app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="?attr/colorSurfaceVariant">
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="18dp">
 
         <!-- Título -->
         <TextView
             android:id="@+id/text_anotacao_home_titulo"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_semi_bold"
+
             android:text="Título da Nota"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="?attr/colorOnSecondaryContainer"
             android:textSize="16sp"
-            android:textStyle="bold"
+
             android:ellipsize="end"
             android:maxLines="3"
 
@@ -35,32 +42,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+
         <!-- Tipo -->
         <TextView
             android:id="@+id/text_anotacao_home_tipo"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tipo"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            android:alpha="0.8"
-            app:layout_constraintBottom_toTopOf="@id/text_anotacao_home_data"
+
+            android:fontFamily="@font/quicksand_semi_bold"
+
+            android:text="Resumo"
+            android:textColor="?attr/colorOnSecondaryContainer"
+            android:textSize="11sp"
+            android:alpha="0.75"
+
+            android:layout_marginBottom="4dp"
+
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="4dp"/>
+            app:layout_constraintBottom_toTopOf="@id/text_anotacao_home_data" />
+
 
         <!-- Data -->
         <TextView
             android:id="@+id/text_anotacao_home_data"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:fontFamily="@font/quicksand_regular"
+
             android:text="03/08/2026"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="?attr/colorOnSecondaryContainer"
             android:textSize="12sp"
             android:alpha="0.7"
-            app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
