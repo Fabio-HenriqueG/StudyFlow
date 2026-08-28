@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- =========================
+         STUDYFLOW - MODO ESCURO
+         ========================= -->
+
+    <!-- Cor principal -->
+    <color name="primary">#B8C4FF</color>
+    <color name="onPrimary">#002A78</color>
+    <color name="primaryContainer">#183FBE</color>
+    <color name="onPrimaryContainer">#DEE4FF</color>
+
+    <!-- Cor secundária -->
+    <color name="secondary">#BCC6EA</color>
+    <color name="onSecondary">#26304F</color>
+    <color name="secondaryContainer">#3D4667</color>
+    <color name="onSecondaryContainer">#DCE2FF</color>
+
+    <!-- Fundo principal -->
+    <color name="background">#232222</color>
+    <color name="onBackground">#E5E1E1</color>
+
+    <!-- Superfícies -->
+    <color name="surface">#232222</color>
+    <color name="onSurface">#E5E1E1</color>
+
+    <!-- Cards -->
+    <color name="surfaceVariant">#303033</color>
+    <color name="onSurfaceVariant">#C7C6CA</color>
+
+    <!-- Bordas / elementos secundários -->
+    <color name="outline">#919096</color>
+    <color name="outlineVariant">#46464B</color>
+
+    <!-- Status: tarefas atrasadas -->
+    <color name="atrasadas">#FFB4AB</color>
+    <color name="atrasadasContainer">#5F2020</color>
+
+    <!-- Status: tarefas pendentes -->
+    <color name="pendentes">#FFB95C</color>
+    <color name="pendentesContainer">#543B0D</color>
+
+    <!-- Cores básicas -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Azul StudyFlow adaptado ao Dark Mode -->
+    <color name="studyflow_blue">#B8C4FF</color>
+
+</resources>

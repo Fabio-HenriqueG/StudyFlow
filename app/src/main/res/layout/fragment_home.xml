@@ -28,11 +28,15 @@
             app:strokeWidth="1dp"
             android:layout_marginEnd="8dp"/>
 
+        <!-- SEÇÃO: SAUDACAO -->
+
         <TextView
             android:id="@+id/lblSaudacao"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:fontFamily="@font/quicksand_regular"
+
             android:text="@string/bom_dia"
             android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
@@ -56,6 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3 de Agosto de 2026"
+            android:fontFamily="@font/quicksand_regular"
+
             android:textSize="16sp"
             android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,6 +110,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:fontFamily="@font/quicksand_regular"
+
             android:text="Tarefas"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -202,6 +210,8 @@
                     android:id="@+id/lblTituloFlashcards"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_regular"
+
                     android:text="Flashcards"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -305,6 +315,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:fontFamily="@font/quicksand_regular"
+
             android:text="@string/anotacoes_recentes"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -361,6 +373,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:fontFamily="@font/quicksand_regular"
+
             android:text="@string/metas_principais"
             android:textSize="18sp"
             android:textStyle="bold"
