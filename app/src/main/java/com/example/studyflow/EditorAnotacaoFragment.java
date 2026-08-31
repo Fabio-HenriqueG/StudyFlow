@@ -48,6 +48,7 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private EditText editTitulo;
     private RelativeLayout canvasNotas;
+    private View containerEditor;
     private Anotacao anotacaoExistente = null;
     private DesenhoView desenhoView;
     private View layoutOpcoesFerramenta, btnConcluirDesenho;
@@ -132,7 +133,7 @@ public class EditorAnotacaoFragment extends Fragment {
 
         btnModoNavegacao.setOnClickListener(v -> toggleModoNavegacao());
 
-        View containerEditor = view.findViewById(R.id.containerEditor);
+        containerEditor = view.findViewById(R.id.containerEditor);
         if (containerEditor != null) {
             containerEditor.setOnTouchListener((v, event) -> {
                 if (!isModoNavegacao) return false;
@@ -292,16 +293,18 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void gravarPDF(Uri uri) {
+        if (containerEditor == null || containerEditor.getWidth() <= 0) return;
+        
         try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
             if (os == null) return;
             PdfDocument document = new PdfDocument();
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(canvasNotas.getWidth(), canvasNotas.getHeight(), 1).create();
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(containerEditor.getWidth(), containerEditor.getHeight(), 1).create();
             PdfDocument.Page page = document.startPage(pageInfo);
-            canvasNotas.draw(page.getCanvas());
+            containerEditor.draw(page.getCanvas());
             document.finishPage(page);
             document.writeTo(os);
             document.close();
-            Toast.makeText(getContext(), "PDF Exportado!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "PDF Exportado (Visão Atual)!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "Erro ao exportar PDF", Toast.LENGTH_SHORT).show();
@@ -309,18 +312,19 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void gravarPNG(Uri uri) {
-        if (canvasNotas.getWidth() <= 0 || canvasNotas.getHeight() <= 0) {
-            Toast.makeText(getContext(), "Área de desenho vazia", Toast.LENGTH_SHORT).show();
+        if (containerEditor == null || containerEditor.getWidth() <= 0 || containerEditor.getHeight() <= 0) {
+            Toast.makeText(getContext(), "Área de visão inválida", Toast.LENGTH_SHORT).show();
             return;
         }
-        Bitmap bitmap = Bitmap.createBitmap(canvasNotas.getWidth(), canvasNotas.getHeight(), Bitmap.Config.ARGB_8888);
+        
+        Bitmap bitmap = Bitmap.createBitmap(containerEditor.getWidth(), containerEditor.getHeight(), Bitmap.Config.ARGB_8888);
         try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
             if (os == null) return;
             Canvas canvas = new Canvas(bitmap);
             canvas.drawColor(Color.WHITE); // Fundo branco
-            canvasNotas.draw(canvas);
+            containerEditor.draw(canvas);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-            Toast.makeText(getContext(), "Imagem Exportada!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Imagem Exportada (Visão Atual)!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "Erro ao exportar PNG", Toast.LENGTH_SHORT).show();

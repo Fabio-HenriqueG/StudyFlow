@@ -140,39 +140,29 @@ public class CriaTarefaFragment extends Fragment {
             
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(appContext).tarefaDao().atualizar(tarefaEmEdicao);
-                if (DateUtils.isToday(tarefaEmEdicao.dataLimite)) {
-                    agendarAlertaImediato(appContext, tarefaEmEdicao.id);
-                }
+                
+                // Agendamento Inteligente
+                NotificacaoScheduler.cancelarNotificacoesTarefa(appContext, tarefaEmEdicao.id);
+                NotificacaoScheduler.agendarNotificacoesTarefa(appContext, tarefaEmEdicao);
+                
                 finalizarEDarFeedback(appContext, "Tarefa atualizada com sucesso!");
             });
         } else {
             Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, 1, prioridade, insistencia);
 
             Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(appContext).tarefaDao().inserir(novaTarefa);
+                long id = AppDatabase.getInstance(appContext).tarefaDao().inserir(novaTarefa);
+                novaTarefa.id = (int) id;
 
                 // Registra a atividade de planejamento (criação) para o streak
                 ProdutividadeManager.registrarAtividade(appContext, "PLANEJAMENTO", 0, 0);
 
-                List<Tarefa> todas = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
-                if (!todas.isEmpty()) {
-                    Tarefa inserida = todas.get(todas.size() - 1);
-                    if (DateUtils.isToday(inserida.dataLimite)) {
-                        agendarAlertaImediato(appContext, inserida.id);
-                    }
-                }
+                // Agendamento Inteligente
+                NotificacaoScheduler.agendarNotificacoesTarefa(appContext, novaTarefa);
+
                 finalizarEDarFeedback(appContext, "Tarefa salva com sucesso!");
             });
         }
-    }
-
-    private void agendarAlertaImediato(Context context, int tarefaId) {
-        Data inputData = new Data.Builder().putInt("tarefa_id", tarefaId).build();
-        OneTimeWorkRequest alertaRequest = new OneTimeWorkRequest.Builder(NotificacaoImediataWorker.class)
-                .setInitialDelay(10, TimeUnit.SECONDS)
-                .setInputData(inputData)
-                .build();
-        WorkManager.getInstance(context).enqueue(alertaRequest);
     }
 
     private void finalizarEDarFeedback(Context context, String mensagem) {

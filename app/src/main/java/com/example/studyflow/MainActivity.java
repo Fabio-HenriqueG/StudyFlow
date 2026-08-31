@@ -77,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
         }, false);
 
         // Inicializações de suporte
-        NotificacaoHelper.criarCanalNotificacao(this);
+        NotificacaoHelper.criarCanaisNotificacao(this);
         pedirPermissaoNotificacao();
+        
+        tratarIntentNotificacao(getIntent());
+
         agendarVerificadorTarefas();
+        NotificacaoScheduler.agendarLembreteMetas(this);
         
         processarLimpezaTarefas();
     }
@@ -224,5 +228,18 @@ public class MainActivity extends AppCompatActivity {
     private void agendarVerificadorTarefas() {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificacaoWorker.class, 15, TimeUnit.MINUTES).build();
         WorkManager.getInstance(this).enqueueUniquePeriodicWork("VerificadorPrazos", ExistingPeriodicWorkPolicy.KEEP, workRequest);
+    }
+
+    private void tratarIntentNotificacao(android.content.Intent intent) {
+        if (intent != null && intent.hasExtra("NavegarPara")) {
+            String destino = intent.getStringExtra("NavegarPara");
+            if ("TAREFA".equals(destino)) {
+                verificarDadosENavegar(R.id.nav_tarefas);
+            } else if ("META".equals(destino)) {
+                verificarDadosENavegar(R.id.nav_metas);
+            } else if ("CHECKLIST".equals(destino)) {
+                verificarDadosENavegar(R.id.nav_checklist);
+            }
+        }
     }
 }

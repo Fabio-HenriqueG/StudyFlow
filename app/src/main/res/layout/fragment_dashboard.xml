@@ -78,147 +78,285 @@
                 android:text="Mês" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <!-- RESUMO GERAL -->
-        <GridLayout
-            android:id="@+id/gridResumo"
+        <!-- SEÇÃO 1: ATIVIDADE GERAL (GRÁFICO) -->
+        <TextView
+            android:id="@+id/lblAtividadeGeral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Atividade Recente (Últimos 7 dias)"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggleGroupPeriodo" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardGraficoAtividade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:columnCount="2"
-            android:rowCount="2"
-            app:layout_constraintTop_toBottomOf="@+id/toggleGroupPeriodo">
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintTop_toBottomOf="@+id/lblAtividadeGeral">
 
-            <!-- Card Tarefas -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutCargaSemanaGeral"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:weightSum="7" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="7">
+                    <TextView style="@style/DayStatsLabel" android:text="D" />
+                    <TextView style="@style/DayStatsLabel" android:text="S" />
+                    <TextView style="@style/DayStatsLabel" android:text="T" />
+                    <TextView style="@style/DayStatsLabel" android:text="Q" />
+                    <TextView style="@style/DayStatsLabel" android:text="Q" />
+                    <TextView style="@style/DayStatsLabel" android:text="S" />
+                    <TextView style="@style/DayStatsLabel" android:text="S" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SEÇÃO 2: TAREFAS -->
+        <TextView
+            android:id="@+id/lblTarefasStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Tarefas Concluídas"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardGraficoAtividade" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTarefasStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintTop_toBottomOf="@+id/lblTarefasStats">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/txtCountTarefas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="24sp"
+                        android:textSize="32sp"
                         android:textStyle="bold"
                         android:textColor="?attr/colorPrimary" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tarefas"
+                        android:layout_marginStart="8dp"
+                        android:text="Total no período"
                         android:textSize="12sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Metas -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/layoutCargaTarefas"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:weightSum="7" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SEÇÃO 3: METAS -->
+        <TextView
+            android:id="@+id/lblMetasStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Metas Atualizadas"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTarefasStats" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardMetasStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintTop_toBottomOf="@+id/lblMetasStats">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                android:orientation="vertical"
+                android:padding="16dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/txtCountMetas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="24sp"
+                        android:textSize="32sp"
                         android:textStyle="bold"
                         android:textColor="#4CAF50" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Metas"
+                        android:layout_marginStart="8dp"
+                        android:text="Total no período"
                         android:textSize="12sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Checklists -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/layoutCargaMetas"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:weightSum="7" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SEÇÃO 4: FLASHCARDS (UNIFICADO) -->
+        <TextView
+            android:id="@+id/lblFlashcardsStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Flashcards e Disciplinas"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardMetasStats" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardFlashcardsStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintTop_toBottomOf="@+id/lblFlashcardsStats">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                android:orientation="vertical"
+                android:padding="20dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/txtCountChecklists"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:textColor="#FF9800" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Itens Lista"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Card Flashcards -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/txtCountFlashcards"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="24sp"
+                        android:textSize="32sp"
                         android:textStyle="bold"
                         android:textColor="#9C27B0" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Flashcards"
+                        android:layout_marginStart="8dp"
+                        android:text="Cards Estudados"
                         android:textSize="12sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Domínio Total"
+                    android:textStyle="bold"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressGeralFlash"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:trackThickness="10dp"
+                    app:trackCornerRadius="5dp"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/txtPercentualFlash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_gravity="end"
+                    android:text="0%"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Desempenho por Matéria"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:alpha="0.7" />
+
+                <LinearLayout
+                    android:id="@+id/layoutMateriasDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- TOTAL DE MATÉRIAS ESTUDADAS -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTotalMaterias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:cardBackgroundColor="?attr/colorSecondaryContainer"
-            app:layout_constraintTop_toBottomOf="@+id/gridResumo">
+            app:layout_constraintTop_toBottomOf="@+id/cardFlashcardsStats">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -234,18 +372,11 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- MENSAGEM MOTIVACIONAL -->
-        <TextView
-            android:id="@+id/txtMensagemMotivacional"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
-            android:text="Continue assim! Cada pequeno passo conta na sua jornada de aprendizado."
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="14sp"
-            android:fontStyle="italic"
+            android:layout_height="32dp"
             app:layout_constraintTop_toBottomOf="@+id/cardTotalMaterias" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,4 +1,5 @@
 package com.example.studyflow;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +79,12 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             holder.btnConcluir.setVisibility(View.GONE);
         } else {
             holder.btnConcluir.setVisibility(View.VISIBLE);
-            holder.btnConcluir.setOnClickListener(v -> concluirTarefa(v, tarefa, position));
+            holder.btnConcluir.setOnClickListener(v -> {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    concluirTarefa(v, tarefa, pos);
+                }
+            });
         }
 
         // Configura o botão de opções
@@ -87,21 +93,20 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             if (modoHistorico) {
                 popup.getMenu().add("Excluir Permanentemente");
             } else {
-                popup.getMenu().add("Concluir");
                 popup.getMenu().add("Editar");
                 popup.getMenu().add("Excluir");
             }
 
             popup.setOnMenuItemClickListener(item -> {
                 String titulo = item.getTitle().toString();
-                if (titulo.equals("Concluir")) {
-                    concluirTarefa(v, tarefa, position);
-                    return true;
-                } else if (titulo.equals("Editar")) {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION) return false;
+
+                if (titulo.equals("Editar")) {
                     abrirEdicao(v, tarefa);
                     return true;
                 } else if (titulo.equals("Excluir") || titulo.equals("Excluir Permanentemente")) {
-                    confirmarExclusao(v, tarefa, position);
+                    confirmarExclusao(v, tarefa, pos);
                     return true;
                 }
                 return false;
@@ -112,7 +117,8 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
     private void concluirTarefa(View view, Tarefa tarefa, int position) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(view.getContext());
+            Context context = view.getContext();
+            AppDatabase db = AppDatabase.getInstance(context);
             
             if (tarefa.prioridade == 0) {
                 // Baixa Prioridade: Deleta na hora
@@ -124,18 +130,21 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
                 db.tarefaDao().atualizar(tarefa);
             }
 
-            // Registra a atividade no histórico (materiaId = 0 para geral)
-            ProdutividadeManager.registrarAtividade(view.getContext(), "TAREFA", tarefa.id, 0);
+            // Cancela notificações agendadas
+            NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
 
-            if (view.getContext() instanceof AppCompatActivity) {
-                ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
+            // Registra a atividade no histórico (materiaId = 0 para geral)
+            ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.id, 0);
+
+            view.post(() -> {
+                if (position < listaTarefas.size()) {
                     listaTarefas.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaTarefas.size());
                     String msg = tarefa.prioridade == 0 ? "Tarefa concluída e removida!" : "Tarefa movida para o histórico!";
-                    Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
-                });
-            }
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 
@@ -159,16 +168,20 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
     private void confirmarExclusao(View view, Tarefa tarefa, int position) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(view.getContext()).tarefaDao().excluir(tarefa);
+            Context context = view.getContext();
+            AppDatabase.getInstance(context).tarefaDao().excluir(tarefa);
             
-            if (view.getContext() instanceof AppCompatActivity) {
-                ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
+            // Cancela notificações agendadas
+            NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+
+            view.post(() -> {
+                if (position < listaTarefas.size()) {
                     listaTarefas.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaTarefas.size());
-                    Toast.makeText(view.getContext(), "Tarefa excluída", Toast.LENGTH_SHORT).show();
-                });
-            }
+                    Toast.makeText(context, "Tarefa excluída", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 

@@ -41,11 +41,16 @@
     <color name="pendentes">#A06000</color>
     <color name="pendentesContainer">#FFF0D5</color>
 
+    <!-- Erros -->
+    <color name="error">#BA1A1A</color>
+    <color name="onError">#FFFFFF</color>
+
     <!-- Cores básicas -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Cor original StudyFlow -->
+    <!-- Cores originais StudyFlow -->
     <color name="studyflow_blue">#2F52E0</color>
+    <color name="azul_secundario">#27187E</color>
 
 </resources>

@@ -14,7 +14,7 @@ import java.util.List;
 public interface TarefaDao {
 
     @Insert
-    void inserir(Tarefa tarefa); // Esse método vai salvar a tarefa que você enviar
+    long inserir(Tarefa tarefa); // Esse método vai salvar a tarefa que você enviar
 
     @Update
     void atualizar(Tarefa tarefa); // Esse método vai atualizar uma tarefa existente

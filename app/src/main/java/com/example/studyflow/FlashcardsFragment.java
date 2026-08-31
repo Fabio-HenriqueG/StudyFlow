@@ -35,7 +35,7 @@ public class FlashcardsFragment extends Fragment {
         btnVoltar.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         btnStats.setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new EstatisticasFlashcardsFragment())
+                    .replace(R.id.fragment_container, new DashboardFragment())
                     .addToBackStack(null)
                     .commit();
         });

@@ -1,0 +1,69 @@
+================================================================================
+          ESTRUTURA DO SISTEMA DE NOTIFICAÇÕES INTELIGENTES - STUDYFLOW
+================================================================================
+
+Este documento descreve a lógica e a arquitetura do motor de notificações
+implementado para garantir a produtividade e o aprendizado do usuário.
+
+--------------------------------------------------------------------------------
+1. CANAIS DE NOTIFICAÇÃO (API 26+)
+--------------------------------------------------------------------------------
+O sistema utiliza 5 canais distintos para priorizar informações:
+
+- channel_tarefas_alta: Importância ALTA (Som e Vibração). Prazos críticos.
+- channel_tarefas_geral: Importância PADRÃO. Lembretes de rotina.
+- channel_metas: Importância PADRÃO. Focado em consistência diária.
+- channel_checklists: Importância BAIXA. Apenas ícone na barra, sem interrupção.
+- channel_flashcards: Importância PADRÃO. Incentivo à revisão científica.
+
+--------------------------------------------------------------------------------
+2. REGRAS DE NEGÓCIO (LOGICA AGENDADA)
+--------------------------------------------------------------------------------
+
+A) TAREFAS (Baseado na proximidade do Prazo Final):
+   1. PRAZOS LONGOS (> 14 dias):
+      - Aviso no PONTO MÉDIO do tempo total.
+      - Aviso de ATENÇÃO 7 dias antes do prazo.
+   2. PRAZOS MÉDIOS (4 a 14 dias):
+      - Aviso no PONTO MÉDIO do tempo total.
+   3. RETA FINAL (< 3 dias) E PRIORIDADES:
+      - PRIORIDADE ALTA: 1 dia antes (20:00) e 1 hora antes do vencimento.
+      - PRIORIDADE MÉDIA: 2 horas antes do vencimento.
+      - PRIORIDADE BAIXA: Às 09:00 da manhã do dia do vencimento.
+
+B) METAS (Consistência Diária):
+   - Lembrete único às 19:30.
+   - O sistema verifica se a meta já foi confirmada. Se sim, o alerta é cancelado.
+
+C) CHECKLISTS (Itens Esquecidos):
+   - Lembretes disparados 24h e 48h após a criação se houver itens pendentes.
+
+D) FLASHCARDS (Memorização):
+   - Integrado ao sistema de repetição espaçada (SRS).
+
+--------------------------------------------------------------------------------
+3. ARQUITETURA TÉCNICA
+--------------------------------------------------------------------------------
+
+- NotificacaoHelper.java: Gerencia a criação dos canais e o envio físico da
+  notificação para o sistema Android.
+- NotificacaoScheduler.java: O "Cérebro". Calcula os milissegundos exatos para
+  cada alerta e enfileira OneTimeWorkRequests no WorkManager.
+- NotificacaoWorker.java: O "Executor". Acordado pelo Android no momento exato
+  para validar se a tarefa ainda está ativa e disparar o alerta.
+- NotificacaoMensagens.java: Central de textos. Permite alterar todas as
+  mensagens do app em um único lugar.
+
+--------------------------------------------------------------------------------
+4. COMPORTAMENTO E UX
+--------------------------------------------------------------------------------
+- Clique na Notificação: Abre automaticamente o fragmento correto (Tarefas,
+  Metas ou Checklists) através de extras no Intent.
+- Limpeza Automática: Ao concluir ou excluir uma tarefa, o sistema cancela
+  automaticamente todos os alertas futuros agendados para aquele ID.
+- Validação de Passado: O sistema nunca agenda notificações para horários que
+  já passaram, evitando "spam" ao editar uma tarefa.
+
+================================================================================
+Sistema gerado em 31/08/2026 para o projeto StudyFlow.
+================================================================================

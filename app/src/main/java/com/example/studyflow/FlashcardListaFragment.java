@@ -47,7 +47,7 @@ public class FlashcardListaFragment extends Fragment {
         
         btnStats.setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new EstatisticasFlashcardsFragment())
+                    .replace(R.id.fragment_container, new DashboardFragment())
                     .addToBackStack(null)
                     .commit();
         });

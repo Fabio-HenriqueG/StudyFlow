@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 public class TarefasFragment extends Fragment {
 
     private RecyclerView recyclerTarefas;
+    private View txtEmptyState;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -114,6 +115,7 @@ public class TarefasFragment extends Fragment {
 
         // 1. Vincula o componente Java ao ID do RecyclerView que você colocou no XML
         recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
+        txtEmptyState = view.findViewById(R.id.txtEmptyTarefas);
     }
 
     @Override
@@ -146,6 +148,10 @@ public class TarefasFragment extends Fragment {
                     // Conecta o seu adapter ao RecyclerView da tela
                     recyclerTarefas.setAdapter(adapter);
 
+                    // Atualiza visibilidade do estado vazio
+                    if (txtEmptyState != null) {
+                        txtEmptyState.setVisibility(listaDoBanco.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                 });
             }
         });

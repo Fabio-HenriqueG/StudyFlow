@@ -32,8 +32,10 @@ public class NotificacaoImediataWorker extends Worker {
                 NotificacaoHelper.enviarNotificacao(
                         getApplicationContext(),
                         tarefa.id,
+                        NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
                         "Início de Acompanhamento",
-                        "Você começou a tarefa: " + tarefa.titulo + ". Estarei te lembrando!"
+                        "Você começou a tarefa: " + tarefa.titulo + ". Estarei te lembrando!",
+                        null
                 );
 
                 // Atualiza o ultimoAlerta no banco para que o Worker periódico comece a contar a partir daqui

@@ -219,61 +219,13 @@
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoNotificacoes" />
 
-        <TextView
-            android:id="@+id/lblPerfilInsistencia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Perfil de Insistência (Slogan do App)"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchNotificacoes" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggleGroupInsistencia"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblPerfilInsistencia"
-            app:singleSelection="true"
-            app:selectionRequired="true">
-
-            <Button
-                android:id="@+id/btnPerfilDiscreto"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Discreto"
-                android:textSize="11sp" />
-
-            <Button
-                android:id="@+id/btnPerfilEquilibrado"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Equilibrado"
-                android:textSize="11sp" />
-
-            <Button
-                android:id="@+id/btnPerfilChato"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Não me deixe esquecer"
-                android:textSize="11sp" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchSom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Som"
-            app:layout_constraintTop_toBottomOf="@+id/toggleGroupInsistencia" />
+            app:layout_constraintTop_toBottomOf="@+id/switchNotificacoes" />
 
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -345,95 +297,6 @@
             android:text="Horário de Reset: 00:00"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoMetas" />
 
-        <TextView
-            android:id="@+id/lblFreqMetas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Frequência de Lembretes de Metas"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnResetMetas" />
-
-        <LinearLayout
-            android:id="@+id/layoutFreqMetas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/lblFreqMetas">
-
-            <SeekBar
-                android:id="@+id/seekBarFreqMetas"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="19"
-                android:progress="0" />
-
-            <TextView
-                android:id="@+id/txtFreqMetasValor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="4 vezes"
-                android:textColor="?attr/colorOnSurface"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Seção: Alertas de Checklists (Novo) -->
-        <TextView
-            android:id="@+id/lblSecaoChecklistAlertas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Lembretes de Checklists"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutFreqMetas" />
-
-        <TextView
-            android:id="@+id/lblFreqChecklistDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Número de lembretes diários para checklists incompletos"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblSecaoChecklistAlertas" />
-
-        <LinearLayout
-            android:id="@+id/layoutFreqChecklist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblFreqChecklistDesc">
-
-            <SeekBar
-                android:id="@+id/seekBarFreqChecklist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="19"
-                android:progress="0" />
-
-            <TextView
-                android:id="@+id/txtFreqChecklistValor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4 vezes"
-                android:layout_marginStart="8dp"
-                android:textColor="?attr/colorOnSurface"
-                android:textStyle="bold" />
-        </LinearLayout>
-
         <!-- Seção: Dados -->
         <TextView
             android:id="@+id/lblSecaoDados"
@@ -445,7 +308,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutFreqChecklist" />
+            app:layout_constraintTop_toBottomOf="@+id/btnResetMetas" />
 
         <Button
             android:id="@+id/btnExportarDados"

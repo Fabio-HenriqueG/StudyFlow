@@ -44,10 +44,10 @@ public class ConfiguracoesFragment extends Fragment {
 
     private EditText editNome;
     private ImageView imgPerfil;
-    private MaterialButtonToggleGroup toggleTema, toggleInsistencia;
+    private MaterialButtonToggleGroup toggleTema;
     private Spinner spinnerEstilo;
-    private SeekBar seekBarFonte, seekBarFreqMetas, seekBarFreqChecklist;
-    private TextView txtFonteValor, txtFreqMetasValor, txtFreqChecklistValor;
+    private SeekBar seekBarFonte;
+    private TextView txtFonteValor;
     private MaterialSwitch switchNotificacoes, switchSom, switchVibracao;
     private Button btnSilencioInicio, btnSilencioFim, btnResetMetas;
     private SharedPreferences prefs;
@@ -79,14 +79,9 @@ public class ConfiguracoesFragment extends Fragment {
         editNome = view.findViewById(R.id.editNomeUsuario);
         imgPerfil = view.findViewById(R.id.imgPerfilConfig);
         toggleTema = view.findViewById(R.id.toggleGroupTema);
-        toggleInsistencia = view.findViewById(R.id.toggleGroupInsistencia);
         spinnerEstilo = view.findViewById(R.id.spinnerEstiloCaderno);
         seekBarFonte = view.findViewById(R.id.seekBarFontSize);
         txtFonteValor = view.findViewById(R.id.txtFontSizeValue);
-        seekBarFreqMetas = view.findViewById(R.id.seekBarFreqMetas);
-        txtFreqMetasValor = view.findViewById(R.id.txtFreqMetasValor);
-        seekBarFreqChecklist = view.findViewById(R.id.seekBarFreqChecklist);
-        txtFreqChecklistValor = view.findViewById(R.id.txtFreqChecklistValor);
         switchNotificacoes = view.findViewById(R.id.switchNotificacoes);
         switchSom = view.findViewById(R.id.switchSom);
         switchVibracao = view.findViewById(R.id.switchVibracao);
@@ -113,26 +108,6 @@ public class ConfiguracoesFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 txtFonteValor.setText(progress + "sp");
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        // Configura SeekBar de Frequência de Metas (1 a 20)
-        seekBarFreqMetas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFreqMetasValor.setText((progress + 1) + " vezes");
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        // Configura SeekBar de Frequência de Checklists (1 a 20)
-        seekBarFreqChecklist.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFreqChecklistValor.setText((progress + 1) + " vezes");
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -193,25 +168,12 @@ public class ConfiguracoesFragment extends Fragment {
         else if (tema == AppCompatDelegate.MODE_NIGHT_YES) toggleTema.check(R.id.btnTemaEscuro);
         else toggleTema.check(R.id.btnTemaSistema);
 
-        int perfil = prefs.getInt("notification_insistence_perfil", 1); // 0=Discreto, 1=Equilibrado, 2=Chato
-        if (perfil == 0) toggleInsistencia.check(R.id.btnPerfilDiscreto);
-        else if (perfil == 2) toggleInsistencia.check(R.id.btnPerfilChato);
-        else toggleInsistencia.check(R.id.btnPerfilEquilibrado);
-
         String estilo = prefs.getString("notebook_style", "GRID");
         spinnerEstilo.setSelection(((ArrayAdapter)spinnerEstilo.getAdapter()).getPosition(estilo));
 
         int fontSize = prefs.getInt("default_font_size", 24);
         seekBarFonte.setProgress(fontSize);
         txtFonteValor.setText(fontSize + "sp");
-
-        int freqMetas = prefs.getInt("goal_notification_frequency", 4);
-        seekBarFreqMetas.setProgress(freqMetas - 1);
-        txtFreqMetasValor.setText(freqMetas + " vezes");
-
-        int freqChecklist = prefs.getInt("checklist_notification_frequency", 4);
-        seekBarFreqChecklist.setProgress(freqChecklist - 1);
-        txtFreqChecklistValor.setText(freqChecklist + " vezes");
 
         switchNotificacoes.setChecked(prefs.getBoolean("notifications_enabled", true));
         switchSom.setChecked(prefs.getBoolean("notification_sound", true));
@@ -228,20 +190,12 @@ public class ConfiguracoesFragment extends Fragment {
         if (checkedId == R.id.btnTemaClaro) tema = AppCompatDelegate.MODE_NIGHT_NO;
         else if (checkedId == R.id.btnTemaEscuro) tema = AppCompatDelegate.MODE_NIGHT_YES;
 
-        int perfil = 1;
-        int checkedPerfilId = toggleInsistencia.getCheckedButtonId();
-        if (checkedPerfilId == R.id.btnPerfilDiscreto) perfil = 0;
-        else if (checkedPerfilId == R.id.btnPerfilChato) perfil = 2;
-
         prefs.edit()
                 .putString("user_name", editNome.getText().toString().trim())
                 .putString("user_profile_pic", currentProfilePicUri)
                 .putInt("app_theme", tema)
-                .putInt("notification_insistence_perfil", perfil)
                 .putString("notebook_style", spinnerEstilo.getSelectedItem().toString())
                 .putInt("default_font_size", seekBarFonte.getProgress())
-                .putInt("goal_notification_frequency", seekBarFreqMetas.getProgress() + 1)
-                .putInt("checklist_notification_frequency", seekBarFreqChecklist.getProgress() + 1)
                 .putBoolean("notifications_enabled", switchNotificacoes.isChecked())
                 .putBoolean("notification_sound", switchSom.isChecked())
                 .putBoolean("notification_vibration", switchVibracao.isChecked())
