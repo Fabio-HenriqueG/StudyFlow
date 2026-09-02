@@ -5,23 +5,24 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_tarefas"
-            android:icon="@android:drawable/ic_menu_zoom"
+            android:icon="@drawable/ic_tarefas"
             android:title="Tarefas"/>
         <item
             android:id="@+id/nav_metas"
-            android:icon="@android:drawable/ic_menu_compass"
+            android:icon="@drawable/ic_metas"
             android:title="Metas" />
         <item
             android:id="@+id/nav_adicionar"
-            android:icon="@android:drawable/ic_input_add"
+            android:icon="@drawable/ic_adicionar"
             android:title="Adicionar" />
         <item
             android:id="@+id/nav_checklist"
-            android:icon="@android:drawable/checkbox_off_background"
+            android:icon="@drawable/ic_checklist"
             android:title="Checklists" />
         <item
             android:id="@+id/nav_anotacoes"
-            android:icon="@android:drawable/ic_menu_edit"
+            android:icon="@drawable/ic_anotacoes"
             android:title="Anotações" />
+
     </group>
 </menu>

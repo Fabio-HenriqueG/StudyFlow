@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Caderno -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+            M13.4,2
+            L6,2
+            A2,2 0,0 0 4,4
+            L4,20
+            A2,2 0,0 0 6,22
+            L18,22
+            A2,2 0,0 0 20,20
+            L20,12.6" />
+
+    <!-- Linhas laterais do caderno -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M2,6 L6,6" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M2,10 L6,10" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M2,14 L6,14" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M2,18 L6,18" />
+
+    <!-- Caneta -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+            M21.378,5.626
+            A1,1 0,1 0 18.374,2.622
+            L13.364,7.634
+            A2,2 0,0 0 12.858,8.488
+            L12.021,11.358
+            A0.5,0.5 0,0 0 12.641,11.978
+            L15.511,11.141
+            A2,2 0,0 0 16.365,10.635
+            Z" />
+
+</vector>

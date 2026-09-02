@@ -48,4 +48,14 @@
     <!-- Azul StudyFlow adaptado ao Dark Mode -->
     <color name="studyflow_blue">#B8C4FF</color>
 
+    <!-- Cards -->
+    <color name="card">#303147</color>
+
+    <color name="card_texto">#F1F3F8</color>
+    <color name="card_texto_secundario">#B8BFCC</color>
+
+    <color name="botao_ver_todos_fundo">#2A3142</color>
+
+    <color name="nav_indicador">#303147</color>
+
 </resources>

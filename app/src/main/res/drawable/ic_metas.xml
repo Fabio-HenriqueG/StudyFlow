@@ -5,7 +5,7 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- Engrenagem -->
+    <!-- Bandeira -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/onSurface"
@@ -13,21 +13,12 @@
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="
-            M9.671,4.136
-            A2.34,2.34 0,0 1 14.33,4.136
-            A2.34,2.34 0,0 0 17.649,6.051
-            A2.34,2.34 0,0 1 19.979,10.084
-            A2.34,2.34 0,0 0 19.979,13.915
-            A2.34,2.34 0,0 1 17.649,17.948
-            A2.34,2.34 0,0 0 14.33,19.863
-            A2.34,2.34 0,0 1 9.671,19.863
-            A2.34,2.34 0,0 0 6.351,17.948
-            A2.34,2.34 0,0 1 4.021,13.915
-            A2.34,2.34 0,0 0 4.021,10.084
-            A2.34,2.34 0,0 1 6.35,6.051
-            A2.34,2.34 0,0 0 9.671,4.136" />
+            M12,13
+            L12,2
+            L20,6
+            L12,10" />
 
-    <!-- Círculo central -->
+    <!-- Círculo externo da meta -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/onSurface"
@@ -35,9 +26,18 @@
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="
-            M15,12
-            A3,3 0,1 1 9,12
-            A3,3 0,1 1 15,12
-            Z" />
+            M20.561,10.222
+            A9,9 0,1 1 8.011,4.932" />
+
+    <!-- Círculo interno -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/onSurface"
+        android:strokeWidth="1.75"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+            M8.002,9.997
+            A5,5 0,1 0 16.902,12.017" />
 
 </vector>

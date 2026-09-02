@@ -12,7 +12,7 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
 
-    app:cardBackgroundColor="?attr/colorSecondaryContainer"
+    app:cardBackgroundColor="@color/card"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
@@ -29,10 +29,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
-            android:fontFamily="@font/quicksand_semi_bold"
+            android:fontFamily="@font/quicksand_bold"
 
             android:text="Estudar Matemática"
-            android:textColor="?attr/colorOnSecondaryContainer"
+            android:textColor="@color/card_texto"
             android:textSize="16sp"
 
             android:ellipsize="end"
@@ -53,7 +53,7 @@
             android:fontFamily="@font/quicksand_regular"
 
             android:text="3 dias restantes"
-            android:textColor="?attr/colorOnSecondaryContainer"
+            android:textColor="@color/card_texto_secundario"
             android:textSize="12sp"
             android:alpha="0.7"
 

@@ -53,4 +53,14 @@
     <color name="studyflow_blue">#2F52E0</color>
     <color name="azul_secundario">#27187E</color>
 
+    <!-- Card modo claro -->
+    <color name="card">#CFDCFF</color>
+
+    <color name="card_texto">#1F2430</color>
+    <color name="card_texto_secundario">#5F6673</color>
+
+    <color name="botao_ver_todos_fundo">#EEF3FF</color>
+
+    <color name="nav_indicador">#CFDCFF</color>
+
 </resources>

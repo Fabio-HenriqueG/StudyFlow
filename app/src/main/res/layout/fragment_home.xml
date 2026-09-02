@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_bold"
 
             android:text="@string/bom_dia"
             android:textColor="?attr/colorOnSurface"
@@ -51,6 +51,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_settings"
+            android:color="@color/onSurface"
             android:contentDescription="Configurações"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3 de Agosto de 2026"
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_medium"
 
             android:textSize="16sp"
             android:textColor="?attr/colorOnSurfaceVariant"
@@ -79,6 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnConfiguracoes"
             android:layout_marginTop="8dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,12 +96,15 @@
                     android:textStyle="bold"
                     android:textColor="#F57C00"
                     android:textSize="14sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" 🔥"
-                    android:textSize="14sp" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/ic_fire"
+                    android:contentDescription="Sequência de estudos" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <!-- CONTEÚDO DINÂMICO (Só aparece se tiver algo) -->
@@ -110,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_bold"
 
             android:text="Tarefas"
             android:textSize="18sp"
@@ -168,7 +173,7 @@
                         android:gravity="center"
                         android:padding="16dp"
                         android:text="Pendentes: 0"
-                        android:textColor="#A06000"
+                        android:textColor="#F57C00"
                         android:textStyle="bold" />
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -204,28 +209,55 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="48dp">
 
+                <!-- Título da seção -->
                 <TextView
                     android:id="@+id/lblTituloFlashcards"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand_regular"
 
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+
+                    android:fontFamily="@font/quicksand_bold"
                     android:text="Flashcards"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="18sp" />
 
+
+                <!-- Ver todos -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerColecaoHome"
                     style="@style/Widget.Material3.Button.TextButton"
+
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="Ver Todos"
-                    android:textSize="12sp" />
+
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+
+                    android:fontFamily="@font/quicksand_bold"
+
+                    android:text="Ver todos"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
+
+                    android:paddingStart="14dp"
+                    android:paddingEnd="10dp"
+
+                    app:backgroundTint="@color/botao_ver_todos_fundo"
+                    app:cornerRadius="20dp"
+
+                    app:icon="@drawable/seta_direita"
+                    app:iconGravity="textEnd"
+                    app:iconPadding="5dp"
+                    app:iconSize="18dp"
+                    app:iconTint="?attr/colorPrimary" />
             </RelativeLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -315,7 +347,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_bold"
 
             android:text="@string/anotacoes_recentes"
             android:textSize="18sp"
@@ -373,7 +405,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/quicksand_bold"
 
             android:text="@string/metas_principais"
             android:textSize="18sp"
