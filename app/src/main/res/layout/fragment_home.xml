@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?attr/colorSurface"
+    android:background="@color/surface"
     tools:context=".HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:padding="16dp">
 
         <!-- CABEÇALHO -->
@@ -38,7 +39,7 @@
             android:fontFamily="@font/quicksand_bold"
 
             android:text="@string/bom_dia"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/imgPerfilHome"
@@ -120,7 +121,7 @@
             android:text="Tarefas"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblDataAtual" />
 
@@ -145,7 +146,7 @@
                     android:layout_marginEnd="8dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#19FF0000"
+                    app:cardBackgroundColor="@color/surface_alta"
                     app:strokeWidth="0dp">
                     <TextView
                         android:id="@+id/text_home_atrasadas"
@@ -155,14 +156,19 @@
                         android:padding="16dp"
                         android:text="Atrasadas: 0"
                         android:textStyle="bold"
-                        android:textColor="#BA1A1A" />
+                        android:fontFamily="@font/quicksand_bold"
+
+
+                        android:textColor="@color/primary_alta" />
                 </com.google.android.material.card.MaterialCardView>
+
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="#19FFA500"
+                    app:cardBackgroundColor="@color/surface_media"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
@@ -173,7 +179,10 @@
                         android:gravity="center"
                         android:padding="16dp"
                         android:text="Pendentes: 0"
-                        android:textColor="#F57C00"
+                        android:fontFamily="@font/quicksand_bold"
+
+
+                        android:textColor="@color/primary_media"
                         android:textStyle="bold" />
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -222,7 +231,7 @@
 
                     android:fontFamily="@font/quicksand_bold"
                     android:text="Flashcards"
-                    android:textColor="?attr/colorOnSurface"
+                    android:textColor="@color/onSurface"
                     android:textSize="18sp" />
 
 
@@ -352,7 +361,7 @@
             android:text="@string/anotacoes_recentes"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutSecaoFlashcards" />
 
@@ -410,7 +419,7 @@
             android:text="@string/metas_principais"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/containerAnotacoes" />
 

@@ -12,7 +12,7 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
 
-    app:cardBackgroundColor="@color/card"
+    app:cardBackgroundColor="@color/surfaceVariant"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
@@ -53,7 +53,7 @@
             android:fontFamily="@font/quicksand_regular"
 
             android:text="3 dias restantes"
-            android:textColor="@color/card_texto_secundario"
+            android:textColor="@color/onSurfaceVariant"
             android:textSize="12sp"
             android:alpha="0.7"
 
