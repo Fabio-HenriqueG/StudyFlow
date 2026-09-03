@@ -5,17 +5,8 @@
          STUDYFLOW - MODO ESCURO
          ========================= -->
 
-    <!-- Cor principal -->
-    <color name="primary">#B8C4FF</color>
-    <color name="onPrimary">#002A78</color>
-    <color name="primaryContainer">#183FBE</color>
-    <color name="onPrimaryContainer">#DEE4FF</color>
-
-    <!-- Cor secundária -->
-    <color name="secondary">#BCC6EA</color>
-    <color name="onSecondary">#26304F</color>
-    <color name="secondaryContainer">#3D4667</color>
-    <color name="onSecondaryContainer">#DCE2FF</color>
+    <!-- Azul StudyFlow adaptado ao Dark Mode -->
+    <color name="studyflow_blue">#B8C4FF</color>
 
     <!-- Fundo principal -->
     <color name="background">#232222</color>
@@ -26,8 +17,8 @@
     <color name="onSurface">#E3E2E9</color>
 
     <!-- Cards -->
-    <color name="surfaceVariant">#2D2D38</color>
-    <color name="onSurfaceVariant">#A9AABC</color>
+    <color name="surfaceVariant">#2D2D31</color>
+    <color name="onSurfaceVariant">#C7C5D0</color>
 
     <!-- Bordas / elementos secundários -->
     <color name="outline">#919096</color>
@@ -41,24 +32,8 @@
     <color name="pendentes">#FFB95C</color>
     <color name="pendentesContainer">#543B0D</color>
 
-    <!-- Cores básicas -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <!-- Azul StudyFlow adaptado ao Dark Mode -->
-    <color name="studyflow_blue">#B8C4FF</color>
-
-    <!-- Cards -->
-    <color name="card">#303147</color>
-
-    <color name="card_texto">#F1F3F8</color>
-    <color name="card_texto_secundario">#B8BFCC</color>
-
-    <color name="botao_ver_todos_fundo">#2A3142</color>
-
-    <color name="nav_indicador">#303147</color>
-
     <!-- Prioridades -->
+
     <color name="primary_baixa">#8FD9A0</color>
     <color name="primary_media">#FFB76B</color>
     <color name="primary_alta">#FFB4AB</color>
@@ -70,5 +45,19 @@
     <color name="onsurface_baixa">#10231A</color>
     <color name="onsurface_media">#241804</color>
     <color name="onsurface_alta">#F9D9D5</color>
+
+    <!-- Outros/Especificos -->
+
+    <color name="btn_prosseguir_surface">#AEC0FF</color>
+    <color name="btn_prosseguir_onsurface">#001A6B</color>
+
+    <!-- EditText -->
+    <color name="edittext_surface">#1E1E27</color>
+    <color name="edittext_outline">#46464F</color>
+    <color name="edittext_outline_focused">#AEC0FF</color>
+    <color name="edittext_outline_error">#FFB4AB</color>
+    <color name="edittext_disabled_surface">#1A1A21</color>
+    <color name="edittext_disabled_outline">#33333D</color>
+    <color name="edittext_disabled_text">#63636F</color>
 
 </resources>

@@ -5,17 +5,8 @@
          STUDYFLOW - MODO CLARO
          ========================= -->
 
-    <!-- Cor principal -->
-    <color name="primary">#2F52E0</color>
-    <color name="onPrimary">#FFFFFF</color>
-    <color name="primaryContainer">#DCE5FF</color>
-    <color name="onPrimaryContainer">#102A73</color>
-
-    <!-- Cor secundária -->
-    <color name="secondary">#5468A9</color>
-    <color name="onSecondary">#FFFFFF</color>
-    <color name="secondaryContainer">#DEE5FF</color>
-    <color name="onSecondaryContainer">#15265C</color>
+    <!-- Cores originais StudyFlow -->
+    <color name="studyflow_blue">#2F52E0</color>
 
     <!-- Fundo principal -->
     <color name="background">#F4F6FC</color>
@@ -45,24 +36,6 @@
     <color name="error">#BA1A1A</color>
     <color name="onError">#FFFFFF</color>
 
-    <!-- Cores básicas -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <!-- Cores originais StudyFlow -->
-    <color name="studyflow_blue">#2F52E0</color>
-    <color name="azul_secundario">#27187E</color>
-
-    <!-- Card modo claro -->
-    <color name="card">#CFDCFF</color>
-
-    <color name="card_texto">#1F2430</color>
-    <color name="card_texto_secundario">#5F6673</color>
-
-    <color name="botao_ver_todos_fundo">#EEF3FF</color>
-
-    <color name="nav_indicador">#CFDCFF</color>
-
     <!-- Prioridades -->
 
     <color name="primary_baixa">#1E8E3E</color>
@@ -76,5 +49,19 @@
     <color name="onsurface_baixa">#0B3D1B</color>
     <color name="onsurface_media">#4A2E00</color>
     <color name="onsurface_alta">#4A0E0A</color>
+
+    <!-- Outros/Especificos -->
+
+    <color name="btn_prosseguir_surface">#2F52E0</color>
+    <color name="btn_prosseguir_onsurface">#FAFAFF</color>
+
+    <!-- EditText -->
+    <color name="edittext_surface">#F0F1FA</color>
+    <color name="edittext_outline">#C4C6D9</color>
+    <color name="edittext_outline_focused">#2F52E0</color>
+    <color name="edittext_outline_error">#C62828</color>
+    <color name="edittext_disabled_surface">#E4E6F0</color>
+    <color name="edittext_disabled_outline">#D5D7E3</color>
+    <color name="edittext_disabled_text">#9C9EAF</color>
 
 </resources>

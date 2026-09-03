@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="@color/surface"
     android:padding="24dp"
     tools:context=".CriaChecklistFragment">
 
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Criar Novo Checklist"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/onSurface"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btnVoltar"
@@ -46,6 +46,7 @@
             android:id="@+id/editTituloChecklist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:inputType="textCapSentences" />
     </com.google.android.material.textfield.TextInputLayout>
 

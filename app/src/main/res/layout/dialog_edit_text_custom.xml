@@ -1,36 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/shape_fundo"
     android:padding="16dp">
+
+    <!-- CAMPO DE TEXTO -->
 
     <EditText
         android:id="@+id/editTextoDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:background="@drawable/shape_edit_text"
+        android:fontFamily="@font/quicksand_regular"
         android:hint="Escreva algo..."
-        android:minLines="2" />
+        android:textColor="@color/surface"
+        android:textColorHint="@color/onSurfaceVariant"
+        android:textSize="15sp"
+        android:gravity="top|start"
+        android:padding="16dp"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minLines="1"
+        android:maxLines="6"
+        android:scrollbars="vertical" />
+
+
+    <!-- TAMANHO DO TEXTO -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/quicksand_regular"
         android:text="Tamanho do texto:"
+        android:textColor="@color/onSurfaceVariant"
         android:textSize="12sp" />
 
-    <SeekBar
-        android:id="@+id/seekBarTamanhoTexto"
+
+    <!-- SeekBar + valor exato -->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="60"
-        android:progress="12" />
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <SeekBar
+            android:id="@+id/seekBarTamanhoTexto"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+
+            android:max="99"
+            android:progress="11"
+
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb"
+
+            android:splitTrack="false"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+
+        <!-- Caixa para escolher valor exato -->
+
+        <EditText
+            android:id="@+id/editTamanhoTexto"
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+
+            android:background="@drawable/shape_edit_text"
+
+            android:fontFamily="@font/quicksand_bold"
+            android:gravity="center"
+
+            android:inputType="number"
+            android:maxLength="3"
+
+            android:text="12"
+            android:textColor="@color/onSurface"
+            android:textSize="14sp"
+
+            android:padding="6dp" />
+
+    </LinearLayout>
+
+
+    <!-- COR ARCO-ÍRIS -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/quicksand_regular"
         android:text="Cor (Arco-íris):"
+        android:textColor="@color/onSurfaceVariant"
         android:textSize="12sp" />
 
     <SeekBar
@@ -42,24 +111,30 @@
         android:progressDrawable="@null"
         android:thumb="@android:drawable/btn_default" />
 
+
+    <!-- CORES RÁPIDAS -->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/quicksand_regular"
         android:text="Cores Rápidas:"
+        android:textColor="@color/onSurfaceVariant"
         android:textSize="12sp" />
-
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/layoutCoresTexto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" />
+
     </HorizontalScrollView>
 
 </LinearLayout>

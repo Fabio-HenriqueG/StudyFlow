@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
@@ -15,7 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:background="@drawable/shape_fundo"
+
+        android:padding="18dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,21 +30,22 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@id/btn_opcoes_anotacao"
                 android:text="Título da Nota"
-                android:textColor="?attr/colorOnSurface"
+                android:fontFamily="@font/quicksand_bold"
+                android:textColor="@color/onSurface"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btn_opcoes_anotacao"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Opções"
                 android:padding="4dp"
                 android:src="@drawable/ic_more_vert"
-                app:tint="?attr/colorOnSurfaceVariant" />
+                app:tint="@color/onSurface" />
         </RelativeLayout>
 
         <TextView
@@ -50,8 +53,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:textColor="@color/onSurfaceVariant"
             android:text="Editado em 03/08/2026"
-            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 
         <TextView
@@ -64,10 +68,9 @@
             android:text="Tipo"
             android:textSize="10sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            android:background="@drawable/cantos_arredondados_up"
-            android:backgroundTint="?attr/colorSurfaceVariant"/>
-
-
+            android:fontFamily="@font/quicksand_regular"
+            android:textColor="@color/onSurfaceVariant"
+            android:background="@drawable/shape_arredondado"
+            />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -5,22 +5,29 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- Linha horizontal -->
+    <!-- Triângulo de voltar -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/onSurface"
-        android:strokeWidth="2"
+        android:strokeWidth="1.75"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:pathData="M5,12 L19,12" />
+        android:pathData="
+            M17.971,4.285
+            A2,2 0,0 1 21,6
+            L21,18
+            A2,2 0,0 1 17.971,19.715
+            L7.974,13.717
+            A2,2 0,0 1 7.971,10.285
+            Z" />
 
     <!-- Linha vertical -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/onSurface"
-        android:strokeWidth="2"
+        android:strokeWidth="1.75"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:pathData="M12,5 L12,19" />
+        android:pathData="M3,20 L3,4" />
 
 </vector>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="@color/surface"
     tools:context=".CheckListFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,15 +19,16 @@
             android:text="@string/checklist"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
+            android:fontFamily="@font/quicksand_bold"
             app:layout_constraintEnd_toStartOf="@+id/btnVoltar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btnVoltar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/voltar"
             android:src="@drawable/seta_voltar"

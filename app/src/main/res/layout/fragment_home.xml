@@ -25,8 +25,8 @@
             app:layout_constraintEnd_toStartOf="@+id/btnConfiguracoes"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="1dp"
+            app:strokeColor="@color/onSurfaceVariant"
+            app:strokeWidth="1.5dp"
             android:layout_marginEnd="8dp"/>
 
         <!-- SEÇÃO: SAUDACAO -->
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textStyle="bold"
-                    android:textColor="#F57C00"
+                    android:textColor="@color/primary_media"
                     android:textSize="14sp" />
                 <ImageView
                     android:layout_width="20dp"
@@ -253,20 +253,20 @@
 
                     android:text="Ver todos"
                     android:textAllCaps="false"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="@color/btn_prosseguir_onsurface"
                     android:textSize="13sp"
 
                     android:paddingStart="14dp"
                     android:paddingEnd="10dp"
 
-                    app:backgroundTint="@color/botao_ver_todos_fundo"
+                    app:backgroundTint="@color/btn_prosseguir_surface"
                     app:cornerRadius="20dp"
 
                     app:icon="@drawable/seta_direita"
                     app:iconGravity="textEnd"
                     app:iconPadding="5dp"
                     app:iconSize="18dp"
-                    app:iconTint="?attr/colorPrimary" />
+                    app:iconTint="@color/btn_prosseguir_onsurface" />
             </RelativeLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -448,7 +448,9 @@
                 android:visibility="gone"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                android:fontFamily="@font/quicksand_bold"
+
+                app:cardBackgroundColor="@color/onSurface"
                 app:strokeWidth="0dp">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -459,9 +461,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/quicksand_bold"
+
                         android:text="Crie uma meta para manter o foco!"
                         android:textSize="14sp"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
+                        android:textColor="@color/onSurface" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
@@ -475,7 +479,8 @@
             android:visibility="gone"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            android:fontFamily="@font/quicksand_bold"
+            app:cardBackgroundColor="@color/surface"
             app:strokeWidth="0dp"
             app:layout_constraintTop_toBottomOf="@+id/lblDataAtual"
             app:layout_constraintStart_toStartOf="parent"
@@ -490,7 +495,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/ic_welcome_rocket"
-                    app:tint="?attr/colorPrimary" />
+                    app:tint="@color/onSurface" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -498,7 +503,8 @@
                     android:text="Tudo pronto para decolar?"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:fontFamily="@font/quicksand_bold"
+                    android:textColor="@color/onSurface" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -506,7 +512,9 @@
                     android:text="Comece criando uma tarefa, nota ou meta para ver sua Home ganhar vida."
                     android:textSize="15sp"
                     android:gravity="center"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
+                    android:fontFamily="@font/quicksand_bold"
+                    android:textColor="@color/onSurface" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnComecarHome"
                     style="@style/Widget.Material3.Button.TonalButton"

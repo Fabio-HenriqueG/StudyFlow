@@ -32,7 +32,7 @@
             android:fontFamily="@font/quicksand_bold"
 
             android:text="Título da Nota"
-            android:textColor="@color/card_texto"
+            android:textColor="@color/onSurfaceVariant"
             android:textSize="16sp"
 
             android:ellipsize="end"

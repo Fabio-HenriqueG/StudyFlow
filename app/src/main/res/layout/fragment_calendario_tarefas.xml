@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="@color/surface"
     android:padding="16dp">
 
     <ImageButton
         android:id="@+id/btn_voltar_calendario"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/shape_fundo"
         android:src="@drawable/seta_voltar"
         android:contentDescription="@string/voltar"
         app:tint="?attr/colorOnSurface"
@@ -24,7 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/calendario_tarefas"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/onSurface"
+        android:fontFamily="@font/quicksand_bold"
+
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btn_voltar_calendario"
@@ -44,9 +46,9 @@
             android:id="@+id/btnPrevMonth"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_media_previous"
-            app:tint="?attr/colorOnSurface" />
+            android:background="@drawable/shape_fundo"
+            android:src="@drawable/ic_skip_forward"
+            app:tint="@color/onSurface" />
 
         <TextView
             android:id="@+id/txtCurrentMonth"
@@ -54,8 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:fontFamily="@font/quicksand_bold"
+
             android:text="Agosto 2026"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/onSurface"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -63,9 +67,9 @@
             android:id="@+id/btnNextMonth"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_media_next"
-            app:tint="?attr/colorOnSurface" />
+            android:background="@drawable/shape_fundo"
+            android:src="@drawable/ic_skip_back"
+            app:tint="@color/onSurface" />
     </LinearLayout>
 
     <LinearLayout
@@ -100,7 +104,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/tarefas_do_dia"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/onSurface"
+        android:fontFamily="@font/quicksand_bold"
+
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

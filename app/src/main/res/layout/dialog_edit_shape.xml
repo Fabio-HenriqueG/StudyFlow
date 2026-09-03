@@ -3,18 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/shape_fundo"
     android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/onSurfaceVariant"
+
+        android:fontFamily="@font/quicksand_bold"
         android:text="Escolha a cor da forma:"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/quicksand_regular"
+        android:textColor="@color/onSurface"
+
         android:layout_marginTop="16dp"
         android:text="Cor (Arco-íris):"
         android:textSize="12sp" />
@@ -23,6 +30,10 @@
         android:id="@+id/seekBarCorArcoIrisShape"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:fontFamily="@font/quicksand_regular"
+        android:textColor="@color/onSurface"
+        android:thumb="@drawable/seekbar_thumb"
+
         android:layout_marginTop="8dp"
         android:max="360"
         android:progressDrawable="@null" />
@@ -31,6 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/quicksand_regular"
+        android:textColor="@color/onSurface"
+
         android:text="Cores Rápidas:"
         android:textSize="12sp" />
 
