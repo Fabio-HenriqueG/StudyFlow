@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -49,12 +48,22 @@ public class CriaMetaFragment extends Fragment {
     }
 
     private void voltarOuHome() {
+        esconderTeclado();
         if (getParentFragmentManager().getBackStackEntryCount() > 0) {
             getParentFragmentManager().popBackStack();
         } else {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
+        }
+    }
+
+    private void esconderTeclado() {
+        View view = getActivity() != null ? getActivity().getCurrentFocus() : null;
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) 
+                getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -65,13 +74,17 @@ public class CriaMetaFragment extends Fragment {
             return;
         }
 
+        esconderTeclado();
         if (metaEmEdicao != null) {
             metaEmEdicao.titulo = titulo;
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(getContext()).metaDao().atualizar(metaEmEdicao);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "Meta atualizada!", Toast.LENGTH_SHORT).show();
+                        View root = getView();
+                        if (root != null) {
+                            com.google.android.material.snackbar.Snackbar.make(root, "Meta atualizada!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                        }
                         voltarOuHome();
                     });
                 }
@@ -82,7 +95,10 @@ public class CriaMetaFragment extends Fragment {
                 AppDatabase.getInstance(getContext()).metaDao().inserir(novaMeta);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "Meta iniciada!", Toast.LENGTH_SHORT).show();
+                        View root = getView();
+                        if (root != null) {
+                            com.google.android.material.snackbar.Snackbar.make(root, "Meta iniciada!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                        }
                         voltarOuHome();
                     });
                 }

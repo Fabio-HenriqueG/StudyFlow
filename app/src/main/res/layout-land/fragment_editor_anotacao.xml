@@ -119,13 +119,13 @@
         android:alpha="0.5"
         android:max="2000"
         android:progress="0"
-        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
+        app:layout_constraintBottom_toTopOf="@+id/layoutOpcoesFerramenta"
         app:layout_constraintEnd_toEndOf="@+id/containerEditor"
         app:layout_constraintStart_toStartOf="@+id/containerEditor" />
 
     <!-- Barra de Desenho (Sobreposta ao rodapé em paisagem) -->
     <LinearLayout
-        android:id="@+id/layoutControlesDesenho"
+        android:id="@+id/layoutOpcoesFerramenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurfaceVariant"

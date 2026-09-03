@@ -12,9 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/cantos_arredondados_up"
-
-        app:itemActiveIndicatorColor="@color/nav_indicador"
-
+        android:theme="@style/ThemeOverlay.App.BottomNav"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

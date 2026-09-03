@@ -30,6 +30,7 @@ public class TarefasFragment extends Fragment {
 
     private RecyclerView recyclerTarefas;
     private View txtEmptyState;
+    private TarefaAdapter adapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -116,6 +117,36 @@ public class TarefasFragment extends Fragment {
         // 1. Vincula o componente Java ao ID do RecyclerView que você colocou no XML
         recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
         txtEmptyState = view.findViewById(R.id.txtEmptyTarefas);
+
+        configurarSwipe();
+    }
+
+    private void configurarSwipe() {
+        new androidx.recyclerview.widget.ItemTouchHelper(new androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(0, 
+                androidx.recyclerview.widget.ItemTouchHelper.LEFT | androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getBindingAdapterPosition();
+                if (adapter != null && position != RecyclerView.NO_POSITION) {
+                    if (direction == androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
+                        adapter.concluirTarefa(position, getContext());
+                        mostrarFeedback("Tarefa concluída!");
+                    } else {
+                        adapter.removerTarefa(position, getContext());
+                        mostrarFeedback("Tarefa excluída");
+                    }
+                }
+            }
+        }).attachToRecyclerView(recyclerTarefas);
+    }
+
+    private void mostrarFeedback(String msg) {
+        com.google.android.material.snackbar.Snackbar.make(recyclerTarefas, msg, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -140,13 +171,21 @@ public class TarefasFragment extends Fragment {
             // 4. Volta para a Main Thread (linha principal) para desenhar na tela do celular
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-
-                    // CHAMA O SEU ADAPTER PRONTO!
-                    // Passamos a lista do banco envolvida em ArrayList para ser mutável
-                    TarefaAdapter adapter = new TarefaAdapter(new ArrayList<>(listaDoBanco));
-
-                    // Conecta o seu adapter ao RecyclerView da tela
-                    recyclerTarefas.setAdapter(adapter);
+                    if (adapter == null) {
+                        adapter = new TarefaAdapter(new ArrayList<>(listaDoBanco));
+                        adapter.setOnDataChangedListener(count -> {
+                            if (txtEmptyState != null) {
+                                txtEmptyState.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+                            }
+                        });
+                    } else {
+                        adapter.setTarefas(new ArrayList<>(listaDoBanco));
+                    }
+                    
+                    // Garante que o adapter esteja sempre conectado ao RecyclerView (importante após recriação da view)
+                    if (recyclerTarefas.getAdapter() == null) {
+                        recyclerTarefas.setAdapter(adapter);
+                    }
 
                     // Atualiza visibilidade do estado vazio
                     if (txtEmptyState != null) {

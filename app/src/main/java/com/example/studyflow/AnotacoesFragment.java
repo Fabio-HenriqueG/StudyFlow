@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 public class AnotacoesFragment extends Fragment {
 
     private RecyclerView recyclerAnotacoes;
+    private AnotacaoAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,11 +108,18 @@ public class AnotacoesFragment extends Fragment {
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    // Configura o Adapter com o clique para abrir o editor e lista mutável
-                    AnotacaoAdapter adapter = new AnotacaoAdapter(new ArrayList<>(lista), anotacao -> {
-                        abrirEditor(anotacao);
-                    });
-                    recyclerAnotacoes.setAdapter(adapter);
+                    if (adapter == null) {
+                        // Configura o Adapter com o clique para abrir o editor e lista mutável
+                        adapter = new AnotacaoAdapter(new ArrayList<>(lista), anotacao -> {
+                            abrirEditor(anotacao);
+                        });
+                    } else {
+                        adapter.setAnotacoes(new ArrayList<>(lista));
+                    }
+                    
+                    if (recyclerAnotacoes.getAdapter() == null) {
+                        recyclerAnotacoes.setAdapter(adapter);
+                    }
                 });
             }
         });

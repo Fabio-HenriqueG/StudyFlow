@@ -93,45 +93,49 @@ public class EditorAnotacaoFragment extends Fragment {
         SeekBar zoomBar = view.findViewById(R.id.seekBarZoomCanvas);
         View btnModoNavegacao = view.findViewById(R.id.btnModoNavegacao);
 
-        zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float oldScale = canvasNotas.getScaleX();
-                float newScale = 0.5f + (progress / 100.0f);
-                
-                View parent = (View) canvasNotas.getParent();
-                if (parent != null && oldScale != newScale) {
-                    // Centro da tela (onde o usuário está olhando)
-                    float cx = parent.getWidth() / 2f;
-                    float cy = parent.getHeight() / 2f;
+        if (zoomBar != null) {
+            zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float oldScale = canvasNotas.getScaleX();
+                    float newScale = 0.5f + (progress / 100.0f);
                     
-                    // Ponto exato no "papel" que está no centro da tela antes do zoom
-                    float px = (cx - canvasNotas.getTranslationX()) / oldScale;
-                    float py = (cy - canvasNotas.getTranslationY()) / oldScale;
+                    View parent = (View) canvasNotas.getParent();
+                    if (parent != null && oldScale != newScale) {
+                        // Centro da tela (onde o usuário está olhando)
+                        float cx = parent.getWidth() / 2f;
+                        float cy = parent.getHeight() / 2f;
+                        
+                        // Ponto exato no "papel" que está no centro da tela antes do zoom
+                        float px = (cx - canvasNotas.getTranslationX()) / oldScale;
+                        float py = (cy - canvasNotas.getTranslationY()) / oldScale;
+                        
+                        // Aplica o novo zoom
+                        canvasNotas.setScaleX(newScale);
+                        canvasNotas.setScaleY(newScale);
+                        
+                        // Calcula a nova translação para manter o mesmo ponto (px, py) centralizado
+                        float newTx = cx - (px * newScale);
+                        float newTy = cy - (py * newScale);
+                        
+                        canvasNotas.setTranslationX(newTx);
+                        canvasNotas.setTranslationY(newTy);
+                    } else {
+                        canvasNotas.setScaleX(newScale);
+                        canvasNotas.setScaleY(newScale);
+                    }
                     
-                    // Aplica o novo zoom
-                    canvasNotas.setScaleX(newScale);
-                    canvasNotas.setScaleY(newScale);
-                    
-                    // Calcula a nova translação para manter o mesmo ponto (px, py) centralizado
-                    float newTx = cx - (px * newScale);
-                    float newTy = cy - (py * newScale);
-                    
-                    canvasNotas.setTranslationX(newTx);
-                    canvasNotas.setTranslationY(newTy);
-                } else {
-                    canvasNotas.setScaleX(newScale);
-                    canvasNotas.setScaleY(newScale);
+                    // Garante que o ajuste não mostre o fundo branco
+                    reajustarPosicaoSeNecessario();
                 }
-                
-                // Garante que o ajuste não mostre o fundo branco
-                reajustarPosicaoSeNecessario();
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+        }
 
-        btnModoNavegacao.setOnClickListener(v -> toggleModoNavegacao());
+        if (btnModoNavegacao != null) {
+            btnModoNavegacao.setOnClickListener(v -> toggleModoNavegacao());
+        }
 
         containerEditor = view.findViewById(R.id.containerEditor);
         if (containerEditor != null) {
@@ -184,7 +188,7 @@ public class EditorAnotacaoFragment extends Fragment {
         }
 
         canvasNotas.post(() -> {
-            zoomBar.setProgress(50);
+            if (zoomBar != null) zoomBar.setProgress(50);
             
             // Centraliza o canvas 3000x3000 dentro do container
             View parent = (View) canvasNotas.getParent();
@@ -211,7 +215,11 @@ public class EditorAnotacaoFragment extends Fragment {
 
         btnVoltar.setOnClickListener(v -> voltarOuHome());
         btnSalvar.setOnClickListener(v -> salvarNota());
-        view.findViewById(R.id.btnExportarNota).setOnClickListener(v -> iniciarExportacao());
+        
+        View btnExportar = view.findViewById(R.id.btnExportarNota);
+        if (btnExportar != null) {
+            btnExportar.setOnClickListener(v -> iniciarExportacao());
+        }
 
         desenhoView = view.findViewById(R.id.desenhoViewSobreposto);
         layoutOpcoesFerramenta = view.findViewById(R.id.layoutOpcoesFerramenta);
@@ -222,33 +230,43 @@ public class EditorAnotacaoFragment extends Fragment {
         ImageButton btnDesfazer = view.findViewById(R.id.btnDesfazer);
         ImageButton btnRefazer = view.findViewById(R.id.btnRefazer);
 
-        btnPincel.setOnClickListener(v -> {
-            if (modoDesenhoAtivo && !modoBorrachaAtivo) desativarModoDesenho();
-            else ativarModoDesenho(false);
-        });
+        if (btnPincel != null) {
+            btnPincel.setOnClickListener(v -> {
+                if (modoDesenhoAtivo && !modoBorrachaAtivo) desativarModoDesenho();
+                else ativarModoDesenho(false);
+            });
+        }
 
-        btnBorracha.setOnClickListener(v -> {
-            if (modoDesenhoAtivo && modoBorrachaAtivo) desativarModoDesenho();
-            else ativarModoDesenho(true);
-        });
+        if (btnBorracha != null) {
+            btnBorracha.setOnClickListener(v -> {
+                if (modoDesenhoAtivo && modoBorrachaAtivo) desativarModoDesenho();
+                else ativarModoDesenho(true);
+            });
+        }
 
-        btnDesfazer.setOnClickListener(v -> desenhoView.desfazer());
-        btnRefazer.setOnClickListener(v -> desenhoView.refazer());
+        if (btnDesfazer != null) btnDesfazer.setOnClickListener(v -> desenhoView.desfazer());
+        if (btnRefazer != null) btnRefazer.setOnClickListener(v -> desenhoView.refazer());
 
-        view.findViewById(R.id.btnLimparCanvas).setOnClickListener(v -> desenhoView.limpar());
-        view.findViewById(R.id.btnConcluirDesenho).setOnClickListener(v -> concluirDesenho());
+        View btnLimpar = view.findViewById(R.id.btnLimparCanvas);
+        if (btnLimpar != null) btnLimpar.setOnClickListener(v -> desenhoView.limpar());
+        if (btnConcluirDesenho != null) btnConcluirDesenho.setOnClickListener(v -> concluirDesenho());
 
         SeekBar seekBar = view.findViewById(R.id.seekBarEspessura);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                desenhoView.setTamanhoPincel(progress);
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        if (seekBar != null) {
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    desenhoView.setTamanhoPincel(progress);
+                }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+        }
 
-        adicionarBotoesDeCores(view.findViewById(R.id.layoutCoresDesenho));
+        View layoutCores = view.findViewById(R.id.layoutCoresDesenho);
+        if (layoutCores instanceof LinearLayout) {
+            adicionarBotoesDeCores((LinearLayout) layoutCores);
+        }
         
         SeekBar rainbowBarDesenho = view.findViewById(R.id.seekBarCorArcoIrisDesenho);
         if (rainbowBarDesenho != null) {
@@ -605,7 +623,7 @@ public class EditorAnotacaoFragment extends Fragment {
                 btn.setIconTint(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
             } catch (Exception ignored) {}
             btn.setBackgroundColor(Color.LTGRAY);
-            Toast.makeText(getContext(), "Modo Navegação Ativo (Arraste a tela)", Toast.LENGTH_SHORT).show();
+            com.google.android.material.snackbar.Snackbar.make(getView(), "Modo Navegação Ativo (Arraste a tela)", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             desativarModoDesenho();
         } else {
             btn.setIconTint(android.content.res.ColorStateList.valueOf(Color.GRAY));
@@ -628,8 +646,8 @@ public class EditorAnotacaoFragment extends Fragment {
         modoBorrachaAtivo = isBorracha;
         desenhoView.setDrawingEnabled(true);
         desenhoView.setBorracha(isBorracha);
-        layoutOpcoesFerramenta.setVisibility(View.VISIBLE);
-        btnConcluirDesenho.setVisibility(View.VISIBLE);
+        if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.VISIBLE);
+        if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.VISIBLE);
         atualizarHighlightBotoes();
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -641,8 +659,8 @@ public class EditorAnotacaoFragment extends Fragment {
     private void desativarModoDesenho() {
         modoDesenhoAtivo = false;
         desenhoView.setDrawingEnabled(false);
-        layoutOpcoesFerramenta.setVisibility(View.GONE);
-        btnConcluirDesenho.setVisibility(View.GONE);
+        if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.GONE);
+        if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.GONE);
         atualizarHighlightBotoes();
     }
 
@@ -871,6 +889,7 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void salvarNota() {
+        esconderTeclado();
         String t = editTitulo.getText().toString().trim();
         if (t.isEmpty()) t = "Sem título";
         String j = serializarCanvas();
@@ -994,13 +1013,27 @@ public class EditorAnotacaoFragment extends Fragment {
 
 
     private void voltarOuHome() {
+        esconderTeclado();
         if (getParentFragmentManager().getBackStackEntryCount() > 0) getParentFragmentManager().popBackStack();
         else getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 
+    private void esconderTeclado() {
+        View view = getActivity() != null ? getActivity().getCurrentFocus() : null;
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) 
+                getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private void voltarComFeedback(String msg) {
         if (getActivity() != null) getActivity().runOnUiThread(() -> {
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            com.google.android.material.snackbar.Snackbar.make(
+                getActivity().findViewById(android.R.id.content),
+                msg,
+                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+            ).show();
             voltarOuHome();
         });
     }

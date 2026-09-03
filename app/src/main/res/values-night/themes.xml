@@ -20,8 +20,11 @@
         <item name="colorSurfaceVariant">#44474E</item>
         <item name="colorOnSurfaceVariant">#C4C6D0</item>
 
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNav" parent="">
+        <item name="colorSecondaryContainer">@color/nav_indicador</item>
     </style>
 </resources>

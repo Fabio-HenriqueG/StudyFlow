@@ -60,6 +60,36 @@ public class MetaHomeAdapter extends RecyclerView.Adapter<MetaHomeAdapter.MetaHo
         return listaMetas.size();
     }
 
+    public void setMetas(List<Meta> novasMetas) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return listaMetas.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return novasMetas.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return listaMetas.get(oldItemPosition).id == novasMetas.get(newItemPosition).id;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Meta oldMeta = listaMetas.get(oldItemPosition);
+                Meta newMeta = novasMetas.get(newItemPosition);
+                return oldMeta.titulo.equals(newMeta.titulo) && oldMeta.dataCriacao == newMeta.dataCriacao;
+            }
+        });
+
+        listaMetas.clear();
+        listaMetas.addAll(novasMetas);
+        result.dispatchUpdatesTo(this);
+    }
+
     static class MetaHomeViewHolder extends RecyclerView.ViewHolder {
         TextView textTitulo, textDias;
 

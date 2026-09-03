@@ -91,9 +91,24 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Flas
                 lista.remove(pos);
                 notifyItemRemoved(pos);
                 notifyItemRangeChanged(pos, lista.size());
-                Toast.makeText(v.getContext(), "Removido!", Toast.LENGTH_SHORT).show();
+                com.google.android.material.snackbar.Snackbar.make(v, "Removido!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             });
         });
+    }
+
+    public void setFlashcards(List<Flashcard> novas) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override public int getOldListSize() { return lista.size(); }
+            @Override public int getNewListSize() { return novas.size(); }
+            @Override public boolean areItemsTheSame(int oldP, int newP) { return lista.get(oldP).id == novas.get(newP).id; }
+            @Override public boolean areContentsTheSame(int oldP, int newP) {
+                Flashcard o = lista.get(oldP), n = novas.get(newP);
+                return o.pergunta.equals(n.pergunta) && o.nivelDominio == n.nivelDominio && o.dataProximaRevisao == n.dataProximaRevisao;
+            }
+        });
+        lista.clear();
+        lista.addAll(novas);
+        result.dispatchUpdatesTo(this);
     }
 
     @Override

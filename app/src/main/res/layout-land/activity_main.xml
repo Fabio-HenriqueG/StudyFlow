@@ -11,6 +11,7 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:theme="@style/ThemeOverlay.App.BottomNav"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

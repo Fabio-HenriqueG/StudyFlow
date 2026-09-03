@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 public class MetasFragment extends Fragment {
 
     private RecyclerView recyclerMetas;
+    private MetaAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,9 +108,16 @@ public class MetasFragment extends Fragment {
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    // Garantimos que a lista seja mutável para permitir exclusão
-                    MetaAdapter adapter = new MetaAdapter(new ArrayList<>(lista));
-                    recyclerMetas.setAdapter(adapter);
+                    if (adapter == null) {
+                        // Garantimos que a lista seja mutável para permitir exclusão
+                        adapter = new MetaAdapter(new ArrayList<>(lista));
+                    } else {
+                        adapter.setMetas(new ArrayList<>(lista));
+                    }
+                    
+                    if (recyclerMetas.getAdapter() == null) {
+                        recyclerMetas.setAdapter(adapter);
+                    }
                 });
             }
         });

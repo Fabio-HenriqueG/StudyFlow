@@ -123,10 +123,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
             AppDatabase.getInstance(view.getContext()).checklistDao().atualizar(checklist);
             if (view.getContext() instanceof AppCompatActivity) {
                 ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
-                    // Recarregar tudo para aplicar a nova ordenação do banco
-                    // ou simplesmente reorganizar a lista local
-                    Toast.makeText(view.getContext(), checklist.isPinned ? "Fixado" : "Desafixado", Toast.LENGTH_SHORT).show();
-                    // Aqui seria melhor chamar um método no Fragment para recarregar a lista do banco
+                    com.google.android.material.snackbar.Snackbar.make(view, checklist.isPinned ? "Fixado" : "Desafixado", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    // O Fragment deve recarregar para aplicar a nova ordenação
                 });
             }
         });
@@ -156,7 +154,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
                     listaChecklists.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaChecklists.size());
-                    Toast.makeText(view.getContext(), "Checklist excluído", Toast.LENGTH_SHORT).show();
+                    com.google.android.material.snackbar.Snackbar.make(view, "Checklist excluído", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                 });
             }
         });
@@ -165,6 +163,21 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
     @Override
     public int getItemCount() {
         return listaChecklists.size();
+    }
+
+    public void setChecklists(List<Checklist> novas) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override public int getOldListSize() { return listaChecklists.size(); }
+            @Override public int getNewListSize() { return novas.size(); }
+            @Override public boolean areItemsTheSame(int oldP, int newP) { return listaChecklists.get(oldP).id == novas.get(newP).id; }
+            @Override public boolean areContentsTheSame(int oldP, int newP) {
+                Checklist o = listaChecklists.get(oldP), n = novas.get(newP);
+                return o.titulo.equals(n.titulo) && o.isPinned == n.isPinned && o.dataValidade == n.dataValidade;
+            }
+        });
+        listaChecklists.clear();
+        listaChecklists.addAll(novas);
+        result.dispatchUpdatesTo(this);
     }
 
     static class ChecklistViewHolder extends RecyclerView.ViewHolder {

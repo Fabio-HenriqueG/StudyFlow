@@ -44,4 +44,8 @@
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
+
+    <style name="ThemeOverlay.App.BottomNav" parent="">
+        <item name="colorSecondaryContainer">@color/nav_indicador</item>
+    </style>
 </resources>

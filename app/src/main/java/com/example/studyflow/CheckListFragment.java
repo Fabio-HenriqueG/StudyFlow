@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 public class CheckListFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private ChecklistAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -104,8 +105,15 @@ public class CheckListFragment extends Fragment {
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    ChecklistAdapter adapter = new ChecklistAdapter(new ArrayList<>(listas));
-                    recyclerView.setAdapter(adapter);
+                    if (adapter == null) {
+                        adapter = new ChecklistAdapter(new ArrayList<>(listas));
+                    } else {
+                        adapter.setChecklists(new ArrayList<>(listas));
+                    }
+                    
+                    if (recyclerView.getAdapter() == null) {
+                        recyclerView.setAdapter(adapter);
+                    }
                 });
             }
         });

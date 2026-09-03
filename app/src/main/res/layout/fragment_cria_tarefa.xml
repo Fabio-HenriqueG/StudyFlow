@@ -125,49 +125,6 @@
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
-            android:id="@+id/lblInsistenciaCria"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Nível de Insistência do App:"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridade" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/toggleGroupInsistenciaCria"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:singleSelection="true"
-            app:selectionRequired="true"
-            app:layout_constraintTop_toBottomOf="@+id/lblInsistenciaCria">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/btnInsistDiscreto"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Discreto" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/btnInsistEquilibrado"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Equilibrado" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/btnInsistChato"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Não esqueça!" />
-        </com.google.android.material.chip.ChipGroup>
-
-
-        <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -176,7 +133,7 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleGroupInsistenciaCria" />
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridade" />
 
 
 

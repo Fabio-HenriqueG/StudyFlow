@@ -35,6 +35,8 @@ public class HomeFragment extends Fragment {
 
     private TextView txtAtrasadas, txtPendentes, lblTituloAnotacoes, lblTituloMetas, lblTituloTarefas, txtFlashcardsCount, txtStreakCount;
     private RecyclerView recyclerMetasHome, recyclerAnotacoesHome;
+    private MetaHomeAdapter metaAdapter;
+    private AnotacaoHomeAdapter anotacaoAdapter;
     private LinearLayout layoutStatus;
     private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards, cardStreak;
     private int countMetas = -1, countAnotacoes = -1, countTarefas = -1, countFlashcards = -1;
@@ -76,9 +78,15 @@ public class HomeFragment extends Fragment {
         View btnIniciarRevisao = view.findViewById(R.id.btnIniciarRevisao);
         View btnVerColecaoHome = view.findViewById(R.id.btnVerColecaoHome);
         
-        btnIniciarRevisao.setOnClickListener(v -> navegarPara(new RevisaoFlashcardsFragment()));
-        btnVerColecaoHome.setOnClickListener(v -> navegarPara(new FlashcardsFragment()));
-        cardStreak.setOnClickListener(v -> navegarPara(new DashboardFragment()));
+        if (btnIniciarRevisao != null) {
+            btnIniciarRevisao.setOnClickListener(v -> navegarPara(new RevisaoFlashcardsFragment()));
+        }
+        if (btnVerColecaoHome != null) {
+            btnVerColecaoHome.setOnClickListener(v -> navegarPara(new FlashcardsFragment()));
+        }
+        if (cardStreak != null) {
+            cardStreak.setOnClickListener(v -> navegarPara(new DashboardFragment()));
+        }
 
         
         View btnComecar = view.findViewById(R.id.btnComecarHome);
@@ -88,39 +96,49 @@ public class HomeFragment extends Fragment {
         String nomeUsuario = prefs.getString("user_name", "");
         String fotoPath = prefs.getString("user_profile_pic", "");
 
-        if (!fotoPath.isEmpty()) {
+        if (!fotoPath.isEmpty() && imgPerfil != null) {
             imgPerfil.setImageURI(android.net.Uri.parse(fotoPath));
         }
 
         int hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         String saudacaoBase = (hora < 12) ? "Bom dia" : (hora < 18) ? "Boa tarde" : "Boa noite";
         
-        if (!nomeUsuario.isEmpty()) {
-            lblSaudacao.setText(saudacaoBase + ", " + nomeUsuario + "!");
-        } else {
-            lblSaudacao.setText(saudacaoBase + "!");
+        if (lblSaudacao != null) {
+            if (!nomeUsuario.isEmpty()) {
+                lblSaudacao.setText(saudacaoBase + ", " + nomeUsuario + "!");
+            } else {
+                lblSaudacao.setText(saudacaoBase + "!");
+            }
         }
 
         // Configuração de Data Atual
-        SimpleDateFormat sdf = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
-        lblDataAtual.setText(sdf.format(new Date()));
+        if (lblDataAtual != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
+            lblDataAtual.setText(sdf.format(new Date()));
+        }
 
         // Navegação ao clicar no status das tarefas
-        layoutStatus.setOnClickListener(v -> navegarPara(new TarefasFragment()));
+        if (layoutStatus != null) {
+            layoutStatus.setOnClickListener(v -> navegarPara(new TarefasFragment()));
+        }
 
         // Abrir Configurações
-        btnConfig.setOnClickListener(v -> navegarPara(new ConfiguracoesFragment()));
+        if (btnConfig != null) {
+            btnConfig.setOnClickListener(v -> navegarPara(new ConfiguracoesFragment()));
+        }
 
         // Abrir Menu Adicionar pelo Card de Estado Vazio
-        btnComecar.setOnClickListener(v -> {
-            MenuMaisBottomSheet bottomSheet = new MenuMaisBottomSheet();
-            bottomSheet.show(getParentFragmentManager(), "MenuMaisBottomSheet");
-        });
+        if (btnComecar != null) {
+            btnComecar.setOnClickListener(v -> {
+                MenuMaisBottomSheet bottomSheet = new MenuMaisBottomSheet();
+                bottomSheet.show(getParentFragmentManager(), "MenuMaisBottomSheet");
+            });
+        }
 
         // Configurar cliques nos cards de estado vazio para direcionar à criação
-        cardEmptyTarefas.setOnClickListener(v -> navegarPara(new CriaTarefaFragment()));
-        cardEmptyAnotacoes.setOnClickListener(v -> navegarPara(new EditorAnotacaoFragment()));
-        cardEmptyMetas.setOnClickListener(v -> navegarPara(new CriaMetaFragment()));
+        if (cardEmptyTarefas != null) cardEmptyTarefas.setOnClickListener(v -> navegarPara(new CriaTarefaFragment()));
+        if (cardEmptyAnotacoes != null) cardEmptyAnotacoes.setOnClickListener(v -> navegarPara(new EditorAnotacaoFragment()));
+        if (cardEmptyMetas != null) cardEmptyMetas.setOnClickListener(v -> navegarPara(new CriaMetaFragment()));
 
         return view;
     }
@@ -144,9 +162,9 @@ public class HomeFragment extends Fragment {
             int streak = ProdutividadeManager.calcularStreak(getContext());
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    txtStreakCount.setText(String.valueOf(streak));
+                    if (txtStreakCount != null) txtStreakCount.setText(String.valueOf(streak));
                     // Efeito visual: Se o streak for 0, deixa o card mais transparente
-                    cardStreak.setAlpha(streak > 0 ? 1.0f : 0.5f);
+                    if (cardStreak != null) cardStreak.setAlpha(streak > 0 ? 1.0f : 0.5f);
                 });
             }
         });
@@ -169,8 +187,8 @@ public class HomeFragment extends Fragment {
             final int fPendentes = pendentes;
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    txtAtrasadas.setText("Atrasadas: " + fAtrasadas);
-                    txtPendentes.setText("Pendentes: " + fPendentes);
+                    if (txtAtrasadas != null) txtAtrasadas.setText("Atrasadas: " + fAtrasadas);
+                    if (txtPendentes != null) txtPendentes.setText("Pendentes: " + fPendentes);
                     atualizarVisibilidadeEstadoVazio();
                 });
             }
@@ -186,8 +204,16 @@ public class HomeFragment extends Fragment {
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    MetaHomeAdapter adapter = new MetaHomeAdapter(metas, meta -> navegarPara(new MetasFragment()));
-                    recyclerMetasHome.setAdapter(adapter);
+                    if (metaAdapter == null) {
+                        metaAdapter = new MetaHomeAdapter(metas, meta -> navegarPara(new MetasFragment()));
+                    } else {
+                        metaAdapter.setMetas(metas);
+                    }
+                    
+                    if (recyclerMetasHome != null && recyclerMetasHome.getAdapter() == null) {
+                        recyclerMetasHome.setAdapter(metaAdapter);
+                    }
+                    
                     atualizarVisibilidadeEstadoVazio();
                 });
             }
@@ -202,20 +228,28 @@ public class HomeFragment extends Fragment {
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    AnotacaoHomeAdapter adapter = new AnotacaoHomeAdapter(anotacoes, anotacao -> {
-                        Fragment fragment;
-                        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
-                            fragment = new EditorAnotacaoFragment();
-                        } else {
-                            fragment = new EditorTextoFragment();
-                        }
-                        
-                        Bundle args = new Bundle();
-                        args.putSerializable("anotacao", anotacao);
-                        fragment.setArguments(args);
-                        navegarPara(fragment);
-                    });
-                    recyclerAnotacoesHome.setAdapter(adapter);
+                    if (anotacaoAdapter == null) {
+                        anotacaoAdapter = new AnotacaoHomeAdapter(anotacoes, anotacao -> {
+                            Fragment fragment;
+                            if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+                                fragment = new EditorAnotacaoFragment();
+                            } else {
+                                fragment = new EditorTextoFragment();
+                            }
+                            
+                            Bundle args = new Bundle();
+                            args.putSerializable("anotacao", anotacao);
+                            fragment.setArguments(args);
+                            navegarPara(fragment);
+                        });
+                    } else {
+                        anotacaoAdapter.setAnotacoes(anotacoes);
+                    }
+                    
+                    if (recyclerAnotacoesHome != null && recyclerAnotacoesHome.getAdapter() == null) {
+                        recyclerAnotacoesHome.setAdapter(anotacaoAdapter);
+                    }
+                    
                     atualizarVisibilidadeEstadoVazio();
                 });
             }
@@ -232,18 +266,22 @@ public class HomeFragment extends Fragment {
 
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    if (total > 0) {
-                        layoutSecaoFlashcards.setVisibility(View.VISIBLE);
-                        if (paraRevisar > 0) {
-                            cardRevisaoFlashcards.setVisibility(View.VISIBLE);
-                            cardEmptyFlashcards.setVisibility(View.GONE);
-                            txtFlashcardsCount.setText("Você tem " + paraRevisar + " cartões para estudar.");
+                    if (layoutSecaoFlashcards != null) {
+                        if (total > 0) {
+                            layoutSecaoFlashcards.setVisibility(View.VISIBLE);
+                            if (cardRevisaoFlashcards != null) {
+                                if (paraRevisar > 0) {
+                                    cardRevisaoFlashcards.setVisibility(View.VISIBLE);
+                                    if (cardEmptyFlashcards != null) cardEmptyFlashcards.setVisibility(View.GONE);
+                                    if (txtFlashcardsCount != null) txtFlashcardsCount.setText("Você tem " + paraRevisar + " cartões para estudar.");
+                                } else {
+                                    cardRevisaoFlashcards.setVisibility(View.GONE);
+                                    if (cardEmptyFlashcards != null) cardEmptyFlashcards.setVisibility(View.VISIBLE);
+                                }
+                            }
                         } else {
-                            cardRevisaoFlashcards.setVisibility(View.GONE);
-                            cardEmptyFlashcards.setVisibility(View.VISIBLE);
+                            layoutSecaoFlashcards.setVisibility(View.GONE);
                         }
-                    } else {
-                        layoutSecaoFlashcards.setVisibility(View.GONE);
                     }
                     atualizarVisibilidadeEstadoVazio();
                 });
@@ -260,48 +298,48 @@ public class HomeFragment extends Fragment {
 
         if (countMetas == 0 && countAnotacoes == 0 && countTarefas == 0 && countFlashcards == 0) {
             // TUDO VAZIO: Mostra o card de boas-vindas gigante e esconde o resto
-            cardEmptyState.setVisibility(View.VISIBLE);
+            if (cardEmptyState != null) cardEmptyState.setVisibility(View.VISIBLE);
             
-            lblTituloTarefas.setVisibility(View.GONE);
-            layoutStatus.setVisibility(View.GONE);
-            cardEmptyTarefas.setVisibility(View.GONE);
+            if (lblTituloTarefas != null) lblTituloTarefas.setVisibility(View.GONE);
+            if (layoutStatus != null) layoutStatus.setVisibility(View.GONE);
+            if (cardEmptyTarefas != null) cardEmptyTarefas.setVisibility(View.GONE);
             
-            lblTituloAnotacoes.setVisibility(View.GONE);
-            recyclerAnotacoesHome.setVisibility(View.GONE);
-            cardEmptyAnotacoes.setVisibility(View.GONE);
+            if (lblTituloAnotacoes != null) lblTituloAnotacoes.setVisibility(View.GONE);
+            if (recyclerAnotacoesHome != null) recyclerAnotacoesHome.setVisibility(View.GONE);
+            if (cardEmptyAnotacoes != null) cardEmptyAnotacoes.setVisibility(View.GONE);
             
-            lblTituloMetas.setVisibility(View.GONE);
-            recyclerMetasHome.setVisibility(View.GONE);
-            cardEmptyMetas.setVisibility(View.GONE);
+            if (lblTituloMetas != null) lblTituloMetas.setVisibility(View.GONE);
+            if (recyclerMetasHome != null) recyclerMetasHome.setVisibility(View.GONE);
+            if (cardEmptyMetas != null) cardEmptyMetas.setVisibility(View.GONE);
         } else {
             // TEM ALGO: Esconde o card geral e gerencia as seções individualmente
-            cardEmptyState.setVisibility(View.GONE);
+            if (cardEmptyState != null) cardEmptyState.setVisibility(View.GONE);
             
-            lblTituloTarefas.setVisibility(View.VISIBLE);
+            if (lblTituloTarefas != null) lblTituloTarefas.setVisibility(View.VISIBLE);
             if (countTarefas > 0) {
-                layoutStatus.setVisibility(View.VISIBLE);
-                cardEmptyTarefas.setVisibility(View.GONE);
+                if (layoutStatus != null) layoutStatus.setVisibility(View.VISIBLE);
+                if (cardEmptyTarefas != null) cardEmptyTarefas.setVisibility(View.GONE);
             } else {
-                layoutStatus.setVisibility(View.GONE);
-                cardEmptyTarefas.setVisibility(View.VISIBLE);
+                if (layoutStatus != null) layoutStatus.setVisibility(View.GONE);
+                if (cardEmptyTarefas != null) cardEmptyTarefas.setVisibility(View.VISIBLE);
             }
 
-            lblTituloAnotacoes.setVisibility(View.VISIBLE);
+            if (lblTituloAnotacoes != null) lblTituloAnotacoes.setVisibility(View.VISIBLE);
             if (countAnotacoes > 0) {
-                recyclerAnotacoesHome.setVisibility(View.VISIBLE);
-                cardEmptyAnotacoes.setVisibility(View.GONE);
+                if (recyclerAnotacoesHome != null) recyclerAnotacoesHome.setVisibility(View.VISIBLE);
+                if (cardEmptyAnotacoes != null) cardEmptyAnotacoes.setVisibility(View.GONE);
             } else {
-                recyclerAnotacoesHome.setVisibility(View.GONE);
-                cardEmptyAnotacoes.setVisibility(View.VISIBLE);
+                if (recyclerAnotacoesHome != null) recyclerAnotacoesHome.setVisibility(View.GONE);
+                if (cardEmptyAnotacoes != null) cardEmptyAnotacoes.setVisibility(View.VISIBLE);
             }
 
-            lblTituloMetas.setVisibility(View.VISIBLE);
+            if (lblTituloMetas != null) lblTituloMetas.setVisibility(View.VISIBLE);
             if (countMetas > 0) {
-                recyclerMetasHome.setVisibility(View.VISIBLE);
-                cardEmptyMetas.setVisibility(View.GONE);
+                if (recyclerMetasHome != null) recyclerMetasHome.setVisibility(View.VISIBLE);
+                if (cardEmptyMetas != null) cardEmptyMetas.setVisibility(View.GONE);
             } else {
-                recyclerMetasHome.setVisibility(View.GONE);
-                cardEmptyMetas.setVisibility(View.VISIBLE);
+                if (recyclerMetasHome != null) recyclerMetasHome.setVisibility(View.GONE);
+                if (cardEmptyMetas != null) cardEmptyMetas.setVisibility(View.VISIBLE);
             }
         }
     }

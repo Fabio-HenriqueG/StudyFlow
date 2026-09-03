@@ -62,6 +62,38 @@ public class AnotacaoHomeAdapter extends RecyclerView.Adapter<AnotacaoHomeAdapte
         return listaAnotacoes.size();
     }
 
+    public void setAnotacoes(List<Anotacao> novasAnotacoes) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return listaAnotacoes.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return novasAnotacoes.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return listaAnotacoes.get(oldItemPosition).id == novasAnotacoes.get(newItemPosition).id;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Anotacao old = listaAnotacoes.get(oldItemPosition);
+                Anotacao nova = novasAnotacoes.get(newItemPosition);
+                return old.titulo.equals(nova.titulo) && 
+                       old.dataUltimaEdicao == nova.dataUltimaEdicao &&
+                       (old.conteudoHtml != null ? old.conteudoHtml.equals(nova.conteudoHtml) : nova.conteudoHtml == null);
+            }
+        });
+
+        listaAnotacoes.clear();
+        listaAnotacoes.addAll(novasAnotacoes);
+        result.dispatchUpdatesTo(this);
+    }
+
     static class AnotacaoHomeViewHolder extends RecyclerView.ViewHolder {
         TextView textTitulo, textData, textTipo;
 

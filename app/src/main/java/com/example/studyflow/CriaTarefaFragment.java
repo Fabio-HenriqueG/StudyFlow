@@ -36,7 +36,6 @@ public class CriaTarefaFragment extends Fragment {
     private Button btnSalvarTarefa;
     private CalendarView calendarioTarefa;
     private ChipGroup chipGroupPrioridade;
-    private ChipGroup toggleGroupInsistencia;
     private Tarefa tarefaEmEdicao;
     private long dataSelecionada;
 
@@ -56,12 +55,10 @@ public class CriaTarefaFragment extends Fragment {
         btnSalvarTarefa = view.findViewById(R.id.btnSalvarTarefa);
         calendarioTarefa = view.findViewById(R.id.calendario_tarefa);
         chipGroupPrioridade = view.findViewById(R.id.chipGroupPrioridade);
-        toggleGroupInsistencia = view.findViewById(R.id.toggleGroupInsistenciaCria);
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltar);
         
         // Padrões
         chipGroupPrioridade.check(R.id.chipMedia);
-        toggleGroupInsistencia.check(R.id.btnInsistEquilibrado);
 
         btnVoltar.setOnClickListener(v -> voltarOuHome());
 
@@ -87,11 +84,6 @@ public class CriaTarefaFragment extends Fragment {
                 else if (tarefaEmEdicao.prioridade == 2) chipGroupPrioridade.check(R.id.chipAlta);
                 else chipGroupPrioridade.check(R.id.chipMedia);
 
-                // Marca a insistência correta
-                if (tarefaEmEdicao.insistencia == 0) toggleGroupInsistencia.check(R.id.btnInsistDiscreto);
-                else if (tarefaEmEdicao.insistencia == 2) toggleGroupInsistencia.check(R.id.btnInsistChato);
-                else toggleGroupInsistencia.check(R.id.btnInsistEquilibrado);
-
                 btnSalvarTarefa.setText("Atualizar");
             }
         }
@@ -100,12 +92,22 @@ public class CriaTarefaFragment extends Fragment {
     }
 
     private void voltarOuHome() {
+        esconderTeclado();
         if (getParentFragmentManager().getBackStackEntryCount() > 0) {
             getParentFragmentManager().popBackStack();
         } else {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
+        }
+    }
+
+    private void esconderTeclado() {
+        View view = getActivity() != null ? getActivity().getCurrentFocus() : null;
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) 
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -119,6 +121,7 @@ public class CriaTarefaFragment extends Fragment {
             return;
         }
 
+        esconderTeclado();
         Context appContext = requireContext().getApplicationContext();
 
         int prioridade = 1; // Média por padrão
@@ -126,10 +129,7 @@ public class CriaTarefaFragment extends Fragment {
         if (selectedId == R.id.chipBaixa) prioridade = 0;
         else if (selectedId == R.id.chipAlta) prioridade = 2;
 
-        int insistencia = 1;
-        int checkedInsistId = toggleGroupInsistencia.getCheckedChipId();
-        if (checkedInsistId == R.id.btnInsistDiscreto) insistencia = 0;
-        else if (checkedInsistId == R.id.btnInsistChato) insistencia = 2;
+        int insistencia = 1; // Equilibrado por padrão (fixo agora)
 
         if (tarefaEmEdicao != null) {
             tarefaEmEdicao.titulo = titulo;
@@ -168,7 +168,12 @@ public class CriaTarefaFragment extends Fragment {
     private void finalizarEDarFeedback(Context context, String mensagem) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
-                Toast.makeText(context, mensagem, Toast.LENGTH_SHORT).show();
+                com.google.android.material.snackbar.Snackbar.make(
+                    getActivity().findViewById(android.R.id.content),
+                    mensagem,
+                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                ).show();
+                
                 if (isAdded()) {
                     voltarOuHome();
                 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +25,15 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
     private final List<Tarefa> listaTarefas;
     private boolean modoHistorico = false;
+    private OnDataChangedListener onDataChangedListener;
+
+    public interface OnDataChangedListener {
+        void onDataChanged(int count);
+    }
+
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+        this.onDataChangedListener = listener;
+    }
 
     // Construtor: O Adapter exige receber a lista de tarefas do banco
     public TarefaAdapter(List<Tarefa> listaTarefas) {
@@ -67,10 +75,11 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
         // Cores de Prioridade
         int cor;
+        Context context = holder.itemView.getContext();
         switch (tarefa.prioridade) {
-            case 0: cor = android.graphics.Color.parseColor("#4CAF50"); break; // Baixa - Verde
-            case 2: cor = android.graphics.Color.parseColor("#F44336"); break; // Alta - Vermelha
-            default: cor = android.graphics.Color.parseColor("#FFC107"); break; // Média - Amarela
+            case 0: cor = androidx.core.content.ContextCompat.getColor(context, R.color.primary_baixa); break; // Baixa
+            case 2: cor = androidx.core.content.ContextCompat.getColor(context, R.color.primary_alta); break; // Alta
+            default: cor = androidx.core.content.ContextCompat.getColor(context, R.color.primary_media); break; // Média
         }
         holder.viewPrioridade.setBackgroundColor(cor);
 
@@ -141,8 +150,14 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
                     listaTarefas.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaTarefas.size());
+                    
+                    // Notifica o Fragment sobre a mudança para atualizar o EmptyState se necessário
+                    if (onDataChangedListener != null) {
+                        onDataChangedListener.onDataChanged(listaTarefas.size());
+                    }
+                    
                     String msg = tarefa.prioridade == 0 ? "Tarefa concluída e removida!" : "Tarefa movida para o histórico!";
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                    com.google.android.material.snackbar.Snackbar.make(view, msg, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                 }
             });
         });
@@ -179,16 +194,96 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
                     listaTarefas.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaTarefas.size());
-                    Toast.makeText(context, "Tarefa excluída", Toast.LENGTH_SHORT).show();
+
+                    if (onDataChangedListener != null) {
+                        onDataChangedListener.onDataChanged(listaTarefas.size());
+                    }
+
+                    com.google.android.material.snackbar.Snackbar.make(view, "Tarefa excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                 }
             });
         });
     }
 
-    // 3. Diz ao Android quantas tarefas existem na lista para ele saber o tamanho do scroll
     @Override
     public int getItemCount() {
         return listaTarefas != null ? listaTarefas.size() : 0;
+    }
+
+    public void setTarefas(List<Tarefa> novasTarefas) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return listaTarefas.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return novasTarefas.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return listaTarefas.get(oldItemPosition).id == novasTarefas.get(newItemPosition).id;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Tarefa old = listaTarefas.get(oldItemPosition);
+                Tarefa nova = novasTarefas.get(newItemPosition);
+                return old.titulo.equals(nova.titulo) && 
+                       old.descricao.equals(nova.descricao) &&
+                       old.dataLimite == nova.dataLimite &&
+                       old.prioridade == nova.prioridade &&
+                       old.concluida == nova.concluida;
+            }
+        });
+
+        listaTarefas.clear();
+        listaTarefas.addAll(novasTarefas);
+        result.dispatchUpdatesTo(this);
+    }
+
+    public void removerTarefa(int position, Context context) {
+        if (position >= 0 && position < listaTarefas.size()) {
+            Tarefa tarefa = listaTarefas.get(position);
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDatabase.getInstance(context).tarefaDao().excluir(tarefa);
+                NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+            });
+            listaTarefas.remove(position);
+            notifyItemRemoved(position);
+            if (onDataChangedListener != null) {
+                onDataChangedListener.onDataChanged(listaTarefas.size());
+            }
+        }
+    }
+
+    public void concluirTarefa(int position, Context context) {
+        if (position >= 0 && position < listaTarefas.size()) {
+            Tarefa tarefa = listaTarefas.get(position);
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDatabase db = AppDatabase.getInstance(context);
+                if (tarefa.prioridade == 0) {
+                    db.tarefaDao().excluir(tarefa);
+                } else {
+                    tarefa.concluida = true;
+                    tarefa.dataConclusao = System.currentTimeMillis();
+                    db.tarefaDao().atualizar(tarefa);
+                }
+                NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+                ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.id, 0);
+            });
+            listaTarefas.remove(position);
+            notifyItemRemoved(position);
+            if (onDataChangedListener != null) {
+                onDataChangedListener.onDataChanged(listaTarefas.size());
+            }
+        }
+    }
+
+    public Tarefa getTarefaAt(int position) {
+        return listaTarefas.get(position);
     }
 
     // Minha "Caixa de ferramentas": Segura as variáveis do XML de uma linha só

@@ -100,7 +100,7 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
                 AppDatabase.getInstance(v.getContext()).metaDao().atualizar(meta);
                 
                 handler.post(() -> {
-                    Toast.makeText(v.getContext(), "Parabéns! Meta confirmada por hoje.", Toast.LENGTH_SHORT).show();
+                    com.google.android.material.snackbar.Snackbar.make(v, "Parabéns! Meta confirmada por hoje.", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                     notifyItemChanged(position);
                 });
             });
@@ -149,7 +149,7 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
                 listaMetas.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, listaMetas.size());
-                Toast.makeText(view.getContext(), "Meta excluída", Toast.LENGTH_SHORT).show();
+                com.google.android.material.snackbar.Snackbar.make(view, "Meta excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             });
         });
     }
@@ -157,6 +157,38 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
     @Override
     public int getItemCount() {
         return listaMetas.size();
+    }
+
+    public void setMetas(List<Meta> novasMetas) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return listaMetas.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return novasMetas.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return listaMetas.get(oldItemPosition).id == novasMetas.get(newItemPosition).id;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Meta old = listaMetas.get(oldItemPosition);
+                Meta nova = novasMetas.get(newItemPosition);
+                return old.titulo.equals(nova.titulo) && 
+                       old.dataCriacao == nova.dataCriacao &&
+                       old.ultimoCheckin == nova.ultimoCheckin;
+            }
+        });
+
+        listaMetas.clear();
+        listaMetas.addAll(novasMetas);
+        result.dispatchUpdatesTo(this);
     }
 
     /**

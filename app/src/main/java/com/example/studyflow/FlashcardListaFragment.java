@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 public class FlashcardListaFragment extends Fragment {
 
     private RecyclerView recycler;
+    private FlashcardAdapter adapter;
     private Materia materia;
 
     @Nullable
@@ -61,17 +62,24 @@ public class FlashcardListaFragment extends Fragment {
             List<Flashcard> cards = AppDatabase.getInstance(getContext()).flashcardDao().buscarPorMateria(materia.id);
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    FlashcardAdapter adapter = new FlashcardAdapter(new ArrayList<>(cards), f -> {
-                        CriaFlashcardFragment fragment = new CriaFlashcardFragment();
-                        Bundle args = new Bundle();
-                        args.putSerializable("flashcard_editar", f);
-                        fragment.setArguments(args);
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .addToBackStack(null)
-                                .commit();
-                    });
-                    recycler.setAdapter(adapter);
+                    if (adapter == null) {
+                        adapter = new FlashcardAdapter(new ArrayList<>(cards), f -> {
+                            CriaFlashcardFragment fragment = new CriaFlashcardFragment();
+                            Bundle args = new Bundle();
+                            args.putSerializable("flashcard_editar", f);
+                            fragment.setArguments(args);
+                            getParentFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, fragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        });
+                    } else {
+                        adapter.setFlashcards(new ArrayList<>(cards));
+                    }
+                    
+                    if (recycler.getAdapter() == null) {
+                        recycler.setAdapter(adapter);
+                    }
                 });
             }
         });

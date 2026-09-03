@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -95,7 +94,7 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
                 listaAnotacoes.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, listaAnotacoes.size());
-                Toast.makeText(view.getContext(), "Anotação excluída", Toast.LENGTH_SHORT).show();
+                com.google.android.material.snackbar.Snackbar.make(view, "Anotação excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             });
         });
     }
@@ -103,6 +102,38 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
     @Override
     public int getItemCount() {
         return listaAnotacoes.size();
+    }
+
+    public void setAnotacoes(List<Anotacao> novasAnotacoes) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return listaAnotacoes.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return novasAnotacoes.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return listaAnotacoes.get(oldItemPosition).id == novasAnotacoes.get(newItemPosition).id;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Anotacao old = listaAnotacoes.get(oldItemPosition);
+                Anotacao nova = novasAnotacoes.get(newItemPosition);
+                return old.titulo.equals(nova.titulo) && 
+                       old.dataUltimaEdicao == nova.dataUltimaEdicao &&
+                       (old.conteudoHtml != null ? old.conteudoHtml.equals(nova.conteudoHtml) : nova.conteudoHtml == null);
+            }
+        });
+
+        listaAnotacoes.clear();
+        listaAnotacoes.addAll(novasAnotacoes);
+        result.dispatchUpdatesTo(this);
     }
 
     static class AnotacaoViewHolder extends RecyclerView.ViewHolder {
