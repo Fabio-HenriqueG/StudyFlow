@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Anotacao;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
@@ -207,7 +208,7 @@ public class ConfiguracoesFragment extends Fragment {
     }
 
     private void confirmarLimpeza() {
-        new AlertDialog.Builder(getContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Limpar Tudo")
                 .setMessage("Isso apagará permanentemente todos os seus dados. Continuar?")
                 .setPositiveButton("Sim", (d, w) -> {

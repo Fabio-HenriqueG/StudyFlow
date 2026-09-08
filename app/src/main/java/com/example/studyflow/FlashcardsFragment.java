@@ -11,13 +11,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Materia;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * Fragmento que exibe a lista de Matérias/Decks de Flashcards.
+ */
 public class FlashcardsFragment extends Fragment {
 
     private RecyclerView recycler;
+
+    public FlashcardsFragment() {
+        // Required empty public constructor
+    }
 
     @Nullable
     @Override
@@ -43,25 +49,26 @@ public class FlashcardsFragment extends Fragment {
         carregarMaterias();
     }
 
-
     private void carregarMaterias() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Materia> materias = AppDatabase.getInstance(getContext()).materiaDao().buscarTodas();
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    MateriaAdapter adapter = new MateriaAdapter(materias, m -> {
-                        FlashcardListaFragment fragment = new FlashcardListaFragment();
-                        Bundle args = new Bundle();
-                        args.putSerializable("materia", m);
-                        fragment.setArguments(args);
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .addToBackStack(null)
-                                .commit();
-                    });
+                    MateriaAdapter adapter = new MateriaAdapter(materias, this::abrirMateria);
                     recycler.setAdapter(adapter);
                 });
             }
         });
+    }
+
+    private void abrirMateria(Materia m) {
+        FlashcardListaFragment fragment = new FlashcardListaFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("materia", m);
+        fragment.setArguments(args);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

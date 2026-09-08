@@ -16,7 +16,9 @@ public class NotificacaoMensagens {
     public static final String TAREFA_DIA_HOJE = "Hoje é o dia: Não esqueça de concluir '%s'.";
 
     // METAS
+    public static final String META_TITULO_DIARIO = "Metas Diárias";
     public static final String META_LEMBRETE_DIARIO = "Lembrete de Meta: Você já cumpriu sua meta '%s' hoje?";
+    public static final String META_LEMBRETE_GERAL = "Você já cumpriu suas metas hoje? Não esqueça de confirmar!";
 
     // CHECKLISTS
     public static final String CHECKLIST_PENDENTE_24H = "Itens Pendentes: Sua lista '%s' tem itens abertos há mais de 24h.";

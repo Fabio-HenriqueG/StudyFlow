@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,11 +52,13 @@ public class EditorAnotacaoFragment extends Fragment {
     private View containerEditor;
     private Anotacao anotacaoExistente = null;
     private DesenhoView desenhoView;
-    private View layoutOpcoesFerramenta, btnConcluirDesenho;
+    private View layoutOpcoesFerramenta, btnConcluirDesenho, layoutMenusSuperiores;
+    private com.google.android.material.button.MaterialButton btnToggleMenus;
     private View btnFerramentas;
     private boolean modoDesenhoAtivo = false;
     private boolean modoBorrachaAtivo = false;
     private boolean isModoNavegacao = false;
+    private boolean isMenusOcultos = false;
     private float lastX, lastY;
 
     private final ActivityResultLauncher<String> pdfExportLauncher =
@@ -204,6 +207,12 @@ public class EditorAnotacaoFragment extends Fragment {
         ImageButton btnSalvar = view.findViewById(R.id.btnSalvarNota);
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltarEditor);
         btnFerramentas = view.findViewById(R.id.btnAbrirFerramentas);
+        layoutMenusSuperiores = view.findViewById(R.id.layoutMenusSuperiores);
+        btnToggleMenus = view.findViewById(R.id.btnToggleMenus);
+
+        if (btnToggleMenus != null) {
+            btnToggleMenus.setOnClickListener(v -> toggleMenusSuperiores());
+        }
 
         if (getArguments() != null) {
             anotacaoExistente = (Anotacao) getArguments().getSerializable("anotacao");
@@ -297,7 +306,7 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void iniciarExportacao() {
         String[] opcoes = {"Exportar como PDF", "Exportar como PNG"};
-        new AlertDialog.Builder(getContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Escolha o formato")
                 .setItems(opcoes, (dialog, which) -> {
                     String nomeSugerido = "Anotacao_" + System.currentTimeMillis();
@@ -404,7 +413,7 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void mostrarDialogoCorForma(ShapeDrawableHelper.ShapeType type, boolean filled) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Cor da Forma");
         
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_shape, null);
@@ -468,7 +477,7 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void mostrarDialogoStickers() {
         String[] emojis = {"📌", "❓", "✅", "💡", "⭐", "🔥", "📚", "🎯"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Escolha um Sticker");
         builder.setItems(emojis, (dialog, which) -> adicionarStickerAoCanvas(emojis[which]));
         builder.show();
@@ -488,12 +497,13 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void mostrarDialogoNovoTexto() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Novo Texto");
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_text_custom, null);
         EditText input = dialogView.findViewById(R.id.editTextoDialog);
         SeekBar barSize = dialogView.findViewById(R.id.seekBarTamanhoTexto);
+        EditText editSize = dialogView.findViewById(R.id.editTamanhoTexto);
         SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIris);
         LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresTexto);
         
@@ -501,11 +511,46 @@ public class EditorAnotacaoFragment extends Fragment {
         configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
         adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
 
+        // Sync SeekBar and EditText for size
+        barSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) editSize.setText(String.valueOf(progress + 12));
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        editSize.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                try {
+                    int val = Integer.parseInt(s.toString());
+                    if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
+                } catch (Exception ignored) {}
+            }
+        });
+
+        editSize.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                try {
+                    int val = Integer.parseInt(s.toString());
+                    if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
+                } catch (Exception ignored) {}
+            }
+        });
+
         builder.setView(dialogView);
         builder.setPositiveButton("Adicionar", (dialog, which) -> {
             String texto = input.getText().toString();
+            int tamanho = 24;
+            try { tamanho = Integer.parseInt(editSize.getText().toString()); } catch (Exception ignored) {}
+            
             if (!texto.isEmpty()) {
-                adicionarTextoAoCanvas(texto, corSelecionada[0], barSize.getProgress() + 12);
+                adicionarTextoAoCanvas(texto, corSelecionada[0], tamanho);
             }
         });
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
@@ -517,7 +562,13 @@ public class EditorAnotacaoFragment extends Fragment {
         textView.setText(texto);
         textView.setTextSize(tamanho);
         textView.setTextColor(cor);
-        textView.setPadding(20, 20, 20, 20);
+        textView.setPadding(24, 24, 24, 24);
+        
+        // Aplica a fonte Quicksand Bold para ficar mais moderno
+        try {
+            textView.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(requireContext(), R.font.quicksand_bold));
+        } catch (Exception ignored) {}
+
         textView.setOnTouchListener(new MultiTouchListener(getContext()));
         textView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(textView); return true; });
         
@@ -536,33 +587,69 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void mostrarDialogoEditarTexto(TextView textView) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Editar Texto");
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_text_custom, null);
         EditText input = dialogView.findViewById(R.id.editTextoDialog);
         SeekBar barSize = dialogView.findViewById(R.id.seekBarTamanhoTexto);
+        EditText editSize = dialogView.findViewById(R.id.editTamanhoTexto);
         SeekBar rainbowBar = dialogView.findViewById(R.id.seekBarCorArcoIris);
         LinearLayout layoutCores = dialogView.findViewById(R.id.layoutCoresTexto);
 
         input.setText(textView.getText().toString());
-        barSize.setProgress((int) textView.getTextSize() - 12);
+        
+        // Recupera o tamanho em SP do metadado JSON salvo na Tag
+        int currentSizeSp = 24;
+        String tag = textView.getTag() != null ? textView.getTag().toString() : "";
+        if (tag.startsWith("{")) {
+            try {
+                JSONObject meta = new JSONObject(tag);
+                currentSizeSp = meta.optInt("size", 24);
+            } catch (Exception ignored) {}
+        }
+        
+        barSize.setProgress(Math.max(0, currentSizeSp - 12));
+        editSize.setText(String.valueOf(currentSizeSp));
         
         final int[] corSelecionada = {textView.getCurrentTextColor()};
         configurarSeekBarArcoIris(rainbowBar, cor -> corSelecionada[0] = cor);
         adicionarSelecaoDeCores(layoutCores, cor -> corSelecionada[0] = cor);
 
+        barSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) editSize.setText(String.valueOf(progress + 12));
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        editSize.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                try {
+                    int val = Integer.parseInt(s.toString());
+                    if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
+                } catch (Exception ignored) {}
+            }
+        });
+
         builder.setView(dialogView);
         builder.setPositiveButton("Salvar", (dialog, which) -> {
+            int novoTamanho = 24;
+            try { novoTamanho = Integer.parseInt(editSize.getText().toString()); } catch (Exception ignored) {}
+
             textView.setText(input.getText().toString());
             textView.setTextColor(corSelecionada[0]);
-            textView.setTextSize(barSize.getProgress() + 12);
+            textView.setTextSize(novoTamanho);
             
             JSONObject meta = new JSONObject();
             try {
                 meta.put("type", "text");
                 meta.put("color", corSelecionada[0]);
-                meta.put("size", barSize.getProgress() + 12);
+                meta.put("size", novoTamanho);
             } catch (Exception ignored) {}
             textView.setTag(meta.toString());
         });
@@ -571,14 +658,28 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void adicionarSelecaoDeCores(LinearLayout layout, ColorSelectionListener listener) {
-        int[] cores = {Color.BLACK, Color.RED, Color.BLUE, Color.GREEN, Color.GRAY, Color.MAGENTA};
+        int[] cores = {
+            Color.BLACK, 
+            Color.parseColor("#F44336"), // Red
+            Color.parseColor("#2196F3"), // Blue
+            Color.parseColor("#4CAF50"), // Green
+            Color.parseColor("#FF9800"), // Orange
+            Color.parseColor("#9C27B0"), // Purple
+            Color.parseColor("#00BCD4")  // Cyan
+        };
         for (int cor : cores) {
-            View v = new View(getContext());
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(60, 60);
-            p.setMargins(8, 0, 8, 0); v.setLayoutParams(p);
-            v.setBackgroundColor(cor);
-            v.setOnClickListener(view -> listener.onColorSelected(cor));
-            layout.addView(v);
+            com.google.android.material.card.MaterialCardView card = new com.google.android.material.card.MaterialCardView(getContext());
+            int size = (int) (40 * getResources().getDisplayMetrics().density);
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(size, size);
+            p.setMargins(12, 12, 12, 12); 
+            card.setLayoutParams(p);
+            card.setCardBackgroundColor(cor);
+            card.setRadius(size / 2f);
+            card.setStrokeWidth(0);
+            card.setClickable(true);
+            card.setFocusable(true);
+            card.setOnClickListener(view -> listener.onColorSelected(cor));
+            layout.addView(card);
         }
     }
 
@@ -608,6 +709,16 @@ public class EditorAnotacaoFragment extends Fragment {
         void onColorSelected(int color);
     }
 
+
+    private void toggleMenusSuperiores() {
+        isMenusOcultos = !isMenusOcultos;
+        if (layoutMenusSuperiores != null) {
+            layoutMenusSuperiores.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
+        }
+        if (btnToggleMenus != null) {
+            btnToggleMenus.setIconResource(isMenusOcultos ? android.R.drawable.arrow_down_float : android.R.drawable.arrow_up_float);
+        }
+    }
 
     private void toggleModoNavegacao() {
         isModoNavegacao = !isModoNavegacao;
@@ -646,19 +757,27 @@ public class EditorAnotacaoFragment extends Fragment {
         modoBorrachaAtivo = isBorracha;
         desenhoView.setDrawingEnabled(true);
         desenhoView.setBorracha(isBorracha);
+        
+        // Oculta barras superiores para maximizar espaço de desenho
+        if (layoutMenusSuperiores != null) layoutMenusSuperiores.setVisibility(View.GONE);
+        if (btnToggleMenus != null) btnToggleMenus.setVisibility(View.GONE);
+
         if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.VISIBLE);
         if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.VISIBLE);
         atualizarHighlightBotoes();
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        esconderTeclado();
     }
 
     private void desativarModoDesenho() {
         modoDesenhoAtivo = false;
         desenhoView.setDrawingEnabled(false);
+        
+        // Restaura barras superiores conforme o estado do toggle
+        if (layoutMenusSuperiores != null) {
+            layoutMenusSuperiores.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
+        }
+        if (btnToggleMenus != null) btnToggleMenus.setVisibility(View.VISIBLE);
+
         if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.GONE);
         if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.GONE);
         atualizarHighlightBotoes();
@@ -841,7 +960,7 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void mostrarDialogoTrocarCorForma(View shapeView) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Trocar Cor da Forma");
         
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_shape, null);

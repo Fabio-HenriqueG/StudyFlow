@@ -145,7 +145,7 @@ public class CriaTarefaFragment extends Fragment {
                 NotificacaoScheduler.cancelarNotificacoesTarefa(appContext, tarefaEmEdicao.id);
                 NotificacaoScheduler.agendarNotificacoesTarefa(appContext, tarefaEmEdicao);
                 
-                finalizarEDarFeedback(appContext, "Tarefa atualizada com sucesso!");
+                finalizarEDarFeedback(appContext, getString(R.string.tarefa_atualizada_sucesso));
             });
         } else {
             Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, 1, prioridade, insistencia);
@@ -160,7 +160,7 @@ public class CriaTarefaFragment extends Fragment {
                 // Agendamento Inteligente
                 NotificacaoScheduler.agendarNotificacoesTarefa(appContext, novaTarefa);
 
-                finalizarEDarFeedback(appContext, "Tarefa salva com sucesso!");
+                finalizarEDarFeedback(appContext, getString(R.string.tarefa_salva_sucesso));
             });
         }
     }

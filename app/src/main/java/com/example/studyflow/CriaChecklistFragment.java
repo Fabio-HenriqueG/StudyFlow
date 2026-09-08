@@ -76,7 +76,17 @@ public class CriaChecklistFragment extends Fragment {
                 .setSelection(dataSelecionada > 0 ? dataSelecionada : MaterialDatePicker.todayInUtcMilliseconds())
                 .build();
         picker.addOnPositiveButtonClickListener(selection -> {
-            dataSelecionada = selection;
+            // MaterialDatePicker retorna a data em UTC. 
+            // Precisamos ajustar para o fuso horário local para não mostrar o dia anterior.
+            java.util.Calendar utcCal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
+            utcCal.setTimeInMillis(selection);
+            
+            java.util.Calendar localCal = java.util.Calendar.getInstance();
+            localCal.set(utcCal.get(java.util.Calendar.YEAR), 
+                        utcCal.get(java.util.Calendar.MONTH), 
+                        utcCal.get(java.util.Calendar.DAY_OF_MONTH), 23, 59, 59); // Final do dia local
+            
+            dataSelecionada = localCal.getTimeInMillis();
             atualizarBotaoData();
         });
         picker.show(getParentFragmentManager(), "DATE_PICKER");

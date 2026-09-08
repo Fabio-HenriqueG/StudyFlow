@@ -2,17 +2,15 @@ package com.example.studyflow;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Tarefa;
@@ -22,59 +20,21 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TarefasFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento que exibe a lista de todas as tarefas ativas do usuário.
  */
 public class TarefasFragment extends Fragment {
 
     private RecyclerView recyclerTarefas;
     private View txtEmptyState;
     private TarefaAdapter adapter;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public TarefasFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TarefasFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TarefasFragment newInstance(String param1, String param2) {
-        TarefasFragment fragment = new TarefasFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tarefas, container, false);
 
         ImageButton btnVoltar = view.findViewById(R.id.btn_voltar);
@@ -82,7 +42,6 @@ public class TarefasFragment extends Fragment {
         ImageButton btnHistorico = view.findViewById(R.id.btn_historico);
 
         btnVoltar.setOnClickListener(v -> {
-            // Volta para o fragmento anterior se existir na pilha, ou volta para Home
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
             } else {
@@ -106,24 +65,20 @@ public class TarefasFragment extends Fragment {
                     .commit();
         });
 
-
         return view;
-
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // 1. Vincula o componente Java ao ID do RecyclerView que você colocou no XML
         recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
         txtEmptyState = view.findViewById(R.id.txtEmptyTarefas);
-
         configurarSwipe();
     }
 
     private void configurarSwipe() {
         new androidx.recyclerview.widget.ItemTouchHelper(new androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(0, 
-                androidx.recyclerview.widget.ItemTouchHelper.LEFT | androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
+                androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
@@ -135,10 +90,7 @@ public class TarefasFragment extends Fragment {
                 if (adapter != null && position != RecyclerView.NO_POSITION) {
                     if (direction == androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
                         adapter.concluirTarefa(position, getContext());
-                        mostrarFeedback("Tarefa concluída!");
-                    } else {
-                        adapter.removerTarefa(position, getContext());
-                        mostrarFeedback("Tarefa excluída");
+                        mostrarFeedback(getString(R.string.tarefa_concluida));
                     }
                 }
             }
@@ -152,23 +104,17 @@ public class TarefasFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // 2. Toda vez que o usuário abrir o app ou voltar da tela de criação, atualiza a lista
         carregarTarefasDoBanco();
     }
 
     private void carregarTarefasDoBanco() {
-        // Capturamos o contexto antes de abrir a Thread para ser seguro
         Context context = getContext();
         if (context == null) return;
         Context appContext = context.getApplicationContext();
 
-        // 3. Busca no banco em segundo plano (Thread separada) para o app não travar
         Executors.newSingleThreadExecutor().execute(() -> {
-
-            // Puxa a lista de tarefas do Room usando o contexto seguro
             List<Tarefa> listaDoBanco = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
 
-            // 4. Volta para a Main Thread (linha principal) para desenhar na tela do celular
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (adapter == null) {
@@ -182,12 +128,10 @@ public class TarefasFragment extends Fragment {
                         adapter.setTarefas(new ArrayList<>(listaDoBanco));
                     }
                     
-                    // Garante que o adapter esteja sempre conectado ao RecyclerView (importante após recriação da view)
                     if (recyclerTarefas.getAdapter() == null) {
                         recyclerTarefas.setAdapter(adapter);
                     }
 
-                    // Atualiza visibilidade do estado vazio
                     if (txtEmptyState != null) {
                         txtEmptyState.setVisibility(listaDoBanco.isEmpty() ? View.VISIBLE : View.GONE);
                     }

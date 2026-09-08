@@ -83,19 +83,6 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         }
         holder.viewPrioridade.setBackgroundColor(cor);
 
-        // Configura o botão "Concluir" direto no card
-        if (modoHistorico) {
-            holder.btnConcluir.setVisibility(View.GONE);
-        } else {
-            holder.btnConcluir.setVisibility(View.VISIBLE);
-            holder.btnConcluir.setOnClickListener(v -> {
-                int pos = holder.getBindingAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    concluirTarefa(v, tarefa, pos);
-                }
-            });
-        }
-
         // Configura o botão de opções
         holder.btnOpcoes.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -123,46 +110,6 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             popup.show();
         });
     }
-
-    private void concluirTarefa(View view, Tarefa tarefa, int position) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Context context = view.getContext();
-            AppDatabase db = AppDatabase.getInstance(context);
-            
-            if (tarefa.prioridade == 0) {
-                // Baixa Prioridade: Deleta na hora
-                db.tarefaDao().excluir(tarefa);
-            } else {
-                // Média ou Alta: Vai para o histórico
-                tarefa.concluida = true;
-                tarefa.dataConclusao = System.currentTimeMillis();
-                db.tarefaDao().atualizar(tarefa);
-            }
-
-            // Cancela notificações agendadas
-            NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
-
-            // Registra a atividade no histórico (materiaId = 0 para geral)
-            ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.id, 0);
-
-            view.post(() -> {
-                if (position < listaTarefas.size()) {
-                    listaTarefas.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, listaTarefas.size());
-                    
-                    // Notifica o Fragment sobre a mudança para atualizar o EmptyState se necessário
-                    if (onDataChangedListener != null) {
-                        onDataChangedListener.onDataChanged(listaTarefas.size());
-                    }
-                    
-                    String msg = tarefa.prioridade == 0 ? "Tarefa concluída e removida!" : "Tarefa movida para o histórico!";
-                    com.google.android.material.snackbar.Snackbar.make(view, msg, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                }
-            });
-        });
-    }
-
 
     private void abrirEdicao(View view, Tarefa tarefa) {
         // Cria o fragmento de criação/edição e passa a tarefa
@@ -291,7 +238,6 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         TextView textTitulo, textDescricao, textData;
         View viewPrioridade;
         ImageButton btnOpcoes;
-        View btnConcluir;
 
         public TarefaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -300,7 +246,6 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             textData = itemView.findViewById(R.id.text_item_data);
             viewPrioridade = itemView.findViewById(R.id.view_prioridade);
             btnOpcoes = itemView.findViewById(R.id.btn_opcoes_tarefa);
-            btnConcluir = itemView.findViewById(R.id.btn_concluir_tarefa);
         }
     }
 

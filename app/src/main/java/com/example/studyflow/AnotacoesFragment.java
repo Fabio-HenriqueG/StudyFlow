@@ -1,9 +1,6 @@
 package com.example.studyflow;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,55 +26,17 @@ public class AnotacoesFragment extends Fragment {
     private RecyclerView recyclerAnotacoes;
     private AnotacaoAdapter adapter;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public AnotacoesFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AnotacoesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AnotacoesFragment newInstance(String param1, String param2) {
-        AnotacoesFragment fragment = new AnotacoesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_anotacoes, container, false);
 
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltar);
         btnVoltar.setOnClickListener(v -> {
-            // Volta para o fragmento anterior se existir na pilha, ou volta para Home
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
             } else {
@@ -88,20 +47,15 @@ public class AnotacoesFragment extends Fragment {
         });
 
         recyclerAnotacoes = view.findViewById(R.id.recyclerAnotacoes);
-
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Recarrega a lista sempre que voltamos para esta tela
         carregarAnotacoes();
     }
 
-    /**
-     * Busca as anotações no banco de dados Room.
-     */
     private void carregarAnotacoes() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Anotacao> lista = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
@@ -109,10 +63,7 @@ public class AnotacoesFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (adapter == null) {
-                        // Configura o Adapter com o clique para abrir o editor e lista mutável
-                        adapter = new AnotacaoAdapter(new ArrayList<>(lista), anotacao -> {
-                            abrirEditor(anotacao);
-                        });
+                        adapter = new AnotacaoAdapter(new ArrayList<>(lista), this::abrirEditor);
                     } else {
                         adapter.setAnotacoes(new ArrayList<>(lista));
                     }
@@ -125,9 +76,6 @@ public class AnotacoesFragment extends Fragment {
         });
     }
 
-    /**
-     * Abre o fragmento do editor enviando a anotação selecionada.
-     */
     private void abrirEditor(Anotacao anotacao) {
         Fragment fragment;
         if (anotacao != null && anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
@@ -147,5 +95,4 @@ public class AnotacoesFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
 }

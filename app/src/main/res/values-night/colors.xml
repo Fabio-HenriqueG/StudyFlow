@@ -7,6 +7,26 @@
 
     <!-- Azul StudyFlow adaptado ao Dark Mode -->
     <color name="studyflow_blue">#B8C4FF</color>
+    <color name="azul_secundario">#B8C4FF</color>
+
+    <!-- Cores básicas -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Cor principal -->
+    <color name="primary">#B8C4FF</color>
+    <color name="onPrimary">#001A6B</color>
+    <color name="primaryContainer">#002B9A</color>
+    <color name="onPrimaryContainer">#DDE1FF</color>
+
+    <!-- Cor secundária -->
+    <color name="secondary">#C1C5DD</color>
+    <color name="onSecondary">#2B3042</color>
+    <color name="secondaryContainer">#414659</color>
+    <color name="onSecondaryContainer">#DDE1F9</color>
+
+    <!-- Indicador de Navegação -->
+    <color name="nav_indicador">#414659</color>
 
     <!-- Fundo principal -->
     <color name="background">#232222</color>

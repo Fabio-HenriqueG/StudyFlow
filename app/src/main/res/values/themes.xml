@@ -23,6 +23,26 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Dialogs -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+
+        <!-- Shape Appearances -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.StudyFlow.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.StudyFlow.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.StudyFlow.Large</item>
+    </style>
+
+    <style name="ShapeAppearance.StudyFlow.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeAppearance.StudyFlow.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.StudyFlow.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">24dp</item>
     </style>
 
     <style name="Theme.StudyFlow" parent="Base.Theme.StudyFlow" />
@@ -47,5 +67,9 @@
 
     <style name="ThemeOverlay.App.BottomNav" parent="">
         <item name="colorSecondaryContainer">@color/nav_indicador</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.StudyFlow.Large</item>
     </style>
 </resources>

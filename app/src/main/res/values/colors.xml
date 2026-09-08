@@ -7,6 +7,26 @@
 
     <!-- Cores originais StudyFlow -->
     <color name="studyflow_blue">#2F52E0</color>
+    <color name="azul_secundario">#2F52E0</color>
+
+    <!-- Cores básicas -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Cor principal -->
+    <color name="primary">#2F52E0</color>
+    <color name="onPrimary">#FAFAFF</color>
+    <color name="primaryContainer">#E0E2FF</color>
+    <color name="onPrimaryContainer">#000B61</color>
+
+    <!-- Cor secundária -->
+    <color name="secondary">#595D72</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="secondaryContainer">#DDE1F9</color>
+    <color name="onSecondaryContainer">#161B2C</color>
+
+    <!-- Indicador de Navegação -->
+    <color name="nav_indicador">#DDE1F9</color>
 
     <!-- Fundo principal -->
     <color name="background">#F4F6FC</color>

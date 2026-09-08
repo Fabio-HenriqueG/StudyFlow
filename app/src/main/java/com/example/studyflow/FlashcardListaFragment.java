@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * Fragmento que exibe a lista de Flashcards de uma matéria específica.
+ */
 public class FlashcardListaFragment extends Fragment {
 
     private RecyclerView recycler;
@@ -63,16 +66,7 @@ public class FlashcardListaFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (adapter == null) {
-                        adapter = new FlashcardAdapter(new ArrayList<>(cards), f -> {
-                            CriaFlashcardFragment fragment = new CriaFlashcardFragment();
-                            Bundle args = new Bundle();
-                            args.putSerializable("flashcard_editar", f);
-                            fragment.setArguments(args);
-                            getParentFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, fragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        });
+                        adapter = new FlashcardAdapter(new ArrayList<>(cards), this::abrirEdicao);
                     } else {
                         adapter.setFlashcards(new ArrayList<>(cards));
                     }
@@ -83,5 +77,16 @@ public class FlashcardListaFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void abrirEdicao(Flashcard f) {
+        CriaFlashcardFragment fragment = new CriaFlashcardFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("flashcard_editar", f);
+        fragment.setArguments(args);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

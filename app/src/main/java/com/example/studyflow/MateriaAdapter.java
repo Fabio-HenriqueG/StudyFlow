@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
 import com.example.studyflow.data.Materia;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -67,7 +68,7 @@ public class MateriaAdapter extends RecyclerView.Adapter<MateriaAdapter.MateriaV
     }
 
     private void confirmarExclusaoMateria(View v, Materia m, int pos) {
-        new android.app.AlertDialog.Builder(v.getContext())
+        new MaterialAlertDialogBuilder(v.getContext())
                 .setTitle("Excluir Seção")
                 .setMessage("Isso apagará a seção '" + m.nome + "' e TODOS os flashcards dentro dela. Continuar?")
                 .setPositiveButton("Sim", (d, w) -> {

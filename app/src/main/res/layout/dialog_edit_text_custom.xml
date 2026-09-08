@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/shape_fundo"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <!-- CAMPO DE TEXTO -->
 
@@ -13,15 +12,15 @@
         android:id="@+id/editTextoDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="100dp"
+        android:minHeight="120dp"
         android:background="@drawable/shape_edit_text"
-        android:fontFamily="@font/quicksand_regular"
+        android:fontFamily="@font/quicksand_bold"
         android:hint="Escreva algo..."
-        android:textColor="@color/surface"
+        android:textColor="@color/onSurface"
         android:textColorHint="@color/onSurfaceVariant"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:gravity="top|start"
-        android:padding="16dp"
+        android:padding="20dp"
         android:inputType="textMultiLine|textCapSentences"
         android:minLines="1"
         android:maxLines="6"
@@ -52,18 +51,11 @@
         <SeekBar
             android:id="@+id/seekBarTamanhoTexto"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-
-            android:max="99"
-            android:progress="11"
-
-            android:progressDrawable="@drawable/seekbar_progress"
-            android:thumb="@drawable/seekbar_thumb"
-
-            android:splitTrack="false"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
+            android:max="100"
+            android:progress="24"
+            android:splitTrack="false" />
 
 
         <!-- Caixa para escolher valor exato -->

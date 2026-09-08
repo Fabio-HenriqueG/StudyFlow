@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     destino = vazio ? new CriaMetaFragment() : new MetasFragment();
                 } else if (itemId == R.id.nav_checklist) {
                     vazio = db.checklistDao().contarTodas() == 0;
-                    destino = vazio ? new CriaChecklistFragment() : new CheckListFragment();
+                    destino = vazio ? new CriaChecklistFragment() : new ChecklistFragment();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (!isFinishing() && !isDestroyed()) {
                     if (isVazio) {
-                        Toast.makeText(this, "Nenhum item criado.\nVamos criar!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.nenhum_item_criado, Toast.LENGTH_SHORT).show();
                     }
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction()

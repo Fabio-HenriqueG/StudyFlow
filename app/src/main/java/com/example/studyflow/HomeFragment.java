@@ -273,7 +273,9 @@ public class HomeFragment extends Fragment {
                                 if (paraRevisar > 0) {
                                     cardRevisaoFlashcards.setVisibility(View.VISIBLE);
                                     if (cardEmptyFlashcards != null) cardEmptyFlashcards.setVisibility(View.GONE);
-                                    if (txtFlashcardsCount != null) txtFlashcardsCount.setText("Você tem " + paraRevisar + " cartões para estudar.");
+                                    if (txtFlashcardsCount != null) {
+                                        txtFlashcardsCount.setText(getString(R.string.flashcards_estudar_count, paraRevisar));
+                                    }
                                 } else {
                                     cardRevisaoFlashcards.setVisibility(View.GONE);
                                     if (cardEmptyFlashcards != null) cardEmptyFlashcards.setVisibility(View.VISIBLE);

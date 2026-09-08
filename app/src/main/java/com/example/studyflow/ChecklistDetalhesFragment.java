@@ -1,6 +1,5 @@
 package com.example.studyflow;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,24 +8,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Checklist;
 import com.example.studyflow.data.ChecklistItem;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * Fragmento que exibe os itens de um Checklist específico.
+ */
 public class ChecklistDetalhesFragment extends Fragment {
 
     private Checklist checklist;
     private RecyclerView recyclerView;
     private ChecklistItemsAdapter adapter;
-    private List<ChecklistItem> listaItens = new ArrayList<>();
+    private final List<ChecklistItem> listaItens = new ArrayList<>();
     private EditText editNovoItem;
     private ChecklistItem itemEmEdicao = null;
 
@@ -88,7 +93,7 @@ public class ChecklistDetalhesFragment extends Fragment {
     private void resetarLista() {
         if (checklist == null) return;
         
-        new AlertDialog.Builder(getContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Reiniciar Lista")
                 .setMessage("Deseja desmarcar todos os itens desta lista?")
                 .setPositiveButton("Sim", (d, w) -> {
@@ -97,7 +102,7 @@ public class ChecklistDetalhesFragment extends Fragment {
                             item.isChecked = false;
                             AppDatabase.getInstance(getContext()).checklistDao().atualizarItem(item);
                         }
-                        getActivity().runOnUiThread(() -> carregarItens());
+                        getActivity().runOnUiThread(this::carregarItens);
                     });
                 })
                 .setNegativeButton("Não", null)

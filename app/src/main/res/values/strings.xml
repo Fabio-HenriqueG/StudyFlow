@@ -23,4 +23,19 @@
     <string name="tarefas_do_dia">Tarefas do dia:</string>
     <string name="historico">Histórico</string>
     <string name="historico_tarefas">Histórico de Tarefas</string>
+    <string name="nada_pendente">Nada pendente! Que tal planejar seu dia?</string>
+    <string name="nenhuma_tarefa">Nenhuma tarefa pendente</string>
+    <string name="flashcards_estudar_count">Você tem %1$d cartões para estudar.</string>
+    <string name="tudo_revisado">Tudo revisado! Crie novos cartões para estudar.</string>
+    <string name="use_caderno">Use o caderno livre para suas ideias!</string>
+    <string name="crie_meta">Crie uma meta para manter o foco!</string>
+    <string name="tarefa_salva_sucesso">Tarefa salva com sucesso!</string>
+    <string name="tarefa_atualizada_sucesso">Tarefa atualizada com sucesso!</string>
+    <string name="tarefa_excluida">Tarefa excluída</string>
+    <string name="tarefa_concluida">Tarefa concluída!</string>
+    <string name="meta_atualizada">Meta atualizada!</string>
+    <string name="meta_iniciada">Meta iniciada!</string>
+    <string name="flashcard_atualizado">Flashcard atualizado!</string>
+    <string name="flashcard_criado">Flashcard criado!</string>
+    <string name="nenhum_item_criado">Nenhum item criado.\nVamos criar!</string>
 </resources>

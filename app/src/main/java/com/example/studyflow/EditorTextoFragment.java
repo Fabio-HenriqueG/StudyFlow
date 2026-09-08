@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.concurrent.Executors;
 
@@ -130,7 +131,7 @@ public class EditorTextoFragment extends Fragment {
 
     private void mostrarDialogoCor(View v) {
         // Podemos reaproveitar o diálogo de cores do EditorAnotacaoFragment ou criar um simplificado
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Escolha a Cor");
         
         LayoutInflater inflater = getLayoutInflater();

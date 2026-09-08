@@ -81,9 +81,9 @@ public class CriaMetaFragment extends Fragment {
                 AppDatabase.getInstance(getContext()).metaDao().atualizar(metaEmEdicao);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        View root = getView();
+                        View root = getActivity().findViewById(android.R.id.content);
                         if (root != null) {
-                            com.google.android.material.snackbar.Snackbar.make(root, "Meta atualizada!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                            com.google.android.material.snackbar.Snackbar.make(root, R.string.meta_atualizada, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                         }
                         voltarOuHome();
                     });
@@ -95,9 +95,9 @@ public class CriaMetaFragment extends Fragment {
                 AppDatabase.getInstance(getContext()).metaDao().inserir(novaMeta);
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        View root = getView();
+                        View root = getActivity().findViewById(android.R.id.content);
                         if (root != null) {
-                            com.google.android.material.snackbar.Snackbar.make(root, "Meta iniciada!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                            com.google.android.material.snackbar.Snackbar.make(root, R.string.meta_iniciada, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                         }
                         voltarOuHome();
                     });

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     android:layout_marginHorizontal="16dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="?attr/colorSurfaceVariant"
@@ -89,21 +89,6 @@
                 android:alpha="0.7"
                 android:textColor="@color/onSurfaceVariant"
                 android:textSize="14sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_concluir_tarefa"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="12dp"
-                android:text="Concluir"
-                android:fontFamily="@font/quicksand_bold"
-
-                android:textColor="@color/onsurface_baixa"
-                app:backgroundTint="@color/primary_baixa"
-                app:icon="@drawable/ic_check"
-                app:iconTint="@color/onsurface_baixa" />
 
         </LinearLayout>
     </LinearLayout>

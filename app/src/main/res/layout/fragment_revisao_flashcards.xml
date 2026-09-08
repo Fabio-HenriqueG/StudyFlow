@@ -168,7 +168,7 @@
             android:text="Errei"
             android:textColor="#F44336"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="12dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDificil"
@@ -180,7 +180,7 @@
             android:text="Difícil"
             android:textColor="#FF9800"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="12dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBom"
@@ -192,7 +192,7 @@
             android:text="Bom"
             android:textColor="#4CAF50"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="12dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFacil"
@@ -204,7 +204,7 @@
             android:text="Fácil"
             android:textColor="#2196F3"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="12dp" />
     </LinearLayout>
 
 

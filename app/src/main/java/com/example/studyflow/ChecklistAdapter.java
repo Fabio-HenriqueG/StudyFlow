@@ -25,6 +25,15 @@ import java.util.concurrent.Executors;
 public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.ChecklistViewHolder> {
 
     private final List<Checklist> listaChecklists;
+    private OnDataChangedListener listener;
+
+    public interface OnDataChangedListener {
+        void onDataChanged();
+    }
+
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+        this.listener = listener;
+    }
 
     public ChecklistAdapter(List<Checklist> listaChecklists) {
         this.listaChecklists = listaChecklists;
@@ -124,7 +133,14 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
             if (view.getContext() instanceof AppCompatActivity) {
                 ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
                     com.google.android.material.snackbar.Snackbar.make(view, checklist.isPinned ? "Fixado" : "Desafixado", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                    // O Fragment deve recarregar para aplicar a nova ordenação
+                    
+                    // Notifica mudança individual primeiro para feedback visual imediato (ícone)
+                    notifyItemChanged(position);
+                    
+                    // Notifica o Fragment para recarregar e re-ordenar (opcional dependendo da fluidez desejada)
+                    if (listener != null) {
+                        listener.onDataChanged();
+                    }
                 });
             }
         });
@@ -154,6 +170,11 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
                     listaChecklists.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaChecklists.size());
+                    
+                    if (listener != null) {
+                        listener.onDataChanged();
+                    }
+                    
                     com.google.android.material.snackbar.Snackbar.make(view, "Checklist excluído", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                 });
             }

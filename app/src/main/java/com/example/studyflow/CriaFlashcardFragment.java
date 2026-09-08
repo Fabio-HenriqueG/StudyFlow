@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
 import com.example.studyflow.data.Materia;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -94,7 +95,7 @@ public class CriaFlashcardFragment extends Fragment {
     }
 
     private void mostrarDialogoNovaMateria() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Nova Seção / Matéria");
         
         final EditText input = new EditText(getContext());
@@ -143,13 +144,13 @@ public class CriaFlashcardFragment extends Fragment {
             
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(getContext()).flashcardDao().atualizar(flashcardEdicao);
-                finalizar("Flashcard atualizado!");
+                finalizar(getString(R.string.flashcard_atualizado));
             });
         } else {
             Flashcard flashcard = new Flashcard(pergunta, resposta, explicacao, materiaSelecionada.id);
             Executors.newSingleThreadExecutor().execute(() -> {
                 AppDatabase.getInstance(getContext()).flashcardDao().inserir(flashcard);
-                finalizar("Flashcard criado!");
+                finalizar(getString(R.string.flashcard_criado));
             });
         }
     }
@@ -157,7 +158,10 @@ public class CriaFlashcardFragment extends Fragment {
     private void finalizar(String msg) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                View root = getActivity().findViewById(android.R.id.content);
+                if (root != null) {
+                    com.google.android.material.snackbar.Snackbar.make(root, msg, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                }
                 getParentFragmentManager().popBackStack();
             });
         }

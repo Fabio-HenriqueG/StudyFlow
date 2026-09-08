@@ -125,8 +125,8 @@ public class NotificacaoScheduler {
                 .putInt("id", 999) // ID fixo para o lembrete diário
                 .putString("tipo", "META")
                 .putString("channel", NotificacaoHelper.CHANNEL_METAS)
-                .putString("titulo", "Metas Diárias")
-                .putString("mensagem", "Você já cumpriu suas metas hoje? Não esqueça de confirmar!")
+                .putString("titulo", NotificacaoMensagens.META_TITULO_DIARIO)
+                .putString("mensagem", NotificacaoMensagens.META_LEMBRETE_GERAL)
                 .build();
 
         OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificacaoWorker.class)
