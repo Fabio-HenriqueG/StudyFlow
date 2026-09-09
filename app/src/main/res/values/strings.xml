@@ -38,4 +38,8 @@
     <string name="flashcard_atualizado">Flashcard atualizado!</string>
     <string name="flashcard_criado">Flashcard criado!</string>
     <string name="nenhum_item_criado">Nenhum item criado.\nVamos criar!</string>
+    <string name="font_size_value">%1$dsp</string>
+    <string name="silence_start_label">Início: %1$s</string>
+    <string name="silence_end_label">Fim: %1$s</string>
+    <string name="goal_reset_label">Horário de Reset: %1$s</string>
 </resources>

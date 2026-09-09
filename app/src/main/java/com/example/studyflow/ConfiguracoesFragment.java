@@ -1,6 +1,5 @@
 package com.example.studyflow;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -61,7 +60,7 @@ public class ConfiguracoesFragment extends Fragment {
                     imgPerfil.setImageURI(uri);
                     // Persiste permissão persistente se necessário, mas para Uri de mídia costuma ser temporária
                     // Idealmente salvaríamos o arquivo internamente, mas seguindo o requisito de salvar o path:
-                    getContext().getContentResolver().takePersistableUriPermission(uri, 
+                    requireContext().getContentResolver().takePersistableUriPermission(uri, 
                         android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
             });
@@ -99,7 +98,7 @@ public class ConfiguracoesFragment extends Fragment {
         prefs = requireContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
 
         // Configura Spinner de Estilo
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), 
                 android.R.layout.simple_spinner_item, new String[]{"BLANK", "GRID", "LINES", "DOTTED"});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEstilo.setAdapter(adapter);
@@ -108,7 +107,7 @@ public class ConfiguracoesFragment extends Fragment {
         seekBarFonte.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFonteValor.setText(progress + "sp");
+                txtFonteValor.setText(getString(R.string.font_size_value, progress));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -148,7 +147,7 @@ public class ConfiguracoesFragment extends Fragment {
                 .build();
 
         picker.addOnPositiveButtonClickListener(v -> {
-            String time = String.format("%02d:%02d", picker.getHour(), picker.getMinute());
+            String time = String.format(java.util.Locale.getDefault(), "%02d:%02d", picker.getHour(), picker.getMinute());
             btn.setText(btn.getText().toString().split(":")[0] + ": " + time);
             prefs.edit().putString(key, time).apply();
         });
@@ -170,11 +169,11 @@ public class ConfiguracoesFragment extends Fragment {
         else toggleTema.check(R.id.btnTemaSistema);
 
         String estilo = prefs.getString("notebook_style", "GRID");
-        spinnerEstilo.setSelection(((ArrayAdapter)spinnerEstilo.getAdapter()).getPosition(estilo));
+        spinnerEstilo.setSelection(((ArrayAdapter<String>)spinnerEstilo.getAdapter()).getPosition(estilo));
 
         int fontSize = prefs.getInt("default_font_size", 24);
         seekBarFonte.setProgress(fontSize);
-        txtFonteValor.setText(fontSize + "sp");
+        txtFonteValor.setText(getString(R.string.font_size_value, fontSize));
 
         switchNotificacoes.setChecked(prefs.getBoolean("notifications_enabled", true));
         switchSom.setChecked(prefs.getBoolean("notification_sound", true));
@@ -211,16 +210,14 @@ public class ConfiguracoesFragment extends Fragment {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Limpar Tudo")
                 .setMessage("Isso apagará permanentemente todos os seus dados. Continuar?")
-                .setPositiveButton("Sim", (d, w) -> {
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        AppDatabase.getInstance(getContext()).clearAllTables();
-                        prefs.edit().clear().apply();
-                        getActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), "Dados limpos!", Toast.LENGTH_SHORT).show();
-                            getActivity().recreate();
-                        });
+                .setPositiveButton("Sim", (d, w) -> Executors.newSingleThreadExecutor().execute(() -> {
+                    AppDatabase.getInstance(requireContext()).clearAllTables();
+                    prefs.edit().clear().apply();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), "Dados limpos!", Toast.LENGTH_SHORT).show();
+                        requireActivity().recreate();
                     });
-                })
+                }))
                 .setNegativeButton("Não", null)
                 .show();
     }
@@ -228,7 +225,7 @@ public class ConfiguracoesFragment extends Fragment {
     private void exportarParaUri(Uri uri) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                List<Anotacao> anotacoes = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
+                List<Anotacao> anotacoes = AppDatabase.getInstance(requireContext()).anotacaoDao().buscarTodas();
                 JSONArray array = new JSONArray();
                 for (Anotacao a : anotacoes) {
                     JSONObject obj = new JSONObject();
@@ -238,13 +235,15 @@ public class ConfiguracoesFragment extends Fragment {
                     array.put(obj);
                 }
                 
-                OutputStream os = getContext().getContentResolver().openOutputStream(uri);
-                os.write(array.toString(4).getBytes());
-                os.close();
+                OutputStream os = requireContext().getContentResolver().openOutputStream(uri);
+                if (os != null) {
+                    os.write(array.toString(4).getBytes());
+                    os.close();
+                }
                 
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Dados exportados!", Toast.LENGTH_SHORT).show());
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Dados exportados!", Toast.LENGTH_SHORT).show());
             } catch (Exception e) {
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Erro ao exportar", Toast.LENGTH_SHORT).show());
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Erro ao exportar", Toast.LENGTH_SHORT).show());
             }
         });
     }
