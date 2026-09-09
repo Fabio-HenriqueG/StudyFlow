@@ -76,7 +76,7 @@ public class NotificacaoHelper {
      */
     public static void enviarNotificacao(Context context, int id, String channelId, String titulo, String mensagem, PendingIntent intent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(android.R.drawable.ic_dialog_info) // Ícone padrão do sistema
+                .setSmallIcon(R.mipmap.ic_launcher) // Usa o ícone do app
                 .setContentTitle(titulo)
                 .setContentText(mensagem)
                 .setAutoCancel(true)

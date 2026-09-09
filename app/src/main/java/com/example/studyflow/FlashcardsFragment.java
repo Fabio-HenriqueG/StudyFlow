@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +51,12 @@ public class FlashcardsFragment extends Fragment {
     }
 
     private void carregarMaterias() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Materia> materias = AppDatabase.getInstance(getContext()).materiaDao().buscarTodas();
+            List<Materia> materias = AppDatabase.getInstance(appContext).materiaDao().buscarTodas();
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     MateriaAdapter adapter = new MateriaAdapter(materias, this::abrirMateria);

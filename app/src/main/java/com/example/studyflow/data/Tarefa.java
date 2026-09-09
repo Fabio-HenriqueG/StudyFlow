@@ -13,7 +13,6 @@ public class Tarefa implements Serializable {
     public String titulo;
     public String descricao;
     public long dataLimite; // Guardaremos a data e hora em milissegundos (padrão do java)
-    public int frequencia;
     
     // Armazena o timestamp (tempo) da última vez que o app mandou uma notificação para esta tarefa.
     // Isso evita que o app mande várias notificações ao mesmo tempo ou muito rápido.
@@ -30,11 +29,10 @@ public class Tarefa implements Serializable {
     public long dataConclusao; // Para controle de deleção automática
 
     //Construtor: É assim que o Java vai criar o objeto antes de mandar pro banco
-    public Tarefa(String titulo, String descricao, long dataLimite, int frequencia, int prioridade, int insistencia){
+    public Tarefa(String titulo, String descricao, long dataLimite, int prioridade, int insistencia){
         this.titulo = titulo;
         this.descricao = descricao;
         this.dataLimite = dataLimite;
-        this.frequencia = frequencia;
         this.prioridade = prioridade;
         this.insistencia = insistencia;
         this.ultimoAlerta = 0; 

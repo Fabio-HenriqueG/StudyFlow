@@ -73,6 +73,15 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
         }
         holder.textData.setText(dataFormatada);
 
+        // Intensidade
+        String intensidadeTxt;
+        switch (tarefa.insistencia) {
+            case 0: intensidadeTxt = "• Focada"; break;
+            case 2: intensidadeTxt = "• Intensa"; break;
+            default: intensidadeTxt = "• Padrão"; break;
+        }
+        holder.textIntensidade.setText(intensidadeTxt);
+
         // Cores de Prioridade
         int cor;
         Context context = holder.itemView.getContext();
@@ -235,7 +244,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
     // Minha "Caixa de ferramentas": Segura as variáveis do XML de uma linha só
     static class TarefaViewHolder extends RecyclerView.ViewHolder {
-        TextView textTitulo, textDescricao, textData;
+        TextView textTitulo, textDescricao, textData, textIntensidade;
         View viewPrioridade;
         ImageButton btnOpcoes;
 
@@ -244,6 +253,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             textTitulo = itemView.findViewById(R.id.text_item_titulo);
             textDescricao = itemView.findViewById(R.id.text_item_descricao);
             textData = itemView.findViewById(R.id.text_item_data);
+            textIntensidade = itemView.findViewById(R.id.text_item_intensidade);
             viewPrioridade = itemView.findViewById(R.id.view_prioridade);
             btnOpcoes = itemView.findViewById(R.id.btn_opcoes_tarefa);
         }

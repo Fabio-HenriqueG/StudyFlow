@@ -10,6 +10,9 @@ public class NotificacaoMensagens {
     public static final String TAREFA_ATENCAO_7_DIAS = "Atenção: Falta apenas 1 semana para o prazo de '%s'.";
 
     // TAREFAS - Reta Final
+    public static final String TAREFA_CONFIRMACAO_TITULO = "Tarefa Salva";
+    public static final String TAREFA_CONFIRMACAO_MSG = "Lembretes configurados para '%s'.";
+    public static final String TAREFA_DIA_HOJE_TITULO = "Lembrete de Hoje";
     public static final String TAREFA_ALTA_PLANEJAMENTO = "Planejamento: Amanhã é o dia final para '%s'. Organize-se!";
     public static final String TAREFA_URGENTE_1H = "URGENTE: '%s' vence em 1 hora!";
     public static final String TAREFA_URGENTE_2H = "Lembrete: Faltam 2 horas para o prazo de '%s'.";

@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +58,12 @@ public class AnotacoesFragment extends Fragment {
     }
 
     private void carregarAnotacoes() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Anotacao> lista = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
+            List<Anotacao> lista = AppDatabase.getInstance(appContext).anotacaoDao().buscarTodas();
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {

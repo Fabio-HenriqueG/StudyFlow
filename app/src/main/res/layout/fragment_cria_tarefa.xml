@@ -124,6 +124,64 @@
                 android:textColor="@color/white" />
         </com.google.android.material.chip.ChipGroup>
 
+        <LinearLayout
+            android:id="@+id/layoutLabelIntensidade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridade">
+
+            <TextView
+                android:id="@+id/textViewIntensidade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Intensidade de Alertas:"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnInfoIntensidade"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_help"
+                app:tint="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupIntensidade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:layout_constraintTop_toBottomOf="@+id/layoutLabelIntensidade">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFocada"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Focada" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPadrao"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Padrão" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipIntensa"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Intensa" />
+        </com.google.android.material.chip.ChipGroup>
+
         <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
@@ -133,7 +191,7 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridade" />
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupIntensidade" />
 
 
 

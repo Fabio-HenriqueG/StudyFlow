@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +58,12 @@ public class ChecklistFragment extends Fragment {
     }
 
     private void carregarChecklists() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Checklist> listas = AppDatabase.getInstance(getContext()).checklistDao().buscarTodas();
+            List<Checklist> listas = AppDatabase.getInstance(appContext).checklistDao().buscarTodas();
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {

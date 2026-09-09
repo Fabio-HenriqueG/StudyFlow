@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -36,6 +37,16 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
 
     private NavigationBarView navView;
+
+    // Launcher para pedido de permissão (deve ser declarado como campo da classe)
+    private final androidx.activity.result.ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Log.d("MainActivity", "Permissão de notificação concedida.");
+                } else {
+                    Toast.makeText(this, "As notificações estão desativadas. Você pode perder prazos importantes!", Toast.LENGTH_LONG).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +93,12 @@ public class MainActivity extends AppCompatActivity {
         
         tratarIntentNotificacao(getIntent());
 
-        agendarVerificadorTarefas();
-        NotificacaoScheduler.agendarLembreteMetas(this);
+        try {
+            agendarVerificadorTarefas();
+            NotificacaoScheduler.agendarLembreteMetas(this);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Erro ao agendar tarefas iniciais", e);
+        }
         
         processarLimpezaTarefas();
     }
@@ -220,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     private void pedirPermissaoNotificacao() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {}).launch(Manifest.permission.POST_NOTIFICATIONS);
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
     }

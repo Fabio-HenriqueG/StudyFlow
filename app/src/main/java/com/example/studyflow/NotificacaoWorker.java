@@ -55,9 +55,10 @@ public class NotificacaoWorker extends Worker {
 
     private Result processarNotificacaoAgendada(Context context, int id, String tipo, String channel, String titulo, String mensagem) {
         SharedPreferences prefs = context.getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
+        int referenciaId = getInputData().getInt("referenciaId", id);
         
         if ("TAREFA".equals(tipo)) {
-            Tarefa t = AppDatabase.getInstance(context).tarefaDao().buscarPorId(id);
+            Tarefa t = AppDatabase.getInstance(context).tarefaDao().buscarPorId(referenciaId);
             if (t == null || t.concluida) return Result.success();
         } else if ("META".equals(tipo) && id == 999) {
             // Lembrete diário inteligente às 19:30 - Agenda para amanhã

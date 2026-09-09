@@ -158,8 +158,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void carregarStreak() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            int streak = ProdutividadeManager.calcularStreak(getContext());
+            int streak = ProdutividadeManager.calcularStreak(appContext);
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (txtStreakCount != null) txtStreakCount.setText(String.valueOf(streak));
@@ -171,8 +175,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void carregarStatusTarefas() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Tarefa> tarefas = AppDatabase.getInstance(getContext()).tarefaDao().buscarAtivas();
+            List<Tarefa> tarefas = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
             int atrasadas = 0, pendentes = 0;
             long agora = System.currentTimeMillis();
 
@@ -196,8 +204,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void carregarMetasHome() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Meta> metas = AppDatabase.getInstance(getContext()).metaDao().buscarTodas();
+            List<Meta> metas = AppDatabase.getInstance(appContext).metaDao().buscarTodas();
             Collections.sort(metas, (m1, m2) -> Long.compare(m1.dataCriacao, m2.dataCriacao));
             
             countMetas = metas.size();
@@ -221,8 +233,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void carregarAnotacoesHome() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Anotacao> anotacoes = AppDatabase.getInstance(getContext()).anotacaoDao().buscarTodas();
+            List<Anotacao> anotacoes = AppDatabase.getInstance(appContext).anotacaoDao().buscarTodas();
             
             countAnotacoes = anotacoes.size();
 
@@ -257,10 +273,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void carregarFlashcardsHome() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
             long hoje = System.currentTimeMillis();
-            int total = AppDatabase.getInstance(getContext()).flashcardDao().buscarTodos().size();
-            int paraRevisar = AppDatabase.getInstance(getContext()).flashcardDao().contarParaRevisarHoje(hoje);
+            int total = AppDatabase.getInstance(appContext).flashcardDao().buscarTodos().size();
+            int paraRevisar = AppDatabase.getInstance(appContext).flashcardDao().contarParaRevisarHoje(hoje);
             
             countFlashcards = total;
 

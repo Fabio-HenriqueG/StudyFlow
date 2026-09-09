@@ -1,5 +1,6 @@
 package com.example.studyflow;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,8 +62,12 @@ public class MetasFragment extends Fragment {
     }
 
     private void carregarMetas() {
+        Context context = getContext();
+        if (context == null) return;
+        Context appContext = context.getApplicationContext();
+
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Meta> lista = AppDatabase.getInstance(getContext()).metaDao().buscarTodas();
+            List<Meta> lista = AppDatabase.getInstance(appContext).metaDao().buscarTodas();
             
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
