@@ -1,126 +1,320 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface"
-    android:padding="16dp">
 
-    <ImageButton
-        android:id="@+id/btn_voltar_calendario"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/shape_fundo"
-        android:src="@drawable/seta_voltar"
-        android:contentDescription="@string/voltar"
-        app:tint="?attr/colorOnSurface"
+    android:background="@color/background"
+
+    android:paddingStart="20dp"
+    android:paddingTop="22dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="0dp">
+
+
+    <!-- ===================================================== -->
+    <!-- CABEÇALHO -->
+    <!-- ===================================================== -->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardVoltarCalendario"
+
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+
+        android:clickable="true"
+        android:focusable="true"
+
+        android:foreground="?attr/selectableItemBackground"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageButton
+            android:id="@+id/btn_voltar_calendario"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@android:color/transparent"
+
+            android:contentDescription="@string/voltar"
+
+            android:padding="11dp"
+
+            android:src="@drawable/seta_voltar"
+
+            app:tint="@color/primary" />
+
+    </com.google.android.material.card.MaterialCardView>
+
 
     <TextView
         android:id="@+id/lblCalendario"
-        android:layout_width="wrap_content"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+
+        android:layout_marginStart="12dp"
+
+        android:fontFamily="@font/poppins_semibold"
+
         android:text="@string/calendario_tarefas"
+
         android:textColor="@color/onSurface"
-        android:fontFamily="@font/quicksand_bold"
 
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_voltar_calendario"
-        app:layout_constraintStart_toEndOf="@+id/btn_voltar_calendario"
-        app:layout_constraintTop_toTopOf="@+id/btn_voltar_calendario" />
+        android:textSize="22sp"
 
-    <LinearLayout
-        android:id="@+id/layoutMonthHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/btn_voltar_calendario">
+        app:layout_constraintStart_toEndOf="@id/cardVoltarCalendario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cardVoltarCalendario"
+        app:layout_constraintBottom_toBottomOf="@id/cardVoltarCalendario" />
 
-        <ImageButton
-            android:id="@+id/btnPrevMonth"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/shape_fundo"
-            android:src="@drawable/ic_skip_forward"
-            app:tint="@color/onSurface" />
 
-        <TextView
-            android:id="@+id/txtCurrentMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:fontFamily="@font/quicksand_bold"
+    <!-- ===================================================== -->
+    <!-- NAVEGAÇÃO DO MÊS -->
+    <!-- ===================================================== -->
 
-            android:text="Agosto 2026"
-            android:textColor="@color/onSurface"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardMonthHeader"
 
-        <ImageButton
-            android:id="@+id/btnNextMonth"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/shape_fundo"
-            android:src="@drawable/ic_skip_back"
-            app:tint="@color/onSurface" />
-    </LinearLayout>
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+
+        android:layout_marginTop="24dp"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardVoltarCalendario">
+
+
+        <LinearLayout
+            android:id="@+id/layoutMonthHeader"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal"
+
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+
+            <ImageButton
+                android:id="@+id/btnPrevMonth"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
+                android:background="?attr/selectableItemBackgroundBorderless"
+
+                android:contentDescription="Mês anterior"
+
+                android:padding="11dp"
+
+                android:src="@drawable/ic_skip_forward"
+
+                app:tint="@color/primary" />
+
+
+            <TextView
+                android:id="@+id/txtCurrentMonth"
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+
+                android:fontFamily="@font/poppins_semibold"
+
+                android:gravity="center"
+
+                android:text="Agosto 2026"
+
+                android:textColor="@color/onSurface"
+
+                android:textSize="16sp" />
+
+
+            <ImageButton
+                android:id="@+id/btnNextMonth"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
+                android:background="?attr/selectableItemBackgroundBorderless"
+
+                android:contentDescription="Próximo mês"
+
+                android:padding="11dp"
+
+                android:src="@drawable/ic_skip_back"
+
+                app:tint="@color/primary" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- ===================================================== -->
+    <!-- DIAS DA SEMANA -->
+    <!-- ===================================================== -->
 
     <LinearLayout
         android:id="@+id/layoutDaysOfWeek"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/layoutMonthHeader">
 
-        <TextView style="@style/DayOfWeekStyle" android:text="D" />
-        <TextView style="@style/DayOfWeekStyle" android:text="S" />
-        <TextView style="@style/DayOfWeekStyle" android:text="T" />
-        <TextView style="@style/DayOfWeekStyle" android:text="Q" />
-        <TextView style="@style/DayOfWeekStyle" android:text="Q" />
-        <TextView style="@style/DayOfWeekStyle" android:text="S" />
-        <TextView style="@style/DayOfWeekStyle" android:text="S" />
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+
+        android:layout_marginTop="14dp"
+
+        android:gravity="center_vertical"
+
+        android:orientation="horizontal"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardMonthHeader">
+
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="D" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="S" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="T" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="Q" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="Q" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="S" />
+
+        <TextView
+            style="@style/DayOfWeekStyle"
+            android:text="S" />
+
     </LinearLayout>
+
+
+    <!-- ===================================================== -->
+    <!-- CALENDÁRIO -->
+    <!-- ===================================================== -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCalendarDays"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+
+        android:layout_marginTop="2dp"
+
+        android:clipToPadding="false"
+
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="7"
-        app:layout_constraintTop_toBottomOf="@+id/layoutDaysOfWeek" />
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutDaysOfWeek" />
+
+
+    <!-- ===================================================== -->
+    <!-- TAREFAS DO DIA -->
+    <!-- ===================================================== -->
 
     <TextView
         android:id="@+id/lblTarefasDia"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tarefas_do_dia"
-        android:textColor="@color/onSurface"
-        android:fontFamily="@font/quicksand_bold"
 
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:layout_marginTop="22dp"
+
+        android:fontFamily="@font/poppins_semibold"
+
+        android:text="@string/tarefas_do_dia"
+
+        android:textColor="@color/onSurface"
+
+        android:textSize="17sp"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerCalendarDays" />
+        app:layout_constraintTop_toBottomOf="@id/recyclerCalendarDays" />
+
+
+    <TextView
+        android:id="@+id/lblDescricaoTarefasDia"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="2dp"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:text="Veja seus compromissos para a data selecionada"
+
+        android:textColor="@color/onSurfaceVariant"
+
+        android:textSize="11sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblTarefasDia" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTarefasDia"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+
+        android:layout_marginTop="12dp"
+
+        android:clipToPadding="false"
+
+        android:paddingBottom="24dp"
+
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblDescricaoTarefasDia"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblTarefasDia"
+
         tools:listitem="@layout/item_tarefa" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

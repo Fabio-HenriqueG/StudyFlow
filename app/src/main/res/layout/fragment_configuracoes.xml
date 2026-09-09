@@ -1,380 +1,878 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+
+    android:background="@color/background"
+
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
 
-        <ImageButton
-            android:id="@+id/btnVoltarConfig"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/seta_voltar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="28dp">
+
+
+        <!-- ===================================================== -->
+        <!-- CABEÇALHO -->
+        <!-- ===================================================== -->
 
         <TextView
             android:id="@+id/lblTituloConfig"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Configurações"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btnVoltarConfig"
-            app:layout_constraintStart_toEndOf="@+id/btnVoltarConfig"
-            app:layout_constraintTop_toTopOf="@+id/btnVoltarConfig" />
 
-        <!-- Seção: Perfil -->
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Configurações"
+            android:textColor="@color/onSurface"
+            android:textSize="22sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/cardVoltarConfig"
+            app:layout_constraintEnd_toStartOf="@+id/cardVoltarConfig"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardVoltarConfig" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarConfig"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnVoltarConfig"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="Voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ===================================================== -->
+        <!-- PERFIL -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoPerfil"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="Perfil"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnVoltarConfig" />
+            app:layout_constraintTop_toBottomOf="@+id/cardVoltarConfig" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgPerfilConfig"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="16dp"
-            android:padding="2dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPerfilConfig"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblSecaoPerfil"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="2dp" />
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoPerfil">
 
-        <Button
-            android:id="@+id/btnAlterarFoto"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Alterar Foto"
-            app:layout_constraintBottom_toBottomOf="@+id/imgPerfilConfig"
-            app:layout_constraintStart_toEndOf="@+id/imgPerfilConfig"
-            app:layout_constraintTop_toTopOf="@+id/imgPerfilConfig" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutNomeUsuario"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Seu Nome"
-            app:layout_constraintTop_toBottomOf="@+id/imgPerfilConfig">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editNomeUsuario"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Seção: Aparência -->
+                android:padding="16dp">
+
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgPerfilConfig"
+
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+
+                    android:padding="2dp"
+
+                    android:scaleType="centerCrop"
+
+                    android:src="@drawable/ic_launcher_background"
+
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="2dp"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAlterarFoto"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAlterarFoto"
+
+                    style="@style/Widget.Material3.Button.TextButton"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+
+                    android:layout_marginStart="12dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+
+                    android:text="Alterar foto"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/imgPerfilConfig"
+                    app:layout_constraintStart_toEndOf="@+id/imgPerfilConfig"
+                    app:layout_constraintTop_toTopOf="@+id/imgPerfilConfig" />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutNomeUsuario"
+
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="16dp"
+
+                    android:hint="Seu nome"
+
+                    app:boxBackgroundColor="@color/edittext_surface"
+
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+
+                    app:hintTextColor="@color/onSurfaceVariant"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imgPerfilConfig">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editNomeUsuario"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+
+                        android:fontFamily="@font/poppins_regular"
+
+                        android:inputType="textPersonName"
+
+                        android:textColor="@color/onSurface"
+                        android:textSize="13sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ===================================================== -->
+        <!-- APARÊNCIA -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoAparencia"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="Aparência"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutNomeUsuario" />
+            app:layout_constraintTop_toBottomOf="@+id/cardPerfilConfig" />
+
 
         <TextView
             android:id="@+id/lblTema"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Tema do Aplicativo"
-            android:textColor="?attr/colorOnSurfaceVariant"
+
+            android:layout_marginTop="12dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:text="Tema do aplicativo"
+            android:textColor="@color/onSurface"
             android:textSize="12sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoAparencia" />
 
+
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleGroupTema"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblTema"
+
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+
+            android:layout_marginTop="8dp"
+
+            app:selectionRequired="true"
             app:singleSelection="true"
-            app:selectionRequired="true">
 
-            <Button
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTema">
+
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTemaClaro"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Claro" />
 
-            <Button
+                style="@style/Widget.Material3.Button.OutlinedButton"
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Claro"
+                android:textAllCaps="false"
+                android:textSize="11sp" />
+
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTemaEscuro"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Escuro" />
 
-            <Button
-                android:id="@+id/btnTemaSistema"
-                style="?attr/materialButtonOutlinedStyle"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Sistema" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Escuro"
+                android:textAllCaps="false"
+                android:textSize="11sp" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTemaSistema"
+
+                style="@style/Widget.Material3.Button.OutlinedButton"
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Sistema"
+                android:textAllCaps="false"
+                android:textSize="11sp" />
+
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+        <!-- ESTILO DO CADERNO -->
 
         <TextView
             android:id="@+id/lblEstiloCaderno"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Estilo do Caderno"
-            android:textColor="?attr/colorOnSurfaceVariant"
+
+            android:layout_marginTop="20dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:text="Estilo do caderno"
+            android:textColor="@color/onSurface"
             android:textSize="12sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggleGroupTema" />
 
+
         <Spinner
             android:id="@+id/spinnerEstiloCaderno"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
+
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+
+            android:layout_marginTop="6dp"
+
+            android:background="@drawable/shape_edit_text"
+
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+
+            android:popupBackground="@color/surfaceVariant"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblEstiloCaderno" />
+
+
+        <!-- TAMANHO DA FONTE -->
 
         <TextView
             android:id="@+id/lblTamanhoFonte"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Tamanho de Fonte Padrão"
-            android:textColor="?attr/colorOnSurfaceVariant"
+
+            android:layout_marginTop="20dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:text="Tamanho de fonte padrão"
+            android:textColor="@color/onSurface"
             android:textSize="12sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerEstiloCaderno" />
 
-        <SeekBar
-            android:id="@+id/seekBarFontSize"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:max="40"
-            android:min="12"
-            android:progress="24"
-            app:layout_constraintEnd_toStartOf="@+id/txtFontSizeValue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblTamanhoFonte" />
 
         <TextView
             android:id="@+id/txtFontSizeValue"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/seekBarFontSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekBarFontSize" />
 
-        <!-- Seção: Notificações -->
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="24sp"
+            android:textColor="@color/primary"
+            android:textSize="12sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/lblTamanhoFonte"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lblTamanhoFonte" />
+
+
+        <SeekBar
+            android:id="@+id/seekBarFontSize"
+
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+
+            android:layout_marginTop="4dp"
+
+            android:max="40"
+            android:min="12"
+            android:progress="24"
+
+            android:progressTint="@color/primary"
+            android:progressBackgroundTint="@color/primaryContainer"
+            android:thumbTint="@color/primary"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTamanhoFonte" />
+
+
+        <!-- ===================================================== -->
+        <!-- NOTIFICAÇÕES -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoNotificacoes"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="Notificações"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seekBarFontSize" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchNotificacoes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Ativar Alertas de Tarefas"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintTop_toBottomOf="@+id/lblSecaoNotificacoes" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchSom"
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardNotificacoesConfig"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Som"
-            app:layout_constraintTop_toBottomOf="@+id/switchNotificacoes" />
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoNotificacoes">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="10dp">
 
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchVibracao"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Vibração"
-            app:layout_constraintTop_toBottomOf="@+id/switchSom" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchNotificacoes"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Alertas de tarefas"
+                    android:textColor="@color/onSurface"
+                    android:textSize="12sp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+
+                    android:background="@color/outlineVariant" />
+
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchSom"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Som"
+                    android:textColor="@color/onSurface"
+                    android:textSize="12sp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+
+                    android:background="@color/outlineVariant" />
+
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchVibracao"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Vibração"
+                    android:textColor="@color/onSurface"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- HORÁRIO DE SILÊNCIO -->
 
         <TextView
             android:id="@+id/lblSilencio"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Horário de Silêncio"
-            android:textColor="?attr/colorOnSurfaceVariant"
+
+            android:layout_marginTop="18dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:text="Horário de silêncio"
+            android:textColor="@color/onSurface"
             android:textSize="12sp"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchVibracao" />
+            app:layout_constraintTop_toBottomOf="@+id/cardNotificacoesConfig" />
+
 
         <LinearLayout
             android:id="@+id/layoutHorarioSilencio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+
             android:layout_marginTop="8dp"
+
             android:orientation="horizontal"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblSilencio">
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSilencioInicio"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+
+                style="@style/Widget.Material3.Button.TonalButton"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+
                 android:layout_weight="1"
-                android:text="Início: 22:00" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Início: 22:00"
+                android:textAllCaps="false"
+                android:textColor="@color/onPrimaryContainer"
+                android:textSize="11sp"
+
+                app:backgroundTint="@color/primaryContainer"
+                app:cornerRadius="14dp" />
+
 
             <View
-                android:layout_width="16dp"
-                android:layout_height="0dp" />
+                android:layout_width="10dp"
+                android:layout_height="match_parent" />
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSilencioFim"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+
+                style="@style/Widget.Material3.Button.TonalButton"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+
                 android:layout_weight="1"
-                android:text="Fim: 07:00" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Fim: 07:00"
+                android:textAllCaps="false"
+                android:textColor="@color/onPrimaryContainer"
+                android:textSize="11sp"
+
+                app:backgroundTint="@color/primaryContainer"
+                app:cornerRadius="14dp" />
+
         </LinearLayout>
 
-        <!-- Seção: Metas -->
+
+        <!-- ===================================================== -->
+        <!-- METAS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoMetas"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="Metas"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutHorarioSilencio" />
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnResetMetas"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Horário de Reset: 00:00"
+
+            style="@style/Widget.Material3.Button.TonalButton"
+
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+
+            android:layout_marginTop="10dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:gravity="center_vertical"
+
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+
+            android:text="Horário de reset: 00:00"
+            android:textAllCaps="false"
+            android:textColor="@color/onPrimaryContainer"
+            android:textSize="12sp"
+
+            app:backgroundTint="@color/primaryContainer"
+            app:cornerRadius="14dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoMetas" />
 
-        <!-- Seção: Dados -->
+
+        <!-- ===================================================== -->
+        <!-- DADOS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoDados"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Gerenciamento de Dados"
-            android:textColor="?attr/colorPrimary"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Gerenciamento de dados"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnResetMetas" />
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnExportarDados"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Exportar Dados (JSON)"
-            android:textAlignment="viewStart"
+
+            style="@style/Widget.Material3.Button.TonalButton"
+
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+
+            android:layout_marginTop="10dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:gravity="center_vertical"
+
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+
+            android:text="Exportar dados (JSON)"
+            android:textAllCaps="false"
+            android:textColor="@color/onPrimaryContainer"
+            android:textSize="12sp"
+
+            app:backgroundTint="@color/primaryContainer"
+            app:cornerRadius="14dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblSecaoDados" />
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimparTudo"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Limpar Tudo (Reset de Fábrica)"
-            android:textAlignment="viewStart"
-            android:textColor="?attr/colorError"
+
+            style="@style/Widget.Material3.Button.TonalButton"
+
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+
+            android:layout_marginTop="8dp"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:gravity="center_vertical"
+
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+
+            android:text="Limpar tudo (Reset de fábrica)"
+            android:textAllCaps="false"
+            android:textColor="@color/error"
+            android:textSize="12sp"
+
+            app:backgroundTint="@color/atrasadasContainer"
+            app:cornerRadius="14dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnExportarDados" />
 
-        <!-- Seção: Sobre -->
+
+        <!-- ===================================================== -->
+        <!-- SOBRE -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblSecaoSobre"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="Sobre"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"
-            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnLimparTudo" />
 
-        <TextView
-            android:id="@+id/txtVersao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Versão 1.2"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblSecaoSobre" />
 
-        <TextView
-            android:id="@+id/txtCreditos"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSobreConfig"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Desenvolvido por Fábio, Bruno, Akin e Andrey"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtVersao" />
+            app:layout_constraintTop_toBottomOf="@+id/lblSecaoSobre">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+
+                android:padding="16dp">
+
+
+                <TextView
+                    android:id="@+id/txtVersao"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/poppins_semibold"
+
+                    android:text="StudyFlow • Versão 1.2"
+                    android:textColor="@color/onSurface"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:id="@+id/txtCreditos"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="4dp"
+
+                    android:fontFamily="@font/poppins_regular"
+
+                    android:text="Desenvolvido por Fábio, Bruno, Akin e Andrey"
+
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ===================================================== -->
+        <!-- SALVAR -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSalvarConfig"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="24dp"
-            android:padding="16dp"
-            android:text="Salvar Alterações"
-            app:cornerRadius="28dp"
+
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Salvar alterações"
+            android:textAllCaps="false"
+
+            android:textColor="@color/onPrimary"
+            android:textSize="13sp"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="16dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtCreditos" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardSobreConfig" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
 
+</ScrollView>

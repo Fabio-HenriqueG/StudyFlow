@@ -1,382 +1,935 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:fillViewport="true">
+
+    android:background="@color/background"
+    android:fillViewport="true"
+
+    tools:context=".DashboardFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
 
-        <ImageButton
-            android:id="@+id/btnVoltarDashboard"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/seta_voltar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="28dp">
+
+
+        <!-- ===================================================== -->
+        <!-- CABEÇALHO -->
+        <!-- ===================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarDashboard"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/btnVoltarDashboard"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="Voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <TextView
             android:id="@+id/lblTituloDashboard"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Dashboard Geral"
+
+            android:textColor="@color/onSurface"
+            android:textSize="22sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/cardVoltarDashboard"
+            app:layout_constraintEnd_toStartOf="@+id/cardVoltarDashboard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardVoltarDashboard" />
+
+
+        <TextView
+            android:id="@+id/lblDescricaoDashboard"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Acompanhe seu desempenho nos estudos"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="12sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTituloDashboard" />
+
+
+        <!-- ===================================================== -->
+        <!-- PERÍODO -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/lblPeriodoDashboard"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Dashboard Geral"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btnVoltarDashboard"
-            app:layout_constraintStart_toEndOf="@+id/btnVoltarDashboard"
-            app:layout_constraintTop_toTopOf="@+id/btnVoltarDashboard" />
 
-        <!-- SELETOR DE PERÍODO -->
+            android:layout_marginTop="26dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Período"
+
+            android:textColor="@color/primary"
+            android:textSize="13sp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblDescricaoDashboard" />
+
+
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleGroupPeriodo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblTituloDashboard"
+
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+
+            android:layout_marginTop="8dp"
+
+            app:selectionRequired="true"
             app:singleSelection="true"
-            app:selectionRequired="true">
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblPeriodoDashboard">
+
 
             <Button
                 android:id="@+id/btnPeriodoHoje"
+
                 style="?attr/materialButtonOutlinedStyle"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
+
                 android:layout_weight="1"
-                android:text="Hoje" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Hoje"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+
 
             <Button
                 android:id="@+id/btnPeriodoOntem"
+
                 style="?attr/materialButtonOutlinedStyle"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
+
                 android:layout_weight="1"
-                android:text="Ontem" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Ontem"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+
 
             <Button
                 android:id="@+id/btnPeriodoSemana"
+
                 style="?attr/materialButtonOutlinedStyle"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
+
                 android:layout_weight="1"
-                android:text="Semana" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Semana"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+
 
             <Button
                 android:id="@+id/btnPeriodoMes"
+
                 style="?attr/materialButtonOutlinedStyle"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
+
                 android:layout_weight="1"
-                android:text="Mês" />
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Mês"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <!-- SEÇÃO 1: ATIVIDADE GERAL (GRÁFICO) -->
+
+        <!-- ===================================================== -->
+        <!-- ATIVIDADE RECENTE -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblAtividadeGeral"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Atividade Recente (Últimos 7 dias)"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Atividade recente"
+
+            android:textColor="@color/onSurface"
+            android:textSize="17sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggleGroupPeriodo" />
 
+
+        <TextView
+            android:id="@+id/lblAtividadeDescricao"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="2dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Últimos 7 dias"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="10sp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblAtividadeGeral" />
+
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardGraficoAtividade"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="28dp"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
-            app:layout_constraintTop_toBottomOf="@+id/lblAtividadeGeral">
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblAtividadeDescricao">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
-                android:padding="20dp">
+
+                android:paddingStart="18dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="14dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Ritmo de estudos"
+
+                    android:textColor="@color/onSurface"
+                    android:textSize="12sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="2dp"
+
+                    android:fontFamily="@font/poppins_regular"
+
+                    android:text="Sua atividade ao longo da semana"
+
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="10sp" />
+
 
                 <LinearLayout
                     android:id="@+id/layoutCargaSemanaGeral"
+
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
+
+                    android:layout_marginTop="16dp"
+
                     android:gravity="bottom"
+
                     android:orientation="horizontal"
+
                     android:weightSum="7" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="8dp"
+
                     android:orientation="horizontal"
+
                     android:weightSum="7">
-                    <TextView style="@style/DayStatsLabel" android:text="D" />
-                    <TextView style="@style/DayStatsLabel" android:text="S" />
-                    <TextView style="@style/DayStatsLabel" android:text="T" />
-                    <TextView style="@style/DayStatsLabel" android:text="Q" />
-                    <TextView style="@style/DayStatsLabel" android:text="Q" />
-                    <TextView style="@style/DayStatsLabel" android:text="S" />
-                    <TextView style="@style/DayStatsLabel" android:text="S" />
+
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="D" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="S" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="T" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="Q" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="Q" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="S" />
+
+                    <TextView
+                        style="@style/DayStatsLabel"
+                        android:text="S" />
+
                 </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SEÇÃO 2: TAREFAS -->
+
+        <!-- ===================================================== -->
+        <!-- TAREFAS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblTarefasStats"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Tarefas Concluídas"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+
+            android:layout_marginTop="26dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Tarefas concluídas"
+
+            android:textColor="@color/onSurface"
+            android:textSize="17sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardGraficoAtividade" />
 
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTarefasStats"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="28dp"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblTarefasStats">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
-                android:padding="16dp">
+
+                android:padding="18dp">
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+
                     <TextView
                         android:id="@+id/txtCountTarefas"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
+                        android:fontFamily="@font/poppins_semibold"
+
                         android:text="0"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary" />
-                    <TextView
+
+                        android:textColor="@color/primary"
+                        android:textSize="30sp" />
+
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Total no período"
-                        android:textSize="12sp" />
+
+                        android:layout_marginStart="10dp"
+
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_medium"
+
+                            android:text="Tarefas"
+
+                            android:textColor="@color/onSurface"
+                            android:textSize="11sp" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_regular"
+
+                            android:text="Total no período"
+
+                            android:textColor="@color/onSurfaceVariant"
+                            android:textSize="9sp" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/layoutCargaTarefas"
+
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="64dp"
+
+                    android:layout_marginTop="14dp"
+
                     android:gravity="bottom"
+
                     android:orientation="horizontal"
+
                     android:weightSum="7" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SEÇÃO 3: METAS -->
+
+        <!-- ===================================================== -->
+        <!-- METAS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblMetasStats"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Metas Atualizadas"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+
+            android:layout_marginTop="26dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Metas atualizadas"
+
+            android:textColor="@color/onSurface"
+            android:textSize="17sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardTarefasStats" />
 
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardMetasStats"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="28dp"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surface_baixa"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+
+            app:strokeColor="@color/primary_baixa"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblMetasStats">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
-                android:padding="16dp">
+
+                android:padding="18dp">
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+
                     <TextView
                         android:id="@+id/txtCountMetas"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
+                        android:fontFamily="@font/poppins_semibold"
+
                         android:text="0"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:textColor="#4CAF50" />
-                    <TextView
+
+                        android:textColor="@color/primary_baixa"
+                        android:textSize="30sp" />
+
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Total no período"
-                        android:textSize="12sp" />
+
+                        android:layout_marginStart="10dp"
+
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_medium"
+
+                            android:text="Metas"
+
+                            android:textColor="@color/onsurface_baixa"
+                            android:textSize="11sp" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_regular"
+
+                            android:text="Total no período"
+
+                            android:textColor="@color/onsurface_baixa"
+                            android:textSize="9sp" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/layoutCargaMetas"
+
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="64dp"
+
+                    android:layout_marginTop="14dp"
+
                     android:gravity="bottom"
+
                     android:orientation="horizontal"
+
                     android:weightSum="7" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SEÇÃO 4: FLASHCARDS (UNIFICADO) -->
+
+        <!-- ===================================================== -->
+        <!-- FLASHCARDS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblFlashcardsStats"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Flashcards e Disciplinas"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+
+            android:layout_marginTop="26dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Flashcards e disciplinas"
+
+            android:textColor="@color/onSurface"
+            android:textSize="17sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardMetasStats" />
 
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardFlashcardsStats"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="28dp"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/primaryContainer"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblFlashcardsStats">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
-                android:padding="20dp">
+
+                android:padding="18dp">
+
+
+                <!-- CONTADOR -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+
+                        android:contentDescription="@null"
+
+                        android:padding="5dp"
+
+                        android:src="@drawable/ic_card"
+
+                        app:tint="@color/onPrimaryContainer" />
+
+
                     <TextView
                         android:id="@+id/txtCountFlashcards"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
+                        android:layout_marginStart="10dp"
+
+                        android:fontFamily="@font/poppins_semibold"
+
                         android:text="0"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:textColor="#9C27B0" />
-                    <TextView
+
+                        android:textColor="@color/onPrimaryContainer"
+                        android:textSize="30sp" />
+
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Cards Estudados"
-                        android:textSize="12sp" />
+
+                        android:layout_marginStart="10dp"
+
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_medium"
+
+                            android:text="Flashcards"
+
+                            android:textColor="@color/onPrimaryContainer"
+                            android:textSize="11sp" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/poppins_regular"
+
+                            android:text="Cards estudados"
+
+                            android:textColor="@color/onPrimaryContainer"
+                            android:textSize="9sp" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
+
+
+                <!-- DOMÍNIO -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Domínio Total"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
+
+                    android:layout_marginTop="20dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Domínio total"
+
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="12sp" />
+
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/progressGeralFlash"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:indicatorColor="?attr/colorPrimary"
-                    app:trackThickness="10dp"
-                    app:trackCornerRadius="5dp"
-                    android:progress="0" />
+
+                    android:layout_marginTop="10dp"
+
+                    android:progress="0"
+
+                    app:indicatorColor="@color/primary"
+
+                    app:trackColor="@color/surface"
+
+                    app:trackCornerRadius="4dp"
+                    app:trackThickness="8dp" />
+
 
                 <TextView
                     android:id="@+id/txtPercentualFlash"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+
                     android:layout_gravity="end"
+
+                    android:layout_marginTop="5dp"
+
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:text="0%"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorPrimary" />
+
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="11sp" />
+
+
+                <!-- MATÉRIAS -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Desempenho por Matéria"
-                    android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:alpha="0.7" />
+
+                    android:layout_marginTop="18dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Desempenho por matéria"
+
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="11sp" />
+
 
                 <LinearLayout
                     android:id="@+id/layoutMateriasDashboard"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="12dp"
+
                     android:orientation="vertical" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- TOTAL DE MATÉRIAS ESTUDADAS -->
+
+        <!-- ===================================================== -->
+        <!-- TOTAL DE MATÉRIAS -->
+        <!-- ===================================================== -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTotalMaterias"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+
+            android:layout_marginTop="16dp"
+
+            app:cardBackgroundColor="@color/secondaryContainer"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSecondaryContainer"
+
+            app:strokeWidth="0dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardFlashcardsStats">
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:gravity="center">
+
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal"
+
+                android:paddingStart="16dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="14dp">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+
+                    android:contentDescription="@null"
+
+                    android:src="@drawable/ic_card"
+
+                    app:tint="@color/onSecondaryContainer" />
+
+
                 <TextView
                     android:id="@+id/txtMateriasEstudadas"
-                    android:layout_width="wrap_content"
+
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+
+                    android:layout_marginStart="10dp"
+
+                    android:layout_weight="1"
+
+                    android:fontFamily="@font/poppins_medium"
+
                     android:text="Você focou em 0 disciplinas neste período."
-                    android:textColor="?attr/colorOnSecondaryContainer"
-                    android:textStyle="bold" />
+
+                    android:textColor="@color/onSecondaryContainer"
+                    android:textSize="11sp" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
+
+        <!-- ESPAÇO FINAL -->
+
         <View
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardTotalMaterias" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

@@ -13,14 +13,42 @@
     android:foreground="?attr/selectableItemBackground"
 
     app:cardBackgroundColor="@color/surfaceVariant"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="18dp">
+        android:padding="16dp">
+
+
+        <!-- Container do ícone -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/container_icon_meta"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+            app:cardBackgroundColor="@color/primaryContainer"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+
+                android:contentDescription="@null"
+                android:src="@drawable/ic_target"
+
+                app:tint="@color/onPrimaryContainer" />
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <!-- Título da meta -->
         <TextView
@@ -28,19 +56,20 @@
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
 
-            android:fontFamily="@font/quicksand_bold"
+            android:fontFamily="@font/poppins_semibold"
 
             android:text="Estudar Matemática"
-            android:textColor="@color/onSurfaceVariant"
-            android:textSize="16sp"
+            android:textColor="@color/onSurface"
+            android:textSize="14sp"
 
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="2"
 
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_icon_meta" />
 
 
         <!-- Informação de prazo -->
@@ -50,12 +79,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:fontFamily="@font/quicksand_regular"
+            android:fontFamily="@font/poppins_regular"
 
             android:text="3 dias restantes"
             android:textColor="@color/onSurfaceVariant"
-            android:textSize="12sp"
-            android:alpha="0.7"
+            android:textSize="11sp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />

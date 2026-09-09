@@ -1,138 +1,339 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
 
-    <!-- Barra de Topo -->
+    android:background="@color/background">
+
+
+    <!-- ===================================================== -->
+    <!-- BARRA SUPERIOR -->
+    <!-- ===================================================== -->
+
     <LinearLayout
         android:id="@+id/topBarTexto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
+
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+
         android:gravity="center_vertical"
-        android:background="?attr/colorSurface"
-        android:elevation="4dp"
+
+        android:orientation="horizontal"
+
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+
+        android:background="@color/background"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+
+        <!-- VOLTAR -->
 
         <ImageButton
             android:id="@+id/btnVoltarTexto"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            android:background="@drawable/bg_editor_icon_button"
+
+            android:contentDescription="Voltar"
+
+            android:padding="11dp"
+
             android:src="@drawable/seta_voltar"
-            app:tint="?attr/colorOnSurface" />
+
+            app:tint="@color/primary" />
+
+
+        <!-- TÍTULO -->
 
         <EditText
             android:id="@+id/editTituloTexto"
+
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
+
             android:background="@null"
-            android:hint="Título da Nota"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:hint="Título da nota"
+
+            android:inputType="textCapSentences"
+
+            android:maxLines="1"
+
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+
+            android:textColor="@color/onSurface"
+            android:textColorHint="@color/onSurfaceVariant"
+
+            android:textSize="18sp" />
+
+
+        <!-- SALVAR -->
 
         <ImageButton
             android:id="@+id/btnSalvarTexto"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            android:background="@drawable/bg_editor_save_button"
+
+            android:contentDescription="Salvar nota"
+
+            android:padding="11dp"
+
             android:src="@drawable/ic_check"
-            app:tint="?attr/colorPrimary" />
+
+            app:tint="@color/onPrimary" />
+
     </LinearLayout>
+
+
+    <!-- DIVISOR DO CABEÇALHO -->
+
+    <View
+        android:id="@+id/divisorEditor"
+
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+
+        android:background="@color/outlineVariant"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBarTexto" />
+
+
+    <!-- ===================================================== -->
+    <!-- ÁREA DE ESCRITA -->
+    <!-- ===================================================== -->
 
     <EditText
         android:id="@+id/editConteudoTexto"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:gravity="top"
-        android:hint="Comece a escrever..."
-        android:background="@null"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/topBarTexto"
-        app:layout_constraintBottom_toTopOf="@id/toolbarFormatacao"/>
 
-    <!-- Barra de Formatação (Movida para baixo) -->
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:background="@null"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:gravity="top|start"
+
+        android:hint="Comece a escrever..."
+
+        android:inputType="textMultiLine|textCapSentences"
+
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp"
+
+        android:scrollbars="vertical"
+
+        android:textColor="@color/onSurface"
+        android:textColorHint="@color/onSurfaceVariant"
+
+        android:textSize="16sp"
+
+        app:layout_constraintBottom_toTopOf="@+id/toolbarFormatacao"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divisorEditor" />
+
+
+    <!-- ===================================================== -->
+    <!-- BARRA DE FORMATAÇÃO -->
+    <!-- ===================================================== -->
+
     <HorizontalScrollView
         android:id="@+id/toolbarFormatacao"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceVariant"
-        android:padding="4dp"
-        android:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+
+        android:background="@drawable/bg_editor_toolbar"
+
+        android:clipToPadding="false"
+
+        android:fillViewport="false"
+
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+
+        android:scrollbars="none"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_height="match_parent"
+
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal">
+
+
+            <!-- NEGRITO -->
 
             <ImageButton
                 android:id="@+id/btnNegrito"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Negrito"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant" />
+
+                android:contentDescription="Negrito"
+
+                android:padding="10dp"
+
+                android:src="@drawable/ic_format_bold"
+
+                app:tint="@color/onSurface" />
+
+
+            <!-- ITÁLICO -->
 
             <ImageButton
                 android:id="@+id/btnItalico"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Itálico"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant" />
+
+                android:contentDescription="Itálico"
+
+                android:padding="10dp"
+
+                android:src="@drawable/ic_format_italic"
+
+                app:tint="@color/onSurface" />
+
+
+            <!-- SUBLINHADO -->
 
             <ImageButton
                 android:id="@+id/btnSublinhado"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Sublinhado"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant" />
+
+                android:contentDescription="Sublinhado"
+
+                android:padding="10dp"
+
+                android:src="@drawable/ic_format_underline"
+
+                app:tint="@color/onSurface" />
+
+
+            <!-- DIVISOR -->
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="24dp"
-                android:background="?attr/colorOutline"
-                android:layout_marginHorizontal="8dp" />
+
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+
+                android:background="@color/outlineVariant" />
+
+
+            <!-- COR DO TEXTO -->
 
             <ImageButton
                 android:id="@+id/btnCorTexto"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_compass"
-                android:contentDescription="Cor"
+
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant" />
+
+                android:contentDescription="Cor do texto"
+
+                android:padding="10dp"
+
+                android:src="@drawable/ic_format_color"
+
+                app:tint="@color/primary" />
+
+
+            <!-- DIVISOR -->
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="12dp"
+
+                android:background="@color/outlineVariant" />
+
+
+            <!-- TAMANHO -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tamanho:"
-                android:textSize="12sp"
-                android:layout_marginStart="8dp"/>
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Tamanho"
+
+                android:textColor="@color/onSurfaceVariant"
+
+                android:textSize="10sp" />
+
 
             <SeekBar
                 android:id="@+id/seekBarTamanhoFonte"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
+
+                android:layout_width="110dp"
+                android:layout_height="40dp"
+
+                android:layout_marginStart="6dp"
+
                 android:max="40"
-                android:progress="18" />
+                android:progress="18"
+
+                android:progressTint="@color/primary"
+
+                android:progressBackgroundTint="@color/primaryContainer"
+
+                android:thumbTint="@color/primary" />
+
 
         </LinearLayout>
-    </HorizontalScrollView>
 
+    </HorizontalScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

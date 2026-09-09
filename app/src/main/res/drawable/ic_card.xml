@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Carta da frente -->
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M12.65,7.65
+            A2,2 0,0 1,15.279,6.604
+            L20.789,8.978
+            A2,2 0,0 1,21.835,11.606
+            L17.878,20.79
+            A2,2 0,0 1,15.25,21.836
+            L9.74,19.462
+            A2,2 0,0 1,8.694,16.834
+            Z" />
+
+
+    <!-- Carta central -->
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M18,7.777
+            L18,4
+            A2,2 0,0 0,16,2
+            L10,2
+            A2,2 0,0 0,8,4
+            L8,14
+            A2,2 0,0 0,9.137,15.805" />
+
+
+    <!-- Carta de trás -->
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M8,4.389
+            L3.636,5.198
+            A2,2 0,0 0,2.034,7.528
+            L3.856,17.361
+            A2,2 0,0 0,6.187,18.963
+            L8.729,18.493" />
+
+</vector>

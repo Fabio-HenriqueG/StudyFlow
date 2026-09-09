@@ -1,107 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="8dp"
-    android:layout_marginHorizontal="16dp"
-    app:cardCornerRadius="20dp"
+
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+
+    app:cardBackgroundColor="@color/surfaceVariant"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorSurfaceVariant"
-    app:cardBackgroundColor="?attr/colorSurface">
+
+    app:strokeColor="@color/outlineVariant"
+    app:strokeWidth="1dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="horizontal">
+
+
+        <!-- FAIXA DE PRIORIDADE -->
 
         <View
             android:id="@+id/view_prioridade"
-            android:layout_width="6dp"
+
+            android:layout_width="5dp"
             android:layout_height="match_parent"
+
             android:background="@color/primary_baixa" />
 
+
+        <!-- CONTEÚDO -->
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+
             android:orientation="vertical"
-            android:padding="16dp">
+
+            android:paddingStart="14dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="14dp">
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <!-- TÍTULO + OPÇÕES -->
 
-            <TextView
-                android:id="@+id/text_item_titulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/layout_metadata"
-                android:text="Título da Tarefa"
-                android:fontFamily="@font/quicksand_bold"
-
-                android:textColor="@color/onSurface"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/layout_metadata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/text_item_data"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand_regular"
-                    android:alpha="0.7"
-                    android:text="01/07/2026"
-                    android:textColor="@color/onSurfaceVariant"
-                    android:textSize="12sp" />
+                    android:id="@+id/text_item_titulo"
 
-                <TextView
-                    android:id="@+id/text_item_intensidade"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:fontFamily="@font/quicksand_bold"
-                    android:alpha="0.7"
-                    android:text="• Padrão"
-                    android:textColor="@color/onSurfaceVariant"
-                    android:textSize="11sp" />
+
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+
+                    android:layout_toStartOf="@+id/btn_opcoes_tarefa"
+                    android:layout_marginEnd="8dp"
+
+                    android:ellipsize="end"
+                    android:maxLines="2"
+
+                    android:fontFamily="@font/poppins_semibold"
+
+                    android:text="Título da Tarefa"
+
+                    android:textColor="@color/onSurface"
+                    android:textSize="14sp" />
 
                 <ImageButton
                     android:id="@+id/btn_opcoes_tarefa"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginStart="8dp"
+
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+
                     android:background="?attr/selectableItemBackgroundBorderless"
+
                     android:contentDescription="Opções"
-                    android:padding="4dp"
+
+                    android:padding="8dp"
+
                     android:src="@drawable/ic_more_vert"
-                    app:tint="?attr/colorOnSurfaceVariant"/>
-            </LinearLayout>
-        </RelativeLayout>
+
+                    app:tint="@color/onSurfaceVariant" />
+
+            </RelativeLayout>
+
+
+            <!-- DESCRIÇÃO -->
 
             <TextView
                 android:id="@+id/text_item_descricao"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+
+                android:layout_marginTop="6dp"
+
+                android:ellipsize="end"
+                android:maxLines="2"
+
+                android:fontFamily="@font/poppins_regular"
+
                 android:text="Descrição ou lembrete da tarefa aqui..."
-                android:fontFamily="@font/quicksand_regular"
-                android:alpha="0.7"
+
                 android:textColor="@color/onSurfaceVariant"
-                android:textSize="14sp" />
+
+                android:textSize="12sp" />
+
+
+            <!-- METADADOS -->
+
+            <LinearLayout
+                android:id="@+id/layout_metadata"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="10dp"
+
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/text_item_data"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/poppins_regular"
+
+                    android:text="01/07/2026"
+
+                    android:textColor="@color/onSurfaceVariant"
+
+                    android:textSize="10sp" />
+
+
+                <TextView
+                    android:id="@+id/text_item_intensidade"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+
+                    android:background="@drawable/bg_prioridade_tarefa"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:paddingStart="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+
+                    android:text="Padrão"
+
+                    android:textColor="@color/onsurface_baixa"
+
+                    android:textSize="9sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
 
+        <!-- STATUS / CHECKBOX -->
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/check_tarefa_concluida"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+
+            app:buttonTint="@color/primary" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

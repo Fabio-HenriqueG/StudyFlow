@@ -6,18 +6,18 @@
          ========================= -->
 
     <!-- Azul StudyFlow adaptado ao Dark Mode -->
-    <color name="studyflow_blue">#B8C4FF</color>
-    <color name="azul_secundario">#B8C4FF</color>
+    <color name="studyflow_blue">#818CF8</color>
+    <color name="azul_secundario">#818CF8</color>
 
     <!-- Cores básicas -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
     <!-- Cor principal -->
-    <color name="primary">#B8C4FF</color>
+    <color name="primary">#818CF8</color>
     <color name="onPrimary">#001A6B</color>
-    <color name="primaryContainer">#002B9A</color>
-    <color name="onPrimaryContainer">#DDE1FF</color>
+    <color name="primaryContainer">#2A2A45</color>
+    <color name="onPrimaryContainer">#A5B4FC</color>
 
     <!-- Cor secundária -->
     <color name="secondary">#C1C5DD</color>
@@ -29,34 +29,34 @@
     <color name="nav_indicador">#414659</color>
 
     <!-- Fundo principal -->
-    <color name="background">#232222</color>
-    <color name="onBackground">#E5E1E1</color>
+    <color name="background">#14151A</color>
+    <color name="onBackground">#F5F5F7</color>
 
     <!-- Superfícies -->
-    <color name="surface">#121218</color>
-    <color name="onSurface">#E3E2E9</color>
+    <color name="surface">#14151A</color>
+    <color name="onSurface">#F5F5F7</color>
 
     <!-- Cards -->
-    <color name="surfaceVariant">#2D2D31</color>
-    <color name="onSurfaceVariant">#C7C5D0</color>
+    <color name="surfaceVariant">#1E2028</color>
+    <color name="onSurfaceVariant">#9CA3AF</color>
 
     <!-- Bordas / elementos secundários -->
     <color name="outline">#919096</color>
-    <color name="outlineVariant">#46464B</color>
+    <color name="outlineVariant">#2A2D38</color>
 
     <!-- Status: tarefas atrasadas -->
-    <color name="atrasadas">#FFB4AB</color>
-    <color name="atrasadasContainer">#5F2020</color>
+    <color name="atrasadas">#F87171</color>
+    <color name="atrasadasContainer">#3A2325</color>
 
     <!-- Status: tarefas pendentes -->
-    <color name="pendentes">#FFB95C</color>
-    <color name="pendentesContainer">#543B0D</color>
+    <color name="pendentes">#FBBF24</color>
+    <color name="pendentesContainer">#3A2E1A</color>
 
     <!-- Prioridades -->
 
     <color name="primary_baixa">#8FD9A0</color>
     <color name="primary_media">#FFB76B</color>
-    <color name="primary_alta">#FFB4AB</color>
+    <color name="primary_alta">#F87171</color>
 
     <color name="surface_baixa">#D9F0DE</color>
     <color name="surface_media">#FCE7C8</color>
@@ -68,14 +68,18 @@
 
     <!-- Outros/Especificos -->
 
-    <color name="btn_prosseguir_surface">#AEC0FF</color>
+    <color name="btn_prosseguir_surface">#818CF8</color>
     <color name="btn_prosseguir_onsurface">#001A6B</color>
+
+    <!-- StudyFlow Redesign - Home -->
+    <color name="success">#22C55E</color>
+    <color name="avatar_background">#4F46E5</color>
 
     <!-- EditText -->
     <color name="edittext_surface">#1E1E27</color>
     <color name="edittext_outline">#46464F</color>
-    <color name="edittext_outline_focused">#AEC0FF</color>
-    <color name="edittext_outline_error">#FFB4AB</color>
+    <color name="edittext_outline_focused">#818CF8</color>
+    <color name="edittext_outline_error">#F87171</color>
     <color name="edittext_disabled_surface">#1A1A21</color>
     <color name="edittext_disabled_outline">#33333D</color>
     <color name="edittext_disabled_text">#63636F</color>

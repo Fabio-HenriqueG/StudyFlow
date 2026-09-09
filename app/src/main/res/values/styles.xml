@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- INDICADOR DO ITEM SELECIONADO -->
+    <style name="StudyFlow.BottomNav.ActiveIndicator"
+        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+
+        <item name="android:width">56dp</item>
+        <item name="android:height">32dp</item>
+        <item name="android:color">@color/primaryContainer</item>
+
+        <item name="shapeAppearance">
+            @style/StudyFlow.BottomNav.ActiveIndicator.Shape
+        </item>
+
+    </style>
+
+
+    <!-- FORMATO DO INDICADOR -->
+    <style name="StudyFlow.BottomNav.ActiveIndicator.Shape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+
+    <!-- TEXTO DA BARRA DE NAVEGAÇÃO -->
+    <style name="StudyFlow.BottomNav.Text"
+        parent="TextAppearance.Material3.LabelMedium">
+
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">10sp</item>
+
+    </style>
+
+
+</resources>

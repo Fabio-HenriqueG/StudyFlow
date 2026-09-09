@@ -1,44 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingVertical="8dp">
 
-    <CheckBox
-        android:id="@+id/check_item"
-        android:layout_width="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="5dp"
+
+    app:cardBackgroundColor="@color/surfaceVariant"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+
+    app:strokeColor="@color/outlineVariant"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:buttonTint="?attr/colorPrimary" />
 
-    <TextView
-        android:id="@+id/text_item_checklist"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Exemplo de tópico"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
 
-    <ImageButton
-        android:id="@+id/btn_editar_item"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_edit"
-        app:tint="?attr/colorOnSurfaceVariant"
-        android:alpha="0.6"/>
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="10dp">
 
-    <ImageButton
-        android:id="@+id/btn_excluir_item"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="4dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_delete"
-        app:tint="@color/error"
-        android:alpha="0.6"/>
 
-</LinearLayout>
+        <CheckBox
+            android:id="@+id/check_item"
+
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+
+            android:buttonTint="@color/primary"
+
+            android:gravity="center"
+
+            android:padding="4dp" />
+
+
+        <TextView
+            android:id="@+id/text_item_checklist"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+
+            android:ellipsize="end"
+            android:maxLines="2"
+
+            android:fontFamily="@font/poppins_medium"
+
+            android:text="Exemplo de tópico"
+
+            android:textColor="@color/onSurface"
+
+            android:textSize="13sp" />
+
+
+        <ImageButton
+            android:id="@+id/btn_editar_item"
+
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+
+            android:background="?attr/selectableItemBackgroundBorderless"
+
+            android:contentDescription="Editar tópico"
+
+            android:padding="9dp"
+
+            android:src="@drawable/pencil"
+
+            app:tint="@color/onSurfaceVariant" />
+
+
+        <ImageButton
+            android:id="@+id/btn_excluir_item"
+
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+
+            android:layout_marginStart="2dp"
+
+            android:background="?attr/selectableItemBackgroundBorderless"
+
+            android:contentDescription="Excluir tópico"
+
+            android:padding="9dp"
+
+            android:src="@drawable/ic_trash"
+
+            app:tint="@color/error" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

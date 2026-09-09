@@ -1,53 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface"
+
+    android:background="@color/background"
+
     tools:context=".CheckListFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="0dp">
+
+
+        <!-- TÍTULO -->
 
         <TextView
             android:id="@+id/lblChecklist"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="@string/checklist"
-            android:textSize="28sp"
-            android:textStyle="bold"
+
             android:textColor="@color/onSurface"
-            android:fontFamily="@font/quicksand_bold"
-            app:layout_constraintEnd_toStartOf="@+id/btnVoltar"
+
+            android:textSize="22sp"
+
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cardVoltarChecklist"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnVoltar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/voltar"
-            android:src="@drawable/seta_voltar"
-            app:tint="?attr/colorOnSurface"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- BOTÃO VOLTAR -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarChecklist"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/btnVoltar"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- DESCRIÇÃO -->
+
+        <TextView
+            android:id="@+id/lblDescricaoChecklist"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Organize suas tarefas em listas"
+
+            android:textColor="@color/onSurfaceVariant"
+
+            android:textSize="12sp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblChecklist" />
+
+
+        <!-- LISTA -->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerChecklists"
+
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+
+            android:layout_marginTop="20dp"
+
             android:clipToPadding="false"
-            android:paddingBottom="80dp"
+
+            android:paddingTop="2dp"
+            android:paddingBottom="96dp"
+
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblChecklist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblDescricaoChecklist"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             tools:listitem="@layout/item_checklist" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

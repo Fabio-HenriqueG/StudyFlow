@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,7 +57,7 @@ public class HomeFragment extends Fragment {
         recyclerMetasHome = view.findViewById(R.id.recycler_metas_home);
         recyclerAnotacoesHome = view.findViewById(R.id.recycler_anotacoes_home);
         layoutStatus = view.findViewById(R.id.layoutStatus);
-        ImageButton btnConfig = view.findViewById(R.id.btnConfiguracoes);
+        View btnConfig = view.findViewById(R.id.btnConfiguracoes);
         
         lblTituloAnotacoes = view.findViewById(R.id.textView9);
         lblTituloMetas = view.findViewById(R.id.textView10);

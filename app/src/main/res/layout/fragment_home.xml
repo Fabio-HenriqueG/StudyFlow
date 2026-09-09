@@ -1,106 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/surface"
+    android:background="@color/background"
     tools:context=".HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:padding="16dp">
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="28dp">
 
+
+        <!-- ===================================================== -->
         <!-- CABEÇALHO -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgPerfilHome"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="2dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
-            app:layout_constraintEnd_toStartOf="@+id/btnConfiguracoes"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:strokeColor="@color/onSurfaceVariant"
-            app:strokeWidth="1.5dp"
-            android:layout_marginEnd="8dp"/>
-
-        <!-- SEÇÃO: SAUDACAO -->
+        <!-- ===================================================== -->
 
         <TextView
             android:id="@+id/lblSaudacao"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/quicksand_bold"
 
+            android:layout_marginEnd="8dp"
+
+            android:fontFamily="@font/poppins_semibold"
             android:text="@string/bom_dia"
             android:textColor="@color/onSurface"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/imgPerfilHome"
+
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/imgPerfilHome"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnConfiguracoes"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_settings"
-            android:color="@color/onSurface"
-            android:contentDescription="Configurações"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/lblDataAtual"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="2dp"
+
+            android:fontFamily="@font/poppins_regular"
             android:text="3 de Agosto de 2026"
-            android:fontFamily="@font/quicksand_medium"
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="13sp"
 
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblSaudacao" />
+            app:layout_constraintStart_toStartOf="@id/lblSaudacao"
+            app:layout_constraintTop_toBottomOf="@id/lblSaudacao" />
 
-        <!-- STREAK (FOGUINHO) -->
+
+        <!-- PERFIL -->
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgPerfilHome"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            android:layout_marginEnd="8dp"
+
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+
+            app:layout_constraintEnd_toStartOf="@id/btnConfiguracoes"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp" />
+
+
+        <!-- CONFIGURAÇÕES -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnConfiguracoes"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:foreground="?attr/selectableItemBackground"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+
+                android:layout_gravity="center"
+
+                android:src="@drawable/ic_settings"
+                android:contentDescription="Configurações"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ===================================================== -->
+        <!-- STREAK -->
+        <!-- continua existente para não quebrar sua lógica -->
+        <!-- ===================================================== -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardStreak"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
+
+            android:layout_marginTop="8dp"
+
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="#19FF9800"
+            app:cardBackgroundColor="@color/primaryContainer"
             app:strokeWidth="0dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnConfiguracoes"
-            android:layout_marginTop="8dp">
+            app:layout_constraintTop_toBottomOf="@id/btnConfiguracoes">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:gravity="center_vertical">
+
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp">
+
                 <TextView
                     android:id="@+id/txtStreakCount"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/quicksand_bold"
                     android:text="0"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary_media"
-                    android:textSize="14sp" />
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="12sp" />
+
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+
+                    android:layout_marginStart="4dp"
+
                     android:src="@drawable/ic_fire"
                     android:contentDescription="Sequência de estudos" />
 
@@ -108,140 +177,308 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- CONTEÚDO DINÂMICO (Só aparece se tiver algo) -->
 
-        <!-- SEÇÃO: TAREFAS -->
+        <!-- ===================================================== -->
+        <!-- TAREFAS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/lblTituloTarefas"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_bold"
 
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
             android:text="Tarefas"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:textColor="@color/onSurface"
+            android:textSize="17sp"
+            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblDataAtual" />
+            app:layout_constraintTop_toBottomOf="@id/lblDataAtual" />
+
 
         <FrameLayout
             android:id="@+id/containerTarefas"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblTituloTarefas">
+
+            android:layout_marginTop="10dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblTituloTarefas">
+
 
             <LinearLayout
                 android:id="@+id/layoutStatus"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
+
                 android:orientation="horizontal"
                 android:weightSum="2"
                 android:visibility="visible">
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/surface_alta"
-                    app:strokeWidth="0dp">
-                    <TextView
-                        android:id="@+id/text_home_atrasadas"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="Atrasadas: 0"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/quicksand_bold"
 
 
-                        android:textColor="@color/primary_alta" />
-                </com.google.android.material.card.MaterialCardView>
-
+                <!-- ATRASADAS -->
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="@color/surface_media"
-                    app:cardCornerRadius="20dp"
+                    android:layout_marginEnd="6dp"
+
+                    app:cardBackgroundColor="@color/surfaceVariant"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-                    <TextView
-                        android:id="@+id/text_home_pendentes"
+
+                    app:strokeColor="@color/outlineVariant"
+                    app:strokeWidth="1dp">
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="Pendentes: 0"
-                        android:fontFamily="@font/quicksand_bold"
+                        android:layout_height="match_parent"
+
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
 
 
-                        android:textColor="@color/primary_media"
-                        android:textStyle="bold" />
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+
+                            app:cardBackgroundColor="@color/atrasadasContainer"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+
+                                android:layout_gravity="center"
+
+                                android:src="@drawable/ic_clock"
+                                app:tint="@color/atrasadas" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="9dp"
+                            android:orientation="vertical">
+
+
+                            <TextView
+                                android:id="@+id/text_home_atrasadas"
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:fontFamily="@font/quicksand_bold"
+
+                                android:text="0"
+                                android:textColor="@color/onSurface"
+                                android:textSize="13sp" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:fontFamily="@font/quicksand_medium"
+
+                                android:text="Atrasadas"
+                                android:textColor="@color/onSurfaceVariant"
+                                android:textSize="10sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- PENDENTES -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+
+                    app:cardBackgroundColor="@color/surfaceVariant"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+
+                    app:strokeColor="@color/outlineVariant"
+                    app:strokeWidth="1dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
+
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+
+                            app:cardBackgroundColor="@color/pendentesContainer"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+
+                                android:layout_gravity="center"
+
+                                android:src="@drawable/ic_task_pending"
+                                app:tint="@color/pendentes" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="9dp"
+                            android:orientation="vertical">
+
+
+                            <TextView
+                                android:id="@+id/text_home_pendentes"
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:fontFamily="@font/quicksand_bold"
+
+                                android:text="0"
+                                android:textColor="@color/onSurface"
+                                android:textSize="13sp" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:fontFamily="@font/quicksand_medium"
+
+                                android:text="Pendentes"
+                                android:textColor="@color/onSurfaceVariant"
+                                android:textSize="10sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardEmptyTarefas"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
+
                 android:visibility="gone"
-                app:cardCornerRadius="20dp"
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                app:strokeWidth="0dp">
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
+
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp"
+                    android:layout_height="match_parent"
+
                     android:gravity="center"
+
+                    android:fontFamily="@font/quicksand_medium"
+
                     android:text="@string/nada_pendente"
-                    android:textSize="14sp"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="12sp" />
+
             </com.google.android.material.card.MaterialCardView>
+
         </FrameLayout>
 
-        <!-- SEÇÃO: FLASHCARDS (Revisão e Coleção) -->
+
+        <!-- ===================================================== -->
+        <!-- FLASHCARDS -->
+        <!-- ===================================================== -->
+
         <LinearLayout
             android:id="@+id/layoutSecaoFlashcards"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="22dp"
+
             android:orientation="vertical"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/containerTarefas">
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerTarefas">
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp">
+                android:layout_height="32dp">
 
-                <!-- Título da seção -->
+
                 <TextView
                     android:id="@+id/lblTituloFlashcards"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
 
-                    android:fontFamily="@font/quicksand_bold"
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:text="Flashcards"
                     android:textColor="@color/onSurface"
-                    android:textSize="18sp" />
+                    android:textSize="17sp" />
 
 
-                <!-- Ver todos -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerColecaoHome"
+
                     style="@style/Widget.Material3.Button.TextButton"
 
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
 
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
@@ -249,284 +486,419 @@
                     android:minWidth="0dp"
                     android:minHeight="0dp"
 
-                    android:fontFamily="@font/quicksand_bold"
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:paddingStart="6dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="0dp"
 
                     android:text="Ver todos"
                     android:textAllCaps="false"
-                    android:textColor="@color/btn_prosseguir_onsurface"
-                    android:textSize="13sp"
+                    android:textColor="@color/primary"
+                    android:textSize="11sp"
 
-                    android:paddingStart="14dp"
-                    android:paddingEnd="10dp"
-
-                    app:backgroundTint="@color/btn_prosseguir_surface"
-                    app:cornerRadius="20dp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:cornerRadius="0dp"
 
                     app:icon="@drawable/seta_direita"
                     app:iconGravity="textEnd"
-                    app:iconPadding="5dp"
-                    app:iconSize="18dp"
-                    app:iconTint="@color/btn_prosseguir_onsurface" />
+                    app:iconPadding="4dp"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/primary"
+
+                    />
             </RelativeLayout>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardRevisaoFlashcards"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorPrimaryContainer"
-                app:strokeWidth="0dp">
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
+
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+
                         android:src="@android:drawable/ic_menu_help"
-                        app:tint="?attr/colorOnPrimaryContainer" />
+
+                        app:tint="@color/primary" />
+
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
                         android:layout_weight="1"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="12dp"
+
                         android:orientation="vertical">
+
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/quicksand_bold"
+
                             android:text="Hora de Revisar!"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnPrimaryContainer" />
+                            android:textColor="@color/onSurface"
+                            android:textSize="14sp" />
+
 
                         <TextView
                             android:id="@+id/txtFlashcardsCount"
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
+                            android:fontFamily="@font/quicksand_medium"
+
                             android:text="Você tem 5 cartões para estudar."
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnPrimaryContainer"
-                            android:alpha="0.8" />
+                            android:textColor="@color/onSurfaceVariant"
+                            android:textSize="11sp" />
+
                     </LinearLayout>
+
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnIniciarRevisao"
+
                         style="@style/Widget.Material3.Button.TonalButton"
+
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+
+                        android:fontFamily="@font/quicksand_bold"
                         android:text="Estudar"
-                        app:cornerRadius="28dp"
-                        android:textColor="?attr/colorOnPrimaryContainer"
-                        app:icon="@android:drawable/ic_media_play" />
+                        android:textAllCaps="false"
+
+                        app:cornerRadius="14dp" />
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardEmptyFlashcards"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="110dp"
+
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
-                app:cardCornerRadius="20dp"
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                app:strokeWidth="0dp">
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
+
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp"
+                    android:layout_height="match_parent"
+
                     android:gravity="center"
+
+                    android:fontFamily="@font/quicksand_medium"
+
                     android:text="@string/tudo_revisado"
-                    android:textSize="14sp"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="12sp" />
+
             </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
 
-        <!-- SEÇÃO: ANOTAÇÕES -->
+
+        <!-- ===================================================== -->
+        <!-- ANOTAÇÕES RECENTES -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/textView9"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_bold"
+
+            android:layout_marginTop="22dp"
+
+            android:fontFamily="@font/poppins_semibold"
 
             android:text="@string/anotacoes_recentes"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:textColor="@color/onSurface"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutSecaoFlashcards" />
+            android:textSize="17sp"
+            android:textStyle="bold"
 
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutSecaoFlashcards" />
 
 
         <FrameLayout
             android:id="@+id/containerAnotacoes"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
+
+            android:layout_marginTop="9dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView9">
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_anotacoes_home"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:clipToPadding="false"
                 android:orientation="horizontal"
+                android:overScrollMode="never"
+
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
                 tools:listitem="@layout/item_anotacao_home" />
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardEmptyAnotacoes"
+
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
+
                 android:visibility="gone"
-                app:cardCornerRadius="20dp"
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                app:strokeWidth="0dp">
-                <LinearLayout
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/use_caderno"
-                        android:textSize="14sp"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
-                </LinearLayout>
+
+                    android:fontFamily="@font/quicksand_medium"
+
+                    android:text="@string/use_caderno"
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="12sp" />
+
             </com.google.android.material.card.MaterialCardView>
+
         </FrameLayout>
 
-        <!-- SEÇÃO: METAS -->
+
+        <!-- ===================================================== -->
+        <!-- METAS PRINCIPAIS -->
+        <!-- ===================================================== -->
+
         <TextView
             android:id="@+id/textView10"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/quicksand_bold"
+
+            android:layout_marginTop="22dp"
+
+            android:fontFamily="@font/poppins_semibold"
 
             android:text="@string/metas_principais"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:textColor="@color/onSurface"
+            android:textSize="17sp"
+            android:textStyle="bold"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/containerAnotacoes" />
+            app:layout_constraintTop_toBottomOf="@id/containerAnotacoes" />
+
 
         <FrameLayout
             android:id="@+id/containerMetas"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+
+            android:layout_marginTop="9dp"
             android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView10"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView10"
             app:layout_constraintBottom_toBottomOf="parent">
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_metas_home"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:clipToPadding="false"
                 android:orientation="horizontal"
+                android:overScrollMode="never"
+
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
                 tools:listitem="@layout/item_meta_home" />
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardEmptyMetas"
+
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:visibility="gone"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                android:fontFamily="@font/quicksand_bold"
 
-                app:cardBackgroundColor="@color/onSurface"
-                app:strokeWidth="0dp">
-                <LinearLayout
+                android:visibility="gone"
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/quicksand_bold"
 
-                        android:text="@string/crie_meta"
-                        android:textSize="14sp"
-                        android:textColor="@color/onSurface" />
-                </LinearLayout>
+                    android:gravity="center"
+
+                    android:fontFamily="@font/quicksand_medium"
+
+                    android:text="@string/crie_meta"
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="12sp" />
+
             </com.google.android.material.card.MaterialCardView>
+
         </FrameLayout>
 
-        <!-- CARD DE BOAS-VINDAS GERAL (DECOLAR) -->
+
+        <!-- ===================================================== -->
+        <!-- EMPTY STATE GERAL -->
+        <!-- ===================================================== -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardEmptyStateHome"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+
+            android:layout_marginTop="28dp"
+
             android:visibility="gone"
-            app:cardCornerRadius="24dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            android:fontFamily="@font/quicksand_bold"
-            app:cardBackgroundColor="@color/surface"
-            app:strokeWidth="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/lblDataAtual"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblDataAtual">
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="32dp"
-                android:gravity="center">
+
+                android:padding="28dp">
+
+
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+
                     android:src="@drawable/ic_welcome_rocket"
-                    app:tint="@color/onSurface" />
+
+                    app:tint="@color/primary" />
+
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+
+                    android:layout_marginTop="16dp"
+
+                    android:fontFamily="@font/quicksand_bold"
+
                     android:text="Tudo pronto para decolar?"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/quicksand_bold"
-                    android:textColor="@color/onSurface" />
+                    android:textColor="@color/onSurface"
+                    android:textSize="19sp" />
+
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Comece criando uma tarefa, nota ou meta para ver sua Home ganhar vida."
-                    android:textSize="15sp"
+
+                    android:layout_marginTop="8dp"
+
                     android:gravity="center"
-                    android:fontFamily="@font/quicksand_bold"
-                    android:textColor="@color/onSurface" />
+
+                    android:fontFamily="@font/quicksand_medium"
+
+                    android:text="Comece criando uma tarefa, nota ou meta para ver sua Home ganhar vida."
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="13sp" />
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnComecarHome"
-                    style="@style/Widget.Material3.Button.TonalButton"
+
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_height="44dp"
+
+                    android:layout_marginTop="20dp"
+
+                    android:fontFamily="@font/quicksand_bold"
+
                     android:text="Começar Agora"
-                    app:cornerRadius="28dp"
-                    app:icon="@android:drawable/ic_input_add" />
+                    android:textAllCaps="false"
+
+                    android:textColor="@color/onPrimary"
+
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="14dp"
+
+                    app:icon="@android:drawable/ic_input_add"
+                    app:iconTint="@color/onPrimary" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

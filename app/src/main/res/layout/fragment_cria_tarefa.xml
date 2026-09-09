@@ -1,221 +1,650 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@color/background"
     android:fillViewport="true"
-    android:background="?attr/colorSurface"
+
     tools:context=".CriaTarefaFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
 
-        <ImageButton
-            android:id="@+id/btnVoltar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/seta_voltar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="28dp">
+
+
+        <!-- ===================================================== -->
+        <!-- CABEÇALHO -->
+        <!-- ===================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarTarefa"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/btnVoltar"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="Voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <TextView
             android:id="@+id/textView4"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="@string/criar_tarefa"
+
+            android:textColor="@color/onSurface"
+            android:textSize="22sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/cardVoltarTarefa"
+            app:layout_constraintEnd_toStartOf="@+id/cardVoltarTarefa"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardVoltarTarefa" />
+
+
+        <TextView
+            android:id="@+id/textDescricaoCriarTarefa"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Organize uma atividade e defina seus alertas"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="12sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+
+        <!-- ===================================================== -->
+        <!-- INFORMAÇÕES -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/lblInformacoesTarefa"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/criar_tarefa"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@+id/btnVoltar"
-            app:layout_constraintStart_toEndOf="@+id/btnVoltar"
-            app:layout_constraintTop_toTopOf="@+id/btnVoltar" />
+
+            android:layout_marginTop="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Informações"
+
+            android:textColor="@color/primary"
+            android:textSize="14sp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDescricaoCriarTarefa" />
+
+
+        <!-- TÍTULO -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutTitulo"
+
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+
+            android:layout_marginTop="10dp"
+
             android:hint="@string/titulo"
+
+            app:boxBackgroundColor="@color/edittext_surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:hintTextColor="@color/onSurfaceVariant"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4">
+            app:layout_constraintTop_toBottomOf="@+id/lblInformacoesTarefa">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtTituloTarefa"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences" />
+                android:layout_height="56dp"
+
+                android:fontFamily="@font/poppins_regular"
+
+                android:inputType="textCapSentences"
+
+                android:maxLines="1"
+
+                android:textColor="@color/onSurface"
+                android:textSize="13sp" />
+
         </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- DESCRIÇÃO -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutDescricao"
+
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+
+            android:layout_marginTop="12dp"
+
             android:hint="@string/descricao"
+
+            app:boxBackgroundColor="@color/edittext_surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:hintTextColor="@color/onSurfaceVariant"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutTitulo">
 
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtDescricaoTarefa"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+                android:fontFamily="@font/poppins_regular"
+
                 android:gravity="top"
-                android:inputType="textMultiLine"
-                android:minLines="3" />
+
+                android:inputType="textMultiLine|textCapSentences"
+
+                android:minHeight="96dp"
+                android:minLines="3"
+
+                android:textColor="@color/onSurface"
+                android:textSize="13sp" />
+
         </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ===================================================== -->
+        <!-- PRIORIDADE -->
+        <!-- ===================================================== -->
 
         <TextView
             android:id="@+id/textViewPrioridade"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="24dp"
-            android:text="Prioridade:"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textStyle="bold"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Prioridade"
+
+            android:textColor="@color/primary"
+            android:textSize="14sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutDescricao" />
 
+
+        <TextView
+            android:id="@+id/textDescricaoPrioridade"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="2dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Escolha a importância desta tarefa"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="10sp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPrioridade" />
+
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupPrioridade"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:singleSelection="true"
+
+            android:layout_marginTop="10dp"
+
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="6dp"
+
             app:selectionRequired="true"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPrioridade">
+            app:singleSelection="true"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDescricaoPrioridade">
+
+
+            <!-- BAIXA -->
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipBaixa"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
                 android:text="Baixa"
-                app:chipBackgroundColor="@color/chip_baixa_selector"
+
+                android:textColor="@color/onsurface_baixa"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary_baixa"
+
+                app:chipBackgroundColor="@color/surface_baixa"
+
                 app:chipIcon="@drawable/ic_check"
+                app:chipIconTint="@color/primary_baixa"
                 app:chipIconVisible="false"
-                android:textColor="@color/white" />
+
+                app:chipStrokeColor="@color/primary_baixa"
+                app:chipStrokeWidth="1dp" />
+
+
+            <!-- MÉDIA -->
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMedia"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
                 android:text="Média"
-                app:chipBackgroundColor="@color/chip_media_selector"
-                android:textColor="@color/white" />
+
+                android:textColor="@color/onsurface_media"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary_media"
+
+                app:chipBackgroundColor="@color/surface_media"
+
+                app:chipStrokeColor="@color/primary_media"
+                app:chipStrokeWidth="1dp" />
+
+
+            <!-- ALTA -->
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipAlta"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
                 android:text="Alta"
-                app:chipBackgroundColor="@color/chip_alta_selector"
-                android:textColor="@color/white" />
+
+                android:textColor="@color/onsurface_alta"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary_alta"
+
+                app:chipBackgroundColor="@color/surface_alta"
+
+                app:chipStrokeColor="@color/primary_alta"
+                app:chipStrokeWidth="1dp" />
+
         </com.google.android.material.chip.ChipGroup>
+
+
+        <!-- ===================================================== -->
+        <!-- INTENSIDADE DOS ALERTAS -->
+        <!-- ===================================================== -->
 
         <LinearLayout
             android:id="@+id/layoutLabelIntensidade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+
             android:layout_marginTop="24dp"
+
             android:gravity="center_vertical"
+
             android:orientation="horizontal"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridade">
+
 
             <TextView
                 android:id="@+id/textViewIntensidade"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Intensidade de Alertas:"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textStyle="bold" />
+
+                android:fontFamily="@font/poppins_semibold"
+
+                android:text="Intensidade de alertas"
+
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
 
             <ImageButton
                 android:id="@+id/btnInfoIntensidade"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="8dp"
+
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+
+                android:layout_marginStart="4dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_help"
-                app:tint="?attr/colorOnSurfaceVariant" />
+
+                android:contentDescription="Informações sobre intensidade de alertas"
+
+                android:padding="8dp"
+
+                android:src="@drawable/ic_help"
+
+                app:tint="@color/onSurfaceVariant" />
+
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textDescricaoIntensidade"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Defina com que frequência deseja ser lembrado"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="10sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutLabelIntensidade" />
+
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupIntensidade"
-            android:layout_width="match_parent"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:singleSelection="true"
+
+            android:layout_marginTop="10dp"
+
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="6dp"
+
             app:selectionRequired="true"
-            app:layout_constraintTop_toBottomOf="@+id/layoutLabelIntensidade">
+            app:singleSelection="true"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDescricaoIntensidade">
+
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipFocada"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Focada" />
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Focada"
+
+                android:textColor="@color/onPrimaryContainer"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary"
+
+                app:chipBackgroundColor="@color/primaryContainer"
+
+                app:chipStrokeColor="@color/primary"
+                app:chipStrokeWidth="1dp" />
+
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipPadrao"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Padrão" />
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Padrão"
+
+                android:textColor="@color/onPrimaryContainer"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary"
+
+                app:chipBackgroundColor="@color/primaryContainer"
+
+                app:chipStrokeColor="@color/primary"
+                app:chipStrokeWidth="1dp" />
+
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipIntensa"
+
                 style="@style/Widget.Material3.Chip.Filter"
+
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Intensa" />
+                android:layout_height="40dp"
+
+                android:fontFamily="@font/poppins_medium"
+
+                android:text="Intensa"
+
+                android:textColor="@color/onPrimaryContainer"
+                android:textSize="11sp"
+
+                app:checkedIconTint="@color/primary"
+
+                app:chipBackgroundColor="@color/primaryContainer"
+
+                app:chipStrokeColor="@color/primary"
+                app:chipStrokeWidth="1dp" />
+
         </com.google.android.material.chip.ChipGroup>
+
+
+        <!-- ===================================================== -->
+        <!-- DATA -->
+        <!-- ===================================================== -->
 
         <TextView
             android:id="@+id/textView11"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+
+            android:layout_marginTop="26dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="@string/selecione_a_data"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textStyle="bold"
+
+            android:textColor="@color/primary"
+            android:textSize="14sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chipGroupIntensidade" />
 
 
+        <TextView
+            android:id="@+id/textDescricaoData"
 
-        <CalendarView
-            android:id="@+id/calendario_tarefa"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+
+            android:layout_marginTop="2dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Escolha o prazo para concluir a tarefa"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="10sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSalvarTarefa"
+
+        <!-- CARD DO CALENDÁRIO -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardCalendarioTarefa"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+
+            app:cardCornerRadius="18dp"
+
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDescricaoData">
+
+
+            <CalendarView
+                android:id="@+id/calendario_tarefa"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:paddingStart="4dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="4dp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ===================================================== -->
+        <!-- CRIAR -->
+        <!-- ===================================================== -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSalvarTarefa"
+
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+
             android:layout_marginTop="24dp"
-            android:padding="12dp"
-            android:text="Criar"
-            app:cornerRadius="28dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="Criar Tarefa"
+
+            android:textAllCaps="false"
+
+            android:textColor="@color/onPrimary"
+            android:textSize="13sp"
+
+            app:backgroundTint="@color/primary"
+
+            app:cornerRadius="16dp"
+
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconSize="20dp"
+            app:iconTint="@color/onPrimary"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendario_tarefa" />
+            app:layout_constraintTop_toBottomOf="@+id/cardCalendarioTarefa" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

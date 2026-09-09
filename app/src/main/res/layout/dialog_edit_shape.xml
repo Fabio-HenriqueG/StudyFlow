@@ -1,62 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:orientation="vertical"
-    android:padding="20dp">
+
+    android:background="@color/surface"
+
+    android:paddingStart="20dp"
+    android:paddingTop="20dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="20dp">
+
+
+    <!-- TÍTULO -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/onSurfaceVariant"
 
-        android:fontFamily="@font/quicksand_bold"
-        android:text="Escolha a cor da forma:"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:fontFamily="@font/poppins_semibold"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/quicksand_regular"
+        android:text="Escolha a cor da forma"
+
         android:textColor="@color/onSurface"
 
-        android:layout_marginTop="16dp"
-        android:text="Cor (Arco-íris):"
-        android:textSize="12sp" />
+        android:textSize="16sp" />
+
+
+    <!-- DESCRIÇÃO -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="4dp"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:text="Personalize a cor da forma selecionada"
+
+        android:textColor="@color/onSurfaceVariant"
+
+        android:textSize="11sp" />
+
+
+    <!-- COR PERSONALIZADA -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="20dp"
+
+        android:fontFamily="@font/poppins_semibold"
+
+        android:text="Cor personalizada"
+
+        android:textColor="@color/onSurface"
+
+        android:textSize="13sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="2dp"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:text="Deslize para escolher uma cor"
+
+        android:textColor="@color/onSurfaceVariant"
+
+        android:textSize="11sp" />
+
+
+    <!-- SEEK BAR DE COR -->
 
     <SeekBar
         android:id="@+id/seekBarCorArcoIrisShape"
+
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:fontFamily="@font/quicksand_regular"
-        android:textColor="@color/onSurface"
-        android:thumb="@drawable/seekbar_thumb"
+        android:layout_height="36dp"
 
         android:layout_marginTop="8dp"
+
         android:max="360"
-        android:progressDrawable="@null" />
+
+        android:progressDrawable="@null"
+
+        android:thumb="@drawable/seekbar_thumb" />
+
+
+    <!-- CORES RÁPIDAS -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/quicksand_regular"
+
+        android:layout_marginTop="20dp"
+
+        android:fontFamily="@font/poppins_semibold"
+
+        android:text="Cores rápidas"
+
         android:textColor="@color/onSurface"
 
-        android:text="Cores Rápidas:"
-        android:textSize="12sp" />
+        android:textSize="13sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="2dp"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:text="Selecione uma opção"
+
+        android:textColor="@color/onSurfaceVariant"
+
+        android:textSize="11sp" />
+
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+
+        android:layout_marginTop="10dp"
+
+        android:fillViewport="false"
+
+        android:scrollbars="none">
+
 
         <LinearLayout
             android:id="@+id/layoutCoresShape"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal"
+
+            android:paddingEnd="4dp" />
+
     </HorizontalScrollView>
+
+
+    <!-- BOTÕES DE AÇÃO -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelarShape"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Cancelar"
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnConfirmarShape"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Confirmar"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 </LinearLayout>

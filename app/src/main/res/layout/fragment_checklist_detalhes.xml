@@ -1,88 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:padding="24dp">
+
+    android:background="@color/background"
+
+    android:paddingStart="20dp"
+    android:paddingTop="22dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="20dp">
+
+
+    <!-- ===================================================== -->
+    <!-- TÍTULO -->
+    <!-- ===================================================== -->
 
     <TextView
         android:id="@+id/lblTituloChecklist"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+
+        android:layout_marginEnd="12dp"
+
+        android:ellipsize="end"
+        android:maxLines="2"
+
+        android:fontFamily="@font/poppins_semibold"
+
         android:text="Título da Lista"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/btnResetarLista"
+
+        android:textColor="@color/onSurface"
+
+        android:textSize="22sp"
+
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cardResetarLista"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnResetarLista"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Reiniciar Lista"
-        android:src="@drawable/ic_reset"
-        app:layout_constraintEnd_toStartOf="@+id/btnVoltarChecklist"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnSurface" />
 
-    <ImageButton
-        android:id="@+id/btnVoltarChecklist"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Voltar"
-        android:src="@drawable/seta_voltar"
+    <!-- ===================================================== -->
+    <!-- RESETAR -->
+    <!-- ===================================================== -->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardResetarLista"
+
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+
+        android:layout_marginEnd="8dp"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
+        app:layout_constraintEnd_toStartOf="@id/cardVoltarChecklistDetalhe"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnResetarLista"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@android:color/transparent"
+
+            android:contentDescription="Reiniciar Lista"
+
+            android:padding="11dp"
+
+            android:src="@drawable/ic_reset"
+
+            app:tint="@color/onSurfaceVariant" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- ===================================================== -->
+    <!-- VOLTAR -->
+    <!-- ===================================================== -->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardVoltarChecklistDetalhe"
+
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnSurface" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnVoltarChecklist"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@android:color/transparent"
+
+            android:contentDescription="Voltar"
+
+            android:padding="11dp"
+
+            android:src="@drawable/seta_voltar"
+
+            app:tint="@color/primary" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- ===================================================== -->
+    <!-- SUBTÍTULO -->
+    <!-- ===================================================== -->
+
+    <TextView
+        android:id="@+id/lblDescricaoChecklist"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="4dp"
+
+        android:fontFamily="@font/poppins_regular"
+
+        android:text="Marque os tópicos conforme concluir"
+
+        android:textColor="@color/onSurfaceVariant"
+
+        android:textSize="12sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblTituloChecklist" />
+
+
+    <!-- ===================================================== -->
+    <!-- ITENS DA CHECKLIST -->
+    <!-- ===================================================== -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerItensChecklist"
+
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+
+        android:layout_marginTop="20dp"
+
+        android:clipToPadding="false"
+
+        android:paddingTop="2dp"
+        android:paddingBottom="16dp"
+
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/layoutNovoItem"
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblTituloChecklist" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblDescricaoChecklist"
+        app:layout_constraintBottom_toTopOf="@id/layoutNovoItem" />
+
+
+    <!-- ===================================================== -->
+    <!-- ADICIONAR NOVO ITEM -->
+    <!-- ===================================================== -->
 
     <LinearLayout
         android:id="@+id/layoutNovoItem"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+
+        android:layout_marginTop="12dp"
+
         android:gravity="center_vertical"
-        android:layout_marginTop="16dp"
+
+        android:orientation="horizontal"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <!-- CAMPO DE TEXTO -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutInputItem"
+
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:layout_weight="1"
-            android:hint="Adicionar tópico...">
+
+            android:hint="Adicionar tópico..."
+
+            app:boxBackgroundColor="@color/edittext_surface"
+
+            app:boxCornerRadiusTopStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusBottomEnd="14dp"
+
+            app:boxStrokeColor="@color/edittext_outline_focused"
+
+            app:hintTextColor="@color/onSurfaceVariant">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editNovoItem"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences" />
+                android:layout_height="56dp"
+
+                android:fontFamily="@font/poppins_regular"
+
+                android:inputType="textCapSentences"
+
+                android:maxLines="1"
+
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+
+                android:textColor="@color/onSurface"
+
+                android:textSize="13sp" />
+
         </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- BOTÃO ADICIONAR -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAdicionarItem"
+
             style="@style/Widget.Material3.Button.IconButton"
+
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            app:icon="@drawable/ic_check" />
+
+            android:layout_marginStart="10dp"
+
+            android:contentDescription="Adicionar tópico"
+
+            app:backgroundTint="@color/primary"
+
+            app:cornerRadius="16dp"
+
+            app:icon="@drawable/ic_check"
+
+            app:iconSize="22dp"
+
+            app:iconTint="@color/onPrimary" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

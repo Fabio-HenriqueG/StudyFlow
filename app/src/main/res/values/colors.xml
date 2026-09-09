@@ -6,18 +6,18 @@
          ========================= -->
 
     <!-- Cores originais StudyFlow -->
-    <color name="studyflow_blue">#2F52E0</color>
-    <color name="azul_secundario">#2F52E0</color>
+    <color name="studyflow_blue">#4F46E5</color>
+    <color name="azul_secundario">#4F46E5</color>
 
     <!-- Cores básicas -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
     <!-- Cor principal -->
-    <color name="primary">#2F52E0</color>
-    <color name="onPrimary">#FAFAFF</color>
-    <color name="primaryContainer">#E0E2FF</color>
-    <color name="onPrimaryContainer">#000B61</color>
+    <color name="primary">#4F46E5</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#EEF0FF</color>
+    <color name="onPrimaryContainer">#4F46E5</color>
 
     <!-- Cor secundária -->
     <color name="secondary">#595D72</color>
@@ -29,31 +29,31 @@
     <color name="nav_indicador">#DDE1F9</color>
 
     <!-- Fundo principal -->
-    <color name="background">#F4F6FC</color>
-    <color name="onBackground">#1B1B1F</color>
+    <color name="background">#FAFAFC</color>
+    <color name="onBackground">#16171C</color>
 
     <!-- Superfícies -->
-    <color name="surface">#FAFAFF</color>
-    <color name="onSurface">#1A1B21</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#16171C</color>
 
     <!-- Cards -->
-    <color name="surfaceVariant">#E4E6F0</color>
-    <color name="onSurfaceVariant">#54566B</color>
+    <color name="surfaceVariant">#FFFFFF</color>
+    <color name="onSurfaceVariant">#737882</color>
 
     <!-- Bordas / elementos secundários -->
     <color name="outline">#74777F</color>
-    <color name="outlineVariant">#C4C6D0</color>
+    <color name="outlineVariant">#EDEEF2</color>
 
     <!-- Status: tarefas atrasadas -->
-    <color name="atrasadas">#BA1A1A</color>
-    <color name="atrasadasContainer">#FFDAD6</color>
+    <color name="atrasadas">#DC4C4C</color>
+    <color name="atrasadasContainer">#FEECEC</color>
 
     <!-- Status: tarefas pendentes -->
-    <color name="pendentes">#A06000</color>
-    <color name="pendentesContainer">#FFF0D5</color>
+    <color name="pendentes">#B45309</color>
+    <color name="pendentesContainer">#FFF4E0</color>
 
     <!-- Erros -->
-    <color name="error">#BA1A1A</color>
+    <color name="error">#DC4C4C</color>
     <color name="onError">#FFFFFF</color>
 
     <!-- Prioridades -->
@@ -72,16 +72,22 @@
 
     <!-- Outros/Especificos -->
 
-    <color name="btn_prosseguir_surface">#2F52E0</color>
-    <color name="btn_prosseguir_onsurface">#FAFAFF</color>
+    <color name="btn_prosseguir_surface">#4F46E5</color>
+    <color name="btn_prosseguir_onsurface">#FFFFFF</color>
+
+    <!-- StudyFlow Redesign - Home -->
+    <color name="success">#16A34A</color>
+    <color name="avatar_background">#4F46E5</color>
 
     <!-- EditText -->
     <color name="edittext_surface">#F0F1FA</color>
     <color name="edittext_outline">#C4C6D9</color>
-    <color name="edittext_outline_focused">#2F52E0</color>
+    <color name="edittext_outline_focused">#4F46E5</color>
     <color name="edittext_outline_error">#C62828</color>
-    <color name="edittext_disabled_surface">#E4E6F0</color>
+    <color name="edittext_disabled_surface">#EDEEF2</color>
     <color name="edittext_disabled_outline">#D5D7E3</color>
     <color name="edittext_disabled_text">#9C9EAF</color>
+
+    <color name="ic_launcher_background">#2B53E2</color>
 
 </resources>
