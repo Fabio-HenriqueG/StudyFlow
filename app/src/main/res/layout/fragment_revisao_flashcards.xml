@@ -1,210 +1,498 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:padding="24dp">
 
-    <ImageButton
-        android:id="@+id/btnVoltarRevisao"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/seta_voltar"
+    android:background="@color/background"
+
+    android:paddingStart="20dp"
+    android:paddingTop="22dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="20dp">
+
+
+    <!-- ================================================= -->
+    <!-- VOLTAR -->
+    <!-- ================================================= -->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardVoltarRevisao"
+
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnSurface" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageButton
+            android:id="@+id/btnVoltarRevisao"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@android:color/transparent"
+
+            android:contentDescription="@string/voltar"
+
+            android:padding="11dp"
+
+            android:src="@drawable/seta_voltar"
+
+            app:tint="@color/primary" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- ================================================= -->
+    <!-- PROGRESSO -->
+    <!-- ================================================= -->
 
     <TextView
         android:id="@+id/lblProgressoRevisao"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:fontFamily="@font/poppins_medium"
+
         android:text="1 / 10"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/btnVoltarRevisao"
+
+        android:textColor="@color/onSurfaceVariant"
+        android:textSize="12sp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/cardVoltarRevisao"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnVoltarRevisao" />
+        app:layout_constraintTop_toTopOf="@+id/cardVoltarRevisao" />
+
+
+    <!-- ================================================= -->
+    <!-- FLASHCARD -->
+    <!-- ================================================= -->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardFlashcard"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginVertical="32dp"
+
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
         app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
         app:layout_constraintBottom_toTopOf="@+id/layoutBotoesRevisao"
-        app:layout_constraintTop_toBottomOf="@+id/btnVoltarRevisao"
-        app:strokeColor="?attr/colorPrimary"
-        app:strokeWidth="2dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardVoltarRevisao">
+
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <!-- Lado da Pergunta -->
+
+
+            <!-- ================================================= -->
+            <!-- FRENTE -->
+            <!-- ================================================= -->
+
             <LinearLayout
                 android:id="@+id/layoutFrente"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:gravity="center"
+
                 android:orientation="vertical"
-                android:padding="24dp"
+
+                android:paddingStart="28dp"
+                android:paddingTop="28dp"
+                android:paddingEnd="28dp"
+                android:paddingBottom="28dp"
+
                 android:visibility="visible">
 
-                <TextView
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PERGUNTA"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:alpha="0.6"/>
+
+                    app:cardBackgroundColor="@color/primaryContainer"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center_vertical"
+
+                        android:orientation="horizontal"
+
+                        android:paddingStart="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="6dp">
+
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+
+                            android:contentDescription="@null"
+
+                            android:src="@drawable/ic_circle_question"
+
+                            app:tint="@color/onPrimaryContainer" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="6dp"
+
+                            android:fontFamily="@font/poppins_semibold"
+
+                            android:text="PERGUNTA"
+
+                            android:textColor="@color/onPrimaryContainer"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
 
                 <TextView
                     android:id="@+id/txtPerguntaRevisao"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+
+                    android:layout_marginTop="22dp"
+
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:gravity="center"
+
+                    android:maxLines="6"
+
                     android:text="Qual a capital da França?"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+
+                    android:textColor="@color/onSurface"
+                    android:textSize="20sp" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="(Toque para ver a resposta)"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp"
-                    android:alpha="0.5"/>
+
+                    android:layout_marginTop="28dp"
+
+                    android:fontFamily="@font/poppins_regular"
+
+                    android:gravity="center"
+
+                    android:text="Toque no cartão para ver a resposta"
+
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="11sp" />
+
             </LinearLayout>
 
-            <!-- Lado da Resposta -->
+
+            <!-- ================================================= -->
+            <!-- VERSO -->
+            <!-- ================================================= -->
+
             <LinearLayout
                 android:id="@+id/layoutVerso"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:gravity="center"
+
                 android:orientation="vertical"
-                android:padding="24dp"
+
+                android:paddingStart="28dp"
+                android:paddingTop="28dp"
+                android:paddingEnd="28dp"
+                android:paddingBottom="28dp"
+
                 android:visibility="gone">
 
-                <TextView
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RESPOSTA"
-                    android:textColor="#4CAF50"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:alpha="0.6"/>
+
+                    app:cardBackgroundColor="@color/surface_baixa"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center_vertical"
+
+                        android:orientation="horizontal"
+
+                        android:paddingStart="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="6dp">
+
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+
+                            android:contentDescription="@null"
+
+                            android:src="@drawable/ic_check"
+
+                            app:tint="@color/primary_baixa" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="6dp"
+
+                            android:fontFamily="@font/poppins_semibold"
+
+                            android:text="RESPOSTA"
+
+                            android:textColor="@color/onsurface_baixa"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
 
                 <TextView
                     android:id="@+id/txtRespostaRevisao"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+
+                    android:layout_marginTop="22dp"
+
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:gravity="center"
+
                     android:text="Paris"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+
+                    android:textColor="@color/onSurface"
+                    android:textSize="20sp" />
+
 
                 <View
                     android:id="@+id/dividerExplicacao"
+
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="24dp"
-                    android:background="?attr/colorSurfaceVariant"
+
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="20dp"
+
+                    android:background="@color/outlineVariant"
+
                     android:visibility="gone" />
+
 
                 <TextView
                     android:id="@+id/lblExplicacao"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:text="POR QUÊ?"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:alpha="0.6"
-                    android:visibility="gone"/>
+
+                    android:textColor="@color/primary"
+                    android:textSize="10sp"
+
+                    android:visibility="gone" />
+
 
                 <TextView
                     android:id="@+id/txtExplicacaoRevisao"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="8dp"
+
+                    android:fontFamily="@font/poppins_regular"
+
                     android:gravity="center"
+
                     android:text="Paris é a capital e a cidade mais populosa da França."
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="16sp"
+
+                    android:textColor="@color/onSurfaceVariant"
+                    android:textSize="13sp"
+
                     android:visibility="gone" />
+
             </LinearLayout>
 
         </FrameLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
 
+    <!-- ================================================= -->
+    <!-- AVALIAÇÃO -->
+    <!-- ================================================= -->
+
     <LinearLayout
         android:id="@+id/layoutBotoesRevisao"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+
         android:gravity="center"
+
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <!-- ERREI -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnErrei"
+
             style="@style/Widget.Material3.Button.TonalButton"
+
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+
             android:layout_weight="1"
+
+            android:fontFamily="@font/poppins_medium"
+
             android:text="Errei"
-            android:textColor="#F44336"
+            android:textAllCaps="false"
+
+            android:textColor="@color/onsurface_alta"
             android:textSize="10sp"
+
+            app:backgroundTint="@color/surface_alta"
             app:cornerRadius="12dp" />
+
+
+        <!-- DIFÍCIL -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDificil"
+
             style="@style/Widget.Material3.Button.TonalButton"
+
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+
+            android:layout_marginStart="6dp"
+
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+
+            android:fontFamily="@font/poppins_medium"
+
             android:text="Difícil"
-            android:textColor="#FF9800"
+            android:textAllCaps="false"
+
+            android:textColor="@color/onsurface_media"
             android:textSize="10sp"
+
+            app:backgroundTint="@color/surface_media"
             app:cornerRadius="12dp" />
+
+
+        <!-- BOM -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBom"
+
             style="@style/Widget.Material3.Button.TonalButton"
+
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+
+            android:layout_marginStart="6dp"
+
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+
+            android:fontFamily="@font/poppins_medium"
+
             android:text="Bom"
-            android:textColor="#4CAF50"
+            android:textAllCaps="false"
+
+            android:textColor="@color/onsurface_baixa"
             android:textSize="10sp"
+
+            app:backgroundTint="@color/surface_baixa"
             app:cornerRadius="12dp" />
+
+
+        <!-- FÁCIL -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFacil"
+
             style="@style/Widget.Material3.Button.TonalButton"
+
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+
+            android:layout_marginStart="6dp"
+
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+
+            android:fontFamily="@font/poppins_medium"
+
             android:text="Fácil"
-            android:textColor="#2196F3"
+            android:textAllCaps="false"
+
+            android:textColor="@color/onPrimaryContainer"
             android:textSize="10sp"
+
+            app:backgroundTint="@color/primaryContainer"
             app:cornerRadius="12dp" />
+
     </LinearLayout>
 
 

@@ -80,9 +80,8 @@
 
             android:src="@drawable/pencil"
 
-            app:tint="@color/onSurfaceVariant" />
-
-
+            app:tint="@color/onSurface" />
+        
         <ImageButton
             android:id="@+id/btn_excluir_item"
 

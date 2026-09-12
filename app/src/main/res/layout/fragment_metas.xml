@@ -1,53 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+
+    android:background="@color/background"
+
     tools:context=".MetasFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp">
+
+
+        <!-- ================================================= -->
+        <!-- TÍTULO -->
+        <!-- ================================================= -->
 
         <TextView
             android:id="@+id/lblMetas"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/metas"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@+id/btnVoltar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnVoltar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/voltar"
-            android:src="@drawable/seta_voltar"
-            app:tint="?attr/colorOnSurface"
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
+            android:text="@string/metas"
+
+            android:textColor="@color/onSurface"
+            android:textSize="22sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/cardVoltarMetas"
+            app:layout_constraintEnd_toStartOf="@+id/cardVoltarMetas"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardVoltarMetas" />
+
+
+        <!-- ================================================= -->
+        <!-- VOLTAR -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarMetas"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/btnVoltar"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- SUBTÍTULO -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/lblDescricaoMetas"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Acompanhe seus objetivos e mantenha o foco"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="12sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblMetas" />
+
+
+        <!-- ================================================= -->
+        <!-- LISTA DE METAS -->
+        <!-- ================================================= -->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerMetas"
+
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+
+            android:layout_marginTop="20dp"
+
             android:clipToPadding="false"
-            android:paddingBottom="80dp"
+
+            android:paddingTop="2dp"
+            android:paddingBottom="96dp"
+
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblMetas"
+            app:layout_constraintTop_toBottomOf="@+id/lblDescricaoMetas"
+
             tools:listitem="@layout/item_meta" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

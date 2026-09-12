@@ -1,93 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@color/background"
+
     tools:context=".TarefasFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+
+        android:paddingStart="20dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="20dp">
+
+
+        <!-- ================================================= -->
+        <!-- TÍTULO -->
+        <!-- ================================================= -->
 
         <TextView
             android:id="@+id/lblTarefas"
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+
+            android:layout_marginEnd="12dp"
+
+            android:fontFamily="@font/poppins_semibold"
+
             android:text="@string/tarefas"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@+id/btn_calendario"
+
+            android:textColor="@color/onSurface"
+            android:textSize="22sp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/cardCalendarioTarefas"
+            app:layout_constraintEnd_toStartOf="@+id/cardCalendarioTarefas"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/cardCalendarioTarefas" />
 
-        <ImageButton
-            android:id="@+id/btn_calendario"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
+
+        <!-- ================================================= -->
+        <!-- CALENDÁRIO -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardCalendarioTarefas"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
             android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/calendario"
-            android:src="@android:drawable/ic_menu_my_calendar"
-            app:tint="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@+id/btn_historico"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btn_historico"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toStartOf="@+id/cardHistoricoTarefas"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/btn_calendario"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/calendario"
+
+                android:padding="11dp"
+
+                android:src="@drawable/ic_calendar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- HISTÓRICO -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardHistoricoTarefas"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
             android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/historico"
-            android:src="@android:drawable/ic_menu_recent_history"
-            app:tint="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@+id/btn_voltar"
-            app:layout_constraintTop_toTopOf="parent" />
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
+            app:layout_constraintEnd_toStartOf="@+id/cardVoltarTarefas"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-        <ImageButton
-            android:id="@+id/btn_voltar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/voltar"
-            android:src="@drawable/seta_voltar"
-            app:tint="?attr/colorOnSurface"
+            <ImageButton
+                android:id="@+id/btn_historico"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/historico"
+
+                android:padding="11dp"
+
+                android:src="@drawable/ic_clock"
+
+                app:tint="@color/onSurfaceVariant" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- VOLTAR -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardVoltarTarefas"
+
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerTarefas"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:clipToPadding="false"
-            android:paddingBottom="80dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblTarefas"
-            tools:listitem="@layout/item_tarefa" />
+
+            <ImageButton
+                android:id="@+id/btn_voltar"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/voltar"
+
+                android:padding="11dp"
+
+                android:src="@drawable/seta_voltar"
+
+                app:tint="@color/primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- SUBTÍTULO -->
+        <!-- ================================================= -->
 
         <TextView
-            android:id="@+id/txtEmptyTarefas"
-            android:layout_width="wrap_content"
+            android:id="@+id/lblDescricaoTarefas"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Nenhuma tarefa pendente"
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+
+            android:layout_marginTop="4dp"
+
+            android:fontFamily="@font/poppins_regular"
+
+            android:text="Acompanhe seus compromissos e prazos"
+
+            android:textColor="@color/onSurfaceVariant"
+            android:textSize="12sp"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblTarefas" />
+
+
+        <!-- ================================================= -->
+        <!-- LISTA DE TAREFAS -->
+        <!-- ================================================= -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTarefas"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:layout_marginTop="20dp"
+
+            android:clipToPadding="false"
+
+            android:paddingTop="2dp"
+            android:paddingBottom="96dp"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblDescricaoTarefas"
+
+            tools:listitem="@layout/item_tarefa" />
+
+
+        <!-- ================================================= -->
+        <!-- ESTADO VAZIO -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:id="@+id/layoutEmptyTarefas"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+
+            android:orientation="vertical"
+
+            android:padding="24dp"
+
+            android:visibility="gone"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblDescricaoTarefas">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+
+                app:cardBackgroundColor="@color/primaryContainer"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:contentDescription="@null"
+
+                    android:padding="15dp"
+
+                    android:src="@drawable/ic_check"
+
+                    app:tint="@color/onPrimaryContainer" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <TextView
+                android:id="@+id/txtEmptyTarefas"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="14dp"
+
+                android:fontFamily="@font/poppins_semibold"
+
+                android:text="Nenhuma tarefa pendente"
+
+                android:textColor="@color/onSurface"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="4dp"
+
+                android:fontFamily="@font/poppins_regular"
+
+                android:gravity="center"
+
+                android:text="Quando você criar uma tarefa, ela aparecerá aqui."
+
+                android:textColor="@color/onSurfaceVariant"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

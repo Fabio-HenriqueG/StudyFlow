@@ -80,7 +80,7 @@
 
             android:src="@drawable/ic_reset"
 
-            app:tint="@color/onSurfaceVariant" />
+            app:tint="@color/onSurface" />
 
     </com.google.android.material.card.MaterialCardView>
 
