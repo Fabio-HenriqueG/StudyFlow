@@ -1,289 +1,726 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
 
-    <!-- Top Bar fixa -->
+    android:background="@color/background">
+
+
+    <!-- ================================================= -->
+    <!-- ÁREA SUPERIOR -->
+    <!-- ================================================= -->
+
     <LinearLayout
         android:id="@+id/layoutMenusSuperiores"
-        android:layout_width="match_parent"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
+        android:background="@color/background"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+
+        <!-- ================================================= -->
+        <!-- TOP BAR -->
+        <!-- ================================================= -->
 
         <LinearLayout
             android:id="@+id/topBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:gravity="center_vertical"
-            android:background="?attr/colorSurface"
-            android:elevation="4dp">
 
-            <ImageButton
-                android:id="@+id/btnVoltarEditor"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/seta_voltar"
-                app:tint="?attr/colorOnSurface" />
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal"
+
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+
+            <!-- VOLTAR -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
+                app:cardBackgroundColor="@color/surfaceVariant"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+
+                app:strokeColor="@color/outlineVariant"
+                app:strokeWidth="1dp">
+
+
+                <ImageButton
+                    android:id="@+id/btnVoltarEditor"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@android:color/transparent"
+
+                    android:contentDescription="@string/voltar"
+
+                    android:padding="11dp"
+
+                    android:src="@drawable/seta_voltar"
+
+                    app:tint="@color/primary" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- TÍTULO -->
 
             <EditText
                 android:id="@+id/editTituloNota"
+
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
+
                 android:background="@null"
-                android:hint="Título"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+
+                android:fontFamily="@font/poppins_semibold"
+
+                android:gravity="center_vertical"
+
+                android:hint="Título da nota"
+
+                android:maxLines="1"
+
+                android:padding="0dp"
+
+                android:textColor="@color/onSurface"
+                android:textColorHint="@color/onSurfaceVariant"
+
+                android:textSize="18sp" />
+
+
+            <!-- EXPORTAR -->
 
             <ImageButton
                 android:id="@+id/btnExportarNota"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_share"
-                app:tint="?attr/colorOnSurface" />
 
-            <ImageButton
-                android:id="@+id/btnSalvarNota"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_check"
-                app:tint="?attr/colorPrimary" />
+
+                android:contentDescription="Exportar nota"
+
+                android:padding="9dp"
+
+                android:src="@drawable/ic_share"
+
+                app:tint="@color/onSurface" />
+
+
+            <!-- SALVAR -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+
+                android:layout_marginStart="4dp"
+
+                app:cardBackgroundColor="@color/primary"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp">
+
+
+                <ImageButton
+                    android:id="@+id/btnSalvarNota"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@android:color/transparent"
+
+                    android:contentDescription="Salvar nota"
+
+                    android:padding="11dp"
+
+                    android:src="@drawable/ic_check"
+
+                    app:tint="@color/onPrimary" />
+
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutControlesTopo"
+
+        <!-- DIVISOR -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+
+            android:background="@color/outlineVariant" />
+
+
+        <!-- ================================================= -->
+        <!-- CONTROLES DO CANVAS -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAbrirFerramentas"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ferramentas"
-                app:icon="@android:drawable/ic_menu_edit" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnModoNavegacao"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:padding="0dp"
-                app:icon="@android:drawable/ic_menu_directions"
-                app:iconPadding="0dp"
-                app:iconGravity="textStart" />
+            app:cardBackgroundColor="@color/surfaceVariant"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
 
-            <SeekBar
-                android:id="@+id/seekBarZoomCanvas"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:max="300"
-                android:progress="50" />
-        </LinearLayout>
+            app:strokeColor="@color/outlineVariant"
+            app:strokeWidth="1dp">
+
+
+            <LinearLayout
+                android:id="@+id/layoutControlesTopo"
+
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal"
+
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+
+                <!-- FERRAMENTAS -->
+
+
+                <!-- NAVEGAÇÃO -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAbrirFerramentas"
+
+                    style="@style/Widget.Material3.Button.TonalButton"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Ferramentas"
+                    android:textAllCaps="false"
+
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="11sp"
+
+                    app:backgroundTint="@color/primaryContainer"
+
+                    app:cornerRadius="12dp"
+
+                    app:icon="@drawable/pencil"
+                    app:iconPadding="6dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/onPrimaryContainer" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnModoNavegacao"
+
+                    style="@style/Widget.Material3.Button.IconButton"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginStart="8dp"
+
+                    app:backgroundTint="@color/surface"
+
+                    app:cornerRadius="12dp"
+
+                    app:icon="@drawable/ic_panel_left_open"
+
+                    app:iconGravity="textStart"
+
+                    app:iconPadding="0dp"
+                    app:iconSize="18dp"
+
+                    app:iconTint="@color/onSurface"
+
+                    app:strokeColor="@color/outlineVariant"
+                    app:strokeWidth="1dp" />
+
+
+                <!-- SEPARADOR -->
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="26dp"
+
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+
+                    android:background="@color/outlineVariant" />
+
+
+                <!-- ZOOM -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/poppins_medium"
+
+                    android:text="Zoom"
+
+                    android:textColor="@color/onSurfaceVariant"
+
+                    android:textSize="10sp" />
+
+
+                <SeekBar
+                    android:id="@+id/seekBarZoomCanvas"
+
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+
+                    android:layout_marginStart="6dp"
+
+                    android:layout_weight="1"
+
+                    android:max="300"
+                    android:progress="50"
+
+                    android:progressTint="@color/primary"
+                    android:thumbTint="@color/primary" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
 
-    <!-- Botão de Alternar Menu (Sempre Visível) -->
+
+    <!-- ================================================= -->
+    <!-- BOTÃO RECOLHER / EXPANDIR MENUS -->
+    <!-- ================================================= -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnToggleMenus"
+
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="?attr/colorSurfaceVariant"
-        app:icon="@android:drawable/arrow_up_float"
-        app:cornerRadius="20dp"
-        android:elevation="6dp"
+
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+
+        android:layout_marginTop="-6dp"
+
+        android:elevation="0dp"
+
+        app:backgroundTint="@color/primaryContainer"
+
+        app:cornerRadius="18dp"
+
+        app:icon="@drawable/ic_up"
+
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="18dp"
+
+        app:iconTint="@color/onPrimaryContainer"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutMenusSuperiores" />
 
-    <!-- Área Principal de Edição -->
+
+    <!-- ================================================= -->
+    <!-- CANVAS / ÁREA DE EDIÇÃO -->
+    <!-- ================================================= -->
+
     <FrameLayout
         android:id="@+id/containerEditor"
+
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        android:background="@android:color/white"
+
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+
+        android:background="@color/surface"
+
         android:clipChildren="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintBottom_toTopOf="@+id/layoutControlesDesenho"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutMenusSuperiores">
 
 
+        <!-- GRANDE ÁREA DE NOTAS -->
+
         <RelativeLayout
             android:id="@+id/canvasNotas"
+
             android:layout_width="3000dp"
-            android:layout_height="3000dp" />
+            android:layout_height="3000dp"
+
+            android:background="@color/surface" />
 
 
+        <!-- CAMADA DE DESENHO -->
 
         <com.example.studyflow.DesenhoView
             android:id="@+id/desenhoViewSobreposto"
+
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="4dp"
+
             android:visibility="visible" />
+
     </FrameLayout>
 
-    <!-- Controles de Desenho (Ficam no rodapé) -->
 
+    <!-- ================================================= -->
+    <!-- CONTROLES DE DESENHO -->
+    <!-- ================================================= -->
 
-    <LinearLayout
-        android:id="@+id/layoutControlesDesenho"
-        android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardControlesDesenho"
+
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/cantos_arredondados_up"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:elevation="8dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Barra de Ferramentas Fixa (Sempre visível) -->
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+
+        app:cardBackgroundColor="@color/surfaceVariant"
+
+        app:cardCornerRadius="18dp"
+        app:cardElevation="0dp"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
         <LinearLayout
+            android:id="@+id/layoutControlesDesenho"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btnDesfazer"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_revert"
-                app:tint="?attr/colorOnSurface" />
-
-            <ImageButton
-                android:id="@+id/btnRefazer"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_revert"
-                android:rotationY="180"
-                app:tint="?attr/colorOnSurface" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/colorOutlineVariant" />
-
-            <ImageButton
-                android:id="@+id/btnPincel"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_edit"
-                app:tint="?attr/colorOnSurface" />
-
-            <ImageButton
-                android:id="@+id/btnBorracha"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_delete"
-                app:tint="?attr/colorOnSurface" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConcluirDesenho"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="0dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="OK"
-                android:textSize="12sp"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <!-- Seção de Opções Expandida (Só aparece ao selecionar Pincel/Borracha) -->
-        <LinearLayout
-            android:id="@+id/layoutOpcoesFerramenta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="4dp">
+
+            android:paddingStart="10dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
+
+            android:visibility="visible">
+
+
+            <!-- ================================================= -->
+            <!-- FERRAMENTAS PRINCIPAIS -->
+            <!-- ================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+
                 android:gravity="center_vertical"
+
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="Tamanho:"
-                    android:textSize="11sp" />
 
-                <SeekBar
-                    android:id="@+id/seekBarEspessura"
+                <!-- DESFAZER -->
+
+                <ImageButton
+                    android:id="@+id/btnDesfazer"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+
+                    android:contentDescription="Desfazer"
+
+                    android:padding="9dp"
+
+                    android:src="@drawable/ic_desfazer"
+
+                    app:tint="@color/onSurfaceVariant" />
+
+
+                <!-- REFAZER -->
+
+                <ImageButton
+                    android:id="@+id/btnRefazer"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginStart="2dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+
+                    android:contentDescription="Refazer"
+
+                    android:padding="9dp"
+
+                    android:src="@drawable/ic_refazer"
+
+                    app:tint="@color/onSurfaceVariant" />
+
+
+                <!-- DIVISOR -->
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="24dp"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:background="@color/outlineVariant" />
+
+
+                <!-- PINCEL -->
+
+                <ImageButton
+                    android:id="@+id/btnPincel"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+
+                    android:contentDescription="Pincel"
+
+                    android:padding="9dp"
+
+                    android:src="@drawable/pencil"
+
+                    app:tint="@color/primary" />
+
+
+                <!-- BORRACHA -->
+
+                <ImageButton
+                    android:id="@+id/btnBorracha"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginStart="2dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+
+                    android:contentDescription="Borracha"
+
+                    android:padding="9dp"
+
+                    android:src="@drawable/ic_trash"
+
+                    app:tint="@color/error" />
+
+
+                <!-- ESPAÇO -->
+
+                <View
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="50"
-                    android:progress="10" />
+                    android:layout_height="1dp"
+
+                    android:layout_weight="1" />
+
+
+                <!-- CONCLUIR -->
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLimparCanvas"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    android:id="@+id/btnConcluirDesenho"
+
+                    style="@style/Widget.Material3.Button.TonalButton"
+
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="36dp"
+
+                    android:fontFamily="@font/poppins_semibold"
+
                     android:minWidth="0dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="Limpar"
-                    android:textSize="12sp" />
+
+                    android:text="Concluir"
+                    android:textAllCaps="false"
+
+                    android:textColor="@color/onPrimaryContainer"
+                    android:textSize="11sp"
+
+                    android:visibility="gone"
+
+                    app:backgroundTint="@color/primaryContainer"
+
+                    app:cornerRadius="11dp" />
+
             </LinearLayout>
 
-            <SeekBar
-                android:id="@+id/seekBarCorArcoIrisDesenho"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:max="360"
-                android:progressDrawable="@null" />
 
-            <HorizontalScrollView
+            <!-- ================================================= -->
+            <!-- OPÇÕES DO PINCEL / BORRACHA -->
+            <!-- ================================================= -->
+
+            <LinearLayout
+                android:id="@+id/layoutOpcoesFerramenta"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+
+                android:layout_marginTop="4dp"
+
+                android:orientation="vertical"
+
+                android:visibility="gone">
+
+
+                <!-- DIVISOR -->
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+
+                    android:layout_marginBottom="8dp"
+
+                    android:background="@color/outlineVariant" />
+
+
+                <!-- ESPESSURA -->
+
                 <LinearLayout
-                    android:id="@+id/layoutCoresDesenho"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="@font/poppins_medium"
+
+                        android:text="Tamanho"
+
+                        android:textColor="@color/onSurfaceVariant"
+
+                        android:textSize="10sp" />
+
+
+                    <SeekBar
+                        android:id="@+id/seekBarEspessura"
+
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+
+                        android:layout_marginStart="8dp"
+
+                        android:layout_weight="1"
+
+                        android:max="50"
+                        android:progress="10"
+
+                        android:progressTint="@color/primary"
+                        android:thumbTint="@color/primary" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLimparCanvas"
+
+                        style="@style/Widget.Material3.Button.TextButton"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+
+                        android:fontFamily="@font/poppins_medium"
+
+                        android:minWidth="0dp"
+
+                        android:text="Limpar"
+                        android:textAllCaps="false"
+
+                        android:textColor="@color/error"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+
+                <!-- COR PERSONALIZADA -->
+
+                <SeekBar
+                    android:id="@+id/seekBarCorArcoIrisDesenho"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+
+                    android:layout_marginTop="4dp"
+
+                    android:max="360"
+
+                    android:progressDrawable="@null" />
+
+
+                <!-- CORES RÁPIDAS -->
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
+
+                    android:layout_marginTop="6dp"
+
+                    android:fillViewport="false"
+
+                    android:scrollbars="none">
+
+
+                    <LinearLayout
+                        android:id="@+id/layoutCoresDesenho"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center_vertical"
+
+                        android:orientation="horizontal"
+
+                        android:paddingBottom="4dp" />
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

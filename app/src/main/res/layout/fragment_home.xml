@@ -456,14 +456,35 @@
                 android:layout_height="32dp">
 
 
+                <!-- ÍCONE FLASHCARDS -->
+
+                <ImageView
+                    android:id="@+id/iconTituloFlashcards"
+
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+
+                    android:contentDescription="@null"
+
+                    android:src="@drawable/ic_card"
+
+                    app:tint="@color/primary" />
+
+
+                <!-- TÍTULO -->
+
                 <TextView
                     android:id="@+id/lblTituloFlashcards"
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@id/iconTituloFlashcards"
 
                     android:fontFamily="@font/poppins_semibold"
 
@@ -471,6 +492,8 @@
                     android:textColor="@color/onSurface"
                     android:textSize="17sp" />
 
+
+                <!-- VER TODOS -->
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerColecaoHome"
@@ -505,9 +528,8 @@
                     app:iconGravity="textEnd"
                     app:iconPadding="4dp"
                     app:iconSize="14dp"
-                    app:iconTint="@color/primary"
+                    app:iconTint="@color/primary" />
 
-                    />
             </RelativeLayout>
 
 
