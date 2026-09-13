@@ -53,7 +53,7 @@ public class EditorAnotacaoFragment extends Fragment {
     private Anotacao anotacaoExistente = null;
     private DesenhoView desenhoView;
     private View layoutOpcoesFerramenta, btnConcluirDesenho, layoutMenusSuperiores;
-    private com.google.android.material.button.MaterialButton btnToggleMenus;
+    private com.google.android.material.button.MaterialButton btnRecolherMenus, btnExpandirMenus;
     private View btnFerramentas;
     private boolean modoDesenhoAtivo = false;
     private boolean modoBorrachaAtivo = false;
@@ -208,10 +208,14 @@ public class EditorAnotacaoFragment extends Fragment {
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltarEditor);
         btnFerramentas = view.findViewById(R.id.btnAbrirFerramentas);
         layoutMenusSuperiores = view.findViewById(R.id.layoutMenusSuperiores);
-        btnToggleMenus = view.findViewById(R.id.btnToggleMenus);
+        btnRecolherMenus = view.findViewById(R.id.btnRecolherMenus);
+        btnExpandirMenus = view.findViewById(R.id.btnExpandirMenus);
 
-        if (btnToggleMenus != null) {
-            btnToggleMenus.setOnClickListener(v -> toggleMenusSuperiores());
+        if (btnRecolherMenus != null) {
+            btnRecolherMenus.setOnClickListener(v -> toggleMenusSuperiores());
+        }
+        if (btnExpandirMenus != null) {
+            btnExpandirMenus.setOnClickListener(v -> toggleMenusSuperiores());
         }
 
         if (getArguments() != null) {
@@ -715,8 +719,12 @@ public class EditorAnotacaoFragment extends Fragment {
         if (layoutMenusSuperiores != null) {
             layoutMenusSuperiores.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
         }
-        if (btnToggleMenus != null) {
-            btnToggleMenus.setIconResource(isMenusOcultos ? android.R.drawable.arrow_down_float : android.R.drawable.arrow_up_float);
+        
+        if (btnRecolherMenus != null) {
+            btnRecolherMenus.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
+        }
+        if (btnExpandirMenus != null) {
+            btnExpandirMenus.setVisibility(isMenusOcultos ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -760,7 +768,8 @@ public class EditorAnotacaoFragment extends Fragment {
         
         // Oculta barras superiores para maximizar espaço de desenho
         if (layoutMenusSuperiores != null) layoutMenusSuperiores.setVisibility(View.GONE);
-        if (btnToggleMenus != null) btnToggleMenus.setVisibility(View.GONE);
+        if (btnRecolherMenus != null) btnRecolherMenus.setVisibility(View.GONE);
+        if (btnExpandirMenus != null) btnExpandirMenus.setVisibility(View.GONE);
 
         if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.VISIBLE);
         if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.VISIBLE);
@@ -776,7 +785,12 @@ public class EditorAnotacaoFragment extends Fragment {
         if (layoutMenusSuperiores != null) {
             layoutMenusSuperiores.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
         }
-        if (btnToggleMenus != null) btnToggleMenus.setVisibility(View.VISIBLE);
+        if (btnRecolherMenus != null) {
+            btnRecolherMenus.setVisibility(isMenusOcultos ? View.GONE : View.VISIBLE);
+        }
+        if (btnExpandirMenus != null) {
+            btnExpandirMenus.setVisibility(isMenusOcultos ? View.VISIBLE : View.GONE);
+        }
 
         if (layoutOpcoesFerramenta != null) layoutOpcoesFerramenta.setVisibility(View.GONE);
         if (btnConcluirDesenho != null) btnConcluirDesenho.setVisibility(View.GONE);

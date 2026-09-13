@@ -317,11 +317,11 @@
 
 
     <!-- ================================================= -->
-    <!-- BOTÃO RECOLHER / EXPANDIR MENUS -->
+    <!-- BOTÃO RECOLHER (Visível quando menus abertos) -->
     <!-- ================================================= -->
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnToggleMenus"
+        android:id="@+id/btnRecolherMenus"
 
         style="@style/Widget.Material3.Button.IconButton"
 
@@ -336,7 +336,7 @@
 
         app:cornerRadius="18dp"
 
-        app:icon="@drawable/ic_up"
+        app:icon="@drawable/ic_up_arrow"
 
         app:iconGravity="textStart"
         app:iconPadding="0dp"
@@ -347,6 +347,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutMenusSuperiores" />
+
+
+    <!-- ================================================= -->
+    <!-- BOTÃO EXPANDIR (Visível quando menus ocultos) -->
+    <!-- ================================================= -->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnExpandirMenus"
+
+        style="@style/Widget.Material3.Button.IconButton"
+
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+
+        android:layout_marginTop="12dp"
+
+        android:elevation="2dp"
+
+        android:visibility="gone"
+
+        app:backgroundTint="@color/surfaceVariant"
+
+        app:cornerRadius="18dp"
+
+        app:icon="@drawable/ic_down"
+
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="18dp"
+
+        app:iconTint="@color/primary"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:strokeColor="@color/outlineVariant"
+        app:strokeWidth="1dp" />
 
 
     <!-- ================================================= -->
