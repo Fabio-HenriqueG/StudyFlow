@@ -1,21 +1,33 @@
 package com.example.studyflow;
 
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.pdf.PdfDocument;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -26,11 +38,17 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,6 +57,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -53,7 +73,7 @@ public class EditorAnotacaoFragment extends Fragment {
     private Anotacao anotacaoExistente = null;
     private DesenhoView desenhoView;
     private View layoutOpcoesFerramenta, btnConcluirDesenho, layoutMenusSuperiores;
-    private com.google.android.material.button.MaterialButton btnRecolherMenus, btnExpandirMenus;
+    private MaterialButton btnRecolherMenus, btnExpandirMenus;
     private View btnFerramentas;
     private boolean modoDesenhoAtivo = false;
     private boolean modoBorrachaAtivo = false;
@@ -71,9 +91,20 @@ public class EditorAnotacaoFragment extends Fragment {
                 if (uri != null) gravarPNG(uri);
             });
 
-    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) processarImagemGaleria(uri);
+    private final ActivityResultLauncher<String[]> pickFile =
+            registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+                if (uri != null) {
+                    try {
+                        String type = requireContext().getContentResolver().getType(uri);
+                        if (type != null && type.contains("pdf")) {
+                            processarPdf(uri);
+                        } else {
+                            processarImagemGaleria(uri);
+                        }
+                    } catch (Exception e) {
+                        processarImagemGaleria(uri);
+                    }
+                }
             });
 
     @Nullable
@@ -86,7 +117,7 @@ public class EditorAnotacaoFragment extends Fragment {
         canvasNotas.setPivotX(0);
         canvasNotas.setPivotY(0);
         
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", android.content.Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
         String estiloStr = prefs.getString("notebook_style", "GRID");
         GridDrawable.Style estilo = GridDrawable.Style.valueOf(estiloStr);
         canvasNotas.setBackground(new GridDrawable(estilo));
@@ -128,7 +159,6 @@ public class EditorAnotacaoFragment extends Fragment {
                         canvasNotas.setScaleY(newScale);
                     }
                     
-                    // Garante que o ajuste não mostre o fundo branco
                     reajustarPosicaoSeNecessario();
                 }
                 @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -149,35 +179,40 @@ public class EditorAnotacaoFragment extends Fragment {
                 float y = event.getRawY();
 
                 switch (event.getAction()) {
-                    case android.view.MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_DOWN:
                         lastX = x;
                         lastY = y;
                         break;
-                    case android.view.MotionEvent.ACTION_MOVE:
+                    case MotionEvent.ACTION_MOVE:
                         float dx = x - lastX;
                         float dy = y - lastY;
                         
                         float novoX = canvasNotas.getTranslationX() + dx;
                         float novoY = canvasNotas.getTranslationY() + dy;
 
-                        // Aplica limites para não mostrar o fundo branco
                         View parentView = (View) canvasNotas.getParent();
                         if (parentView != null) {
                             float scale = canvasNotas.getScaleX();
                             float larguraReal = canvasNotas.getWidth() * scale;
                             float alturaReal = canvasNotas.getHeight() * scale;
 
-                            // Limite Esquerda/Direita (impede que o papel saia da moldura)
-                            float minX = parentView.getWidth() - larguraReal;
-                            float maxX = 0;
-                            if (novoX > maxX) novoX = maxX;
-                            if (novoX < minX) novoX = minX;
+                            // Se a largura real for menor que a tela, centraliza horizontalmente
+                            if (larguraReal <= parentView.getWidth()) {
+                                novoX = (parentView.getWidth() - larguraReal) / 2f;
+                            } else {
+                                float minX = parentView.getWidth() - larguraReal;
+                                if (novoX > 0) novoX = 0;
+                                if (novoX < minX) novoX = minX;
+                            }
 
-                            // Limite Cima/Baixo
-                            float minY = parentView.getHeight() - alturaReal;
-                            float maxY = 0;
-                            if (novoY > maxY) novoY = maxY;
-                            if (novoY < minY) novoY = minY;
+                            // Se a altura real for menor que a tela, centraliza verticalmente
+                            if (alturaReal <= parentView.getHeight()) {
+                                novoY = (parentView.getHeight() - alturaReal) / 2f;
+                            } else {
+                                float minY = parentView.getHeight() - alturaReal;
+                                if (novoY > 0) novoY = 0;
+                                if (novoY < minY) novoY = minY;
+                            }
                         }
 
                         canvasNotas.setTranslationX(novoX);
@@ -342,6 +377,149 @@ public class EditorAnotacaoFragment extends Fragment {
         }
     }
 
+    private void processarPdf(Uri uri) {
+        Context context = getContext();
+        if (context == null) return;
+
+        final ProgressBar progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar.setPadding(60, 40, 60, 40);
+        
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Importando PDF");
+        builder.setMessage("Preparando páginas...");
+        builder.setView(progressBar);
+        builder.setCancelable(false);
+        final AlertDialog progressDialog = builder.create();
+        progressDialog.show();
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                ParcelFileDescriptor fd = context.getContentResolver().openFileDescriptor(uri, "r");
+                if (fd == null) {
+                    safeDismiss(progressDialog, "Erro ao abrir arquivo.");
+                    return;
+                }
+                
+                PdfRenderer renderer = new PdfRenderer(fd);
+                int pageCount = renderer.getPageCount();
+                
+                if (pageCount > 50) {
+                    renderer.close(); fd.close();
+                    safeDismiss(progressDialog, "O PDF é muito grande (limite de 50 páginas).");
+                    return;
+                }
+
+                if (getActivity() != null) getActivity().runOnUiThread(() -> progressBar.setMax(pageCount));
+
+                float totalHeight = 0;
+                int screenW = context.getResources().getDisplayMetrics().widthPixels;
+                int targetWidth = Math.min(screenW, 1000); 
+
+                List<Uri> pageUris = new ArrayList<>();
+                List<Integer> pageHeights = new ArrayList<>();
+
+                for (int i = 0; i < pageCount; i++) {
+                    final int currentIdx = i;
+                    PdfRenderer.Page page = renderer.openPage(i);
+                    
+                    float scale = (float) targetWidth / page.getWidth();
+                    int renderW = targetWidth;
+                    int renderH = (int) (page.getHeight() * scale);
+
+                    if (renderH > 3500) renderH = 3500;
+                    if (renderH <= 0) renderH = 100;
+
+                    Bitmap bitmap = Bitmap.createBitmap(renderW, renderH, Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(bitmap);
+                    canvas.drawColor(Color.WHITE);
+                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                    
+                    File file = new File(context.getCacheDir(), "p_" + System.currentTimeMillis() + "_" + i + ".jpg");
+                    FileOutputStream fos = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos); 
+                    fos.close();
+                    
+                    pageUris.add(Uri.fromFile(file));
+                    pageHeights.add(renderH);
+                    totalHeight += renderH + 30;
+                    
+                    bitmap.recycle();
+                    page.close();
+                    
+                    if (getActivity() != null) getActivity().runOnUiThread(() -> {
+                        progressBar.setProgress(currentIdx + 1);
+                        progressDialog.setMessage("Lendo página " + (currentIdx + 1) + "/" + pageCount);
+                    });
+                }
+                renderer.close();
+                fd.close();
+
+                final float finalTotalHeight = Math.max(3000f, totalHeight + 1000f);
+                final int finalTargetWidth = targetWidth;
+
+                if (getActivity() != null) getActivity().runOnUiThread(() -> {
+                    if (!isAdded() || canvasNotas == null) {
+                        if (progressDialog.isShowing()) progressDialog.dismiss();
+                        return;
+                    }
+
+                    canvasNotas.setBackgroundColor(Color.parseColor("#2C2C2C"));
+
+                    ViewGroup.LayoutParams lp = canvasNotas.getLayoutParams();
+                    lp.height = (int) finalTotalHeight;
+                    lp.width = containerEditor != null ? containerEditor.getWidth() : finalTargetWidth;
+                    if (lp.width <= 0) lp.width = finalTargetWidth;
+                    canvasNotas.setLayoutParams(lp);
+
+                    float currentY = 50;
+                    int canvasW = lp.width;
+
+                    for (int i = 0; i < pageUris.size(); i++) {
+                        Bitmap bmp = carregarBitmapOtimizado(pageUris.get(i), finalTargetWidth, pageHeights.get(i));
+                        if (bmp != null) {
+                            ImageView iv = new ImageView(getContext());
+                            iv.setImageBitmap(bmp);
+                            iv.setAdjustViewBounds(true);
+                            iv.setTag(pageUris.get(i).getPath());
+                            
+                            int w = bmp.getWidth();
+                            int h = bmp.getHeight();
+                            RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, h);
+                            iv.setTranslationX((canvasW - w) / 2f);
+                            iv.setTranslationY(currentY);
+                            canvasNotas.addView(iv, i, p);
+                            currentY += h + 30;
+                        }
+                    }
+                    
+                    if (desenhoView != null) desenhoView.bringToFront();
+                    
+                    canvasNotas.setScaleX(1f);
+                    canvasNotas.setScaleY(1f);
+                    canvasNotas.setTranslationX(0);
+                    canvasNotas.setTranslationY(0);
+
+                    if (progressDialog.isShowing()) progressDialog.dismiss();
+                    Toast.makeText(getContext(), "PDF Pronto!", Toast.LENGTH_SHORT).show();
+                    
+                    canvasNotas.requestLayout();
+                    canvasNotas.invalidate();
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                safeDismiss(progressDialog, "Erro: Memória cheia ou arquivo inválido.");
+            }
+        });
+    }
+
+    private void safeDismiss(AlertDialog dialog, String msg) {
+        if (getActivity() != null) getActivity().runOnUiThread(() -> {
+            if (dialog.isShowing()) dialog.dismiss();
+            Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+        });
+    }
+
     private void gravarPNG(Uri uri) {
         if (containerEditor == null || containerEditor.getWidth() <= 0 || containerEditor.getHeight() <= 0) {
             Toast.makeText(getContext(), "Área de visão inválida", Toast.LENGTH_SHORT).show();
@@ -367,7 +545,7 @@ public class EditorAnotacaoFragment extends Fragment {
     private void mostrarMenuFerramentas(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
         popup.getMenu().add("Adicionar Texto");
-        popup.getMenu().add("Inserir Imagem");
+        popup.getMenu().add("Importar Arquivo (PDF/Imagem)");
         popup.getMenu().add("Inserir Forma");
         popup.getMenu().add("Biblioteca de Stickers");
 
@@ -375,9 +553,8 @@ public class EditorAnotacaoFragment extends Fragment {
             String title = item.getTitle().toString();
             switch (title) {
                 case "Adicionar Texto": mostrarDialogoNovoTexto(); break;
-                case "Inserir Imagem": 
-                    pickMedia.launch(new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
+                case "Importar Arquivo (PDF/Imagem)":
+                    pickFile.launch(new String[]{"application/pdf", "image/*"});
                     break;
                 case "Inserir Forma": mostrarMenuFormas(v); break;
                 case "Biblioteca de Stickers": mostrarDialogoStickers(); break;
@@ -525,10 +702,10 @@ public class EditorAnotacaoFragment extends Fragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        editSize.addTextChangedListener(new android.text.TextWatcher() {
+        editSize.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(android.text.Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int val = Integer.parseInt(s.toString());
                     if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
@@ -536,10 +713,10 @@ public class EditorAnotacaoFragment extends Fragment {
             }
         });
 
-        editSize.addTextChangedListener(new android.text.TextWatcher() {
+        editSize.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(android.text.Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int val = Integer.parseInt(s.toString());
                     if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
@@ -570,7 +747,7 @@ public class EditorAnotacaoFragment extends Fragment {
         
         // Aplica a fonte Quicksand Bold para ficar mais moderno
         try {
-            textView.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(requireContext(), R.font.quicksand_bold));
+            textView.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.quicksand_bold));
         } catch (Exception ignored) {}
 
         textView.setOnTouchListener(new MultiTouchListener(getContext()));
@@ -629,10 +806,10 @@ public class EditorAnotacaoFragment extends Fragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        editSize.addTextChangedListener(new android.text.TextWatcher() {
+        editSize.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(android.text.Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int val = Integer.parseInt(s.toString());
                     if (val >= 12 && val <= 112) barSize.setProgress(val - 12);
@@ -672,7 +849,7 @@ public class EditorAnotacaoFragment extends Fragment {
             Color.parseColor("#00BCD4")  // Cyan
         };
         for (int cor : cores) {
-            com.google.android.material.card.MaterialCardView card = new com.google.android.material.card.MaterialCardView(getContext());
+            MaterialCardView card = new MaterialCardView(getContext());
             int size = (int) (40 * getResources().getDisplayMetrics().density);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(size, size);
             p.setMargins(12, 12, 12, 12); 
@@ -692,8 +869,8 @@ public class EditorAnotacaoFragment extends Fragment {
         int[] rainbowColors = {
             Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED
         };
-        android.graphics.drawable.GradientDrawable gradient = new android.graphics.drawable.GradientDrawable(
-            android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowColors
+        GradientDrawable gradient = new GradientDrawable(
+            GradientDrawable.Orientation.LEFT_RIGHT, rainbowColors
         );
         seekBar.setBackground(gradient);
         
@@ -734,18 +911,18 @@ public class EditorAnotacaoFragment extends Fragment {
         View view = getView();
         if (view == null) return;
         
-        com.google.android.material.button.MaterialButton btn = view.findViewById(R.id.btnModoNavegacao);
+        MaterialButton btn = view.findViewById(R.id.btnModoNavegacao);
         if (btn == null) return;
 
         if (isModoNavegacao) {
             try {
-                btn.setIconTint(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
+                btn.setIconTint(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary)));
             } catch (Exception ignored) {}
             btn.setBackgroundColor(Color.LTGRAY);
-            com.google.android.material.snackbar.Snackbar.make(getView(), "Modo Navegação Ativo (Arraste a tela)", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Modo Navegação Ativo (Arraste a tela)", Snackbar.LENGTH_SHORT).show();
             desativarModoDesenho();
         } else {
-            btn.setIconTint(android.content.res.ColorStateList.valueOf(Color.GRAY));
+            btn.setIconTint(ColorStateList.valueOf(Color.GRAY));
             btn.setBackgroundColor(Color.TRANSPARENT);
         }
         
@@ -755,18 +932,23 @@ public class EditorAnotacaoFragment extends Fragment {
             child.setEnabled(!isModoNavegacao);
         }
         
-        // Desativa o DesenhoView se estiver navegando
-        desenhoView.setVisibility(isModoNavegacao ? View.GONE : View.VISIBLE);
+        // Só mostra o DesenhoView se NÃO estiver navegando E se o modo desenho estiver ativo
+        if (desenhoView != null) {
+            desenhoView.setVisibility((!isModoNavegacao && modoDesenhoAtivo) ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void ativarModoDesenho(boolean isBorracha) {
         modoDesenhoAtivo = true;
-
         modoBorrachaAtivo = isBorracha;
-        desenhoView.setDrawingEnabled(true);
-        desenhoView.setBorracha(isBorracha);
         
-        // Oculta barras superiores para maximizar espaço de desenho
+        if (desenhoView != null) {
+            desenhoView.setVisibility(View.VISIBLE);
+            desenhoView.setDrawingEnabled(true);
+            desenhoView.setBorracha(isBorracha);
+            desenhoView.bringToFront(); // Garante que fique acima do PDF
+        }
+        
         if (layoutMenusSuperiores != null) layoutMenusSuperiores.setVisibility(View.GONE);
         if (btnRecolherMenus != null) btnRecolherMenus.setVisibility(View.GONE);
         if (btnExpandirMenus != null) btnExpandirMenus.setVisibility(View.GONE);
@@ -779,7 +961,10 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void desativarModoDesenho() {
         modoDesenhoAtivo = false;
-        desenhoView.setDrawingEnabled(false);
+        if (desenhoView != null) {
+            desenhoView.setDrawingEnabled(false);
+            desenhoView.setVisibility(View.GONE);
+        }
         
         // Restaura barras superiores conforme o estado do toggle
         if (layoutMenusSuperiores != null) {
@@ -808,13 +993,22 @@ public class EditorAnotacaoFragment extends Fragment {
         float larguraReal = canvasNotas.getWidth() * scale;
         float alturaReal = canvasNotas.getHeight() * scale;
 
-        float minX = parent.getWidth() - larguraReal;
-        float minY = parent.getHeight() - alturaReal;
+        // Centraliza se for menor que a tela, senão trava nas bordas
+        if (larguraReal <= parent.getWidth()) {
+            x = (parent.getWidth() - larguraReal) / 2f;
+        } else {
+            float minX = parent.getWidth() - larguraReal;
+            if (x > 0) x = 0;
+            if (x < minX) x = minX;
+        }
 
-        if (x > 0) x = 0;
-        if (x < minX) x = minX;
-        if (y > 0) y = 0;
-        if (y < minY) y = minY;
+        if (alturaReal <= parent.getHeight()) {
+            y = (parent.getHeight() - alturaReal) / 2f;
+        } else {
+            float minY = parent.getHeight() - alturaReal;
+            if (y > 0) y = 0;
+            if (y < minY) y = minY;
+        }
 
         canvasNotas.setTranslationX(x);
         canvasNotas.setTranslationY(y);
@@ -828,36 +1022,104 @@ public class EditorAnotacaoFragment extends Fragment {
         if (btnPincel == null || btnBorracha == null) return;
 
         int corPadraoSetas = Color.GRAY;
-        android.util.TypedValue typedValue = new android.util.TypedValue();
+        TypedValue typedValue = new TypedValue();
         if (requireContext().getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)) {
             corPadraoSetas = typedValue.data;
         }
 
         if (modoDesenhoAtivo) {
             if (modoBorrachaAtivo) {
-                btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(Color.RED));
-                btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+                btnBorracha.setImageTintList(ColorStateList.valueOf(Color.RED));
+                btnPincel.setImageTintList(ColorStateList.valueOf(corPadraoSetas));
             } else {
-                btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
-                btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+                btnPincel.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary)));
+                btnBorracha.setImageTintList(ColorStateList.valueOf(corPadraoSetas));
             }
         } else {
-            btnPincel.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
-            btnBorracha.setImageTintList(android.content.res.ColorStateList.valueOf(corPadraoSetas));
+            btnPincel.setImageTintList(ColorStateList.valueOf(corPadraoSetas));
+            btnBorracha.setImageTintList(ColorStateList.valueOf(corPadraoSetas));
         }
         btnPincel.setBackgroundTintList(null);
         btnBorracha.setBackgroundTintList(null);
     }
 
+    private static class CropResult {
+        Bitmap bitmap;
+        int x, y;
+        CropResult(Bitmap b, int x, int y) { this.bitmap = b; this.x = x; this.y = y; }
+    }
+
+    private CropResult cortarEspacosVaziosComCoordenadas(Bitmap source) {
+        int width = source.getWidth(), height = source.getHeight();
+        int minX = width, minY = height, maxX = -1, maxY = -1;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = source.getPixel(x, y);
+                if (pixel != Color.TRANSPARENT && pixel != 0) {
+                    if (x < minX) minX = x; if (x > maxX) maxX = x;
+                    if (y < minY) minY = y; if (y > maxY) maxY = y;
+                }
+            }
+        }
+        if (maxX < minX || maxY < minY) return new CropResult(Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888), 0, 0);
+        
+        int p = 10;
+        int sX = Math.max(0, minX - p), sY = Math.max(0, minY - p);
+        int fW = Math.min(width - sX, (maxX - minX) + (p * 2)), fH = Math.min(height - sY, (maxY - minY) + (p * 2));
+        
+        return new CropResult(Bitmap.createBitmap(source, sX, sY, fW, fH), sX, sY);
+    }
+
     private void concluirDesenho() {
+        if (desenhoView == null) return;
         Bitmap drawingBitmap = desenhoView.getBitmap();
-        Bitmap bitmapCortado = cortarEspacosVazios(drawingBitmap);
-        Bitmap finalBitmap = Bitmap.createBitmap(bitmapCortado.getWidth(), bitmapCortado.getHeight(), Bitmap.Config.ARGB_8888);
-        new Canvas(finalBitmap).drawBitmap(bitmapCortado, 0, 0, null);
-        Uri uri = salvarFinalBitmap(finalBitmap);
-        if (uri != null) exibirImagemNoCanvas(uri, finalBitmap.getWidth(), finalBitmap.getHeight());
-        desenhoView.limpar();
-        desativarModoDesenho();
+        if (drawingBitmap == null) return;
+
+        ProgressDialog pd = new ProgressDialog(getContext());
+        pd.setMessage("Finalizando rabisco...");
+        pd.setCancelable(false);
+        pd.show();
+
+        // Salva estados de visão ANTES de processar (para precisão)
+        final float currentScale = canvasNotas.getScaleX();
+        final float transX = canvasNotas.getTranslationX();
+        final float transY = canvasNotas.getTranslationY();
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            CropResult result = cortarEspacosVaziosComCoordenadas(drawingBitmap);
+            
+            requireActivity().runOnUiThread(() -> {
+                Uri uri = salvarFinalBitmap(result.bitmap);
+                if (uri != null) {
+                    // CONVERSÃO DE COORDENADAS: Mapeia o desenho da tela para o local correto no papel com zoom
+                    float papelX = (result.x - transX) / currentScale;
+                    float papelY = (result.y - transY) / currentScale;
+                    float papelW = result.bitmap.getWidth() / currentScale;
+                    float papelH = result.bitmap.getHeight() / currentScale;
+
+                    exibirDesenhoNoCanvas(uri, (int) papelW, (int) papelH, papelX, papelY);
+                }
+                desenhoView.limpar();
+                desativarModoDesenho();
+                pd.dismiss();
+            });
+        });
+    }
+
+    private void exibirDesenhoNoCanvas(Uri uri, int w, int h, float x, float y) {
+        ImageView iv = new ImageView(getContext());
+        iv.setImageBitmap(carregarBitmapOtimizado(uri, w, h));
+        iv.setAdjustViewBounds(true);
+        iv.setOnTouchListener(new MultiTouchListener(getContext()));
+        iv.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(iv); return true; });
+        iv.setTag(uri.getPath());
+        
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
+        iv.setTranslationX(x);
+        iv.setTranslationY(y);
+        
+        canvasNotas.addView(iv, params);
+        iv.bringToFront();
     }
 
     private Bitmap cortarEspacosVazios(Bitmap source) {
@@ -908,6 +1170,10 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void exibirImagemNoCanvas(Uri fileUri, int w, int h) {
+        exibirImagemNoCanvas(fileUri, w, h, -1, -1, -1);
+    }
+
+    private void exibirImagemNoCanvas(Uri fileUri, int w, int h, float startX, float startY, int index) {
         Bitmap bitmap = carregarBitmapOtimizado(fileUri, 1000, 1000);
         if (bitmap == null) return;
         ImageView imageView = new ImageView(getContext());
@@ -917,13 +1183,35 @@ public class EditorAnotacaoFragment extends Fragment {
         imageView.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(imageView); return true; });
         imageView.setTag(fileUri.getPath());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
+
+        if (startX >= 0 && startY >= 0) {
+            imageView.setTranslationX(startX);
+            imageView.setTranslationY(startY);
+        } else {
+            posicionarNoCentroDaVisao(imageView);
+        }
         
-        posicionarNoCentroDaVisao(imageView);
-        canvasNotas.addView(imageView, params);
+        if (index >= 0) {
+            canvasNotas.addView(imageView, index, params);
+        } else {
+            canvasNotas.addView(imageView, params);
+        }
     }
 
     private Bitmap carregarBitmapOtimizado(Uri uri, int reqW, int reqH) {
         try {
+            if ("file".equals(uri.getScheme())) {
+                String path = uri.getPath();
+                if (path == null) return null;
+                BitmapFactory.Options opt = new BitmapFactory.Options();
+                opt.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(path, opt);
+                opt.inSampleSize = calcularSampleSize(opt, reqW, reqH);
+                opt.inJustDecodeBounds = false;
+                opt.inPreferredConfig = Bitmap.Config.RGB_565;
+                return BitmapFactory.decodeFile(path, opt);
+            }
+
             InputStream is = requireContext().getContentResolver().openInputStream(uri);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -931,6 +1219,7 @@ public class EditorAnotacaoFragment extends Fragment {
             if (is != null) is.close();
             options.inSampleSize = calcularSampleSize(options, reqW, reqH);
             options.inJustDecodeBounds = false;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
             is = requireContext().getContentResolver().openInputStream(uri);
             Bitmap res = BitmapFactory.decodeStream(is, null, options);
             if (is != null) is.close();
@@ -1044,9 +1333,15 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private String serializarCanvas() {
         try {
+            JSONObject root = new JSONObject();
+            root.put("canvasW", canvasNotas.getWidth());
+            root.put("canvasH", canvasNotas.getHeight());
+            
             JSONArray array = new JSONArray();
             for (int i = 0; i < canvasNotas.getChildCount(); i++) {
                 View child = canvasNotas.getChildAt(i);
+                if (child == desenhoView) continue;
+                
                 JSONObject obj = new JSONObject();
                 String tag = child.getTag() != null ? child.getTag().toString() : "";
                 
@@ -1057,7 +1352,6 @@ public class EditorAnotacaoFragment extends Fragment {
                     } else {
                         obj.put("tipo", "texto"); 
                         obj.put("conteudo", ((TextView) child).getText().toString());
-                        // Salva atributos extras se disponíveis na tag JSON
                         if (tag.startsWith("{")) {
                             JSONObject meta = new JSONObject(tag);
                             obj.put("color", meta.optInt("color", Color.BLACK));
@@ -1083,14 +1377,30 @@ public class EditorAnotacaoFragment extends Fragment {
                 obj.put("w", child.getWidth()); obj.put("h", child.getHeight());
                 array.put(obj);
             }
-            return array.toString();
+            root.put("objetos", array);
+            return root.toString();
         } catch (Exception e) { return "[]"; }
     }
 
     private void carregarObjetosDoJson(String json) {
         if (json == null || json.isEmpty() || json.startsWith("<")) return;
         try {
-            JSONArray array = new JSONArray(json);
+            JSONArray array;
+            if (json.startsWith("{")) {
+                JSONObject root = new JSONObject(json);
+                int savedW = root.optInt("canvasW", 3000);
+                int savedH = root.optInt("canvasH", 3000);
+                
+                ViewGroup.LayoutParams lp = canvasNotas.getLayoutParams();
+                lp.width = savedW;
+                lp.height = savedH;
+                canvasNotas.setLayoutParams(lp);
+                
+                array = root.getJSONArray("objetos");
+            } else {
+                array = new JSONArray(json);
+            }
+
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 String tipo = obj.getString("tipo"), conteudo = obj.getString("conteudo");
@@ -1128,7 +1438,7 @@ public class EditorAnotacaoFragment extends Fragment {
                     v.setTag(meta.toString());
                 } else {
                     ImageView iv = new ImageView(getContext());
-                    Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), 1000, 1000);
+                    Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
                     if (b != null) iv.setImageBitmap(b);
                     iv.setAdjustViewBounds(true); iv.setTag(conteudo);
                     v = iv;
@@ -1141,6 +1451,9 @@ public class EditorAnotacaoFragment extends Fragment {
                 v.setRotation((float) obj.getDouble("rotation"));
                 canvasNotas.addView(v);
             }
+            
+            if (desenhoView != null) desenhoView.bringToFront();
+            
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -1154,18 +1467,18 @@ public class EditorAnotacaoFragment extends Fragment {
     private void esconderTeclado() {
         View view = getActivity() != null ? getActivity().getCurrentFocus() : null;
         if (view != null) {
-            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) 
-                getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
     private void voltarComFeedback(String msg) {
         if (getActivity() != null) getActivity().runOnUiThread(() -> {
-            com.google.android.material.snackbar.Snackbar.make(
+            Snackbar.make(
                 getActivity().findViewById(android.R.id.content),
                 msg,
-                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                Snackbar.LENGTH_SHORT
             ).show();
             voltarOuHome();
         });

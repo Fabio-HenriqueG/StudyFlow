@@ -433,16 +433,18 @@
             android:layout_width="3000dp"
             android:layout_height="3000dp"
 
-            android:background="@color/surface" />
+            android:background="@color/surface">
 
+            <!-- CAMADA DE DESENHO (Tinta) -->
+            <com.example.studyflow.DesenhoView
+                android:id="@+id/desenhoViewSobreposto"
 
-        <com.example.studyflow.DesenhoView
-            android:id="@+id/desenhoViewSobreposto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
-            android:layout_width="match_parent"
-            android:layout_height="213dp"
+                android:visibility="gone" />
 
-            android:visibility="visible" />
+        </RelativeLayout>
 
     </FrameLayout>
 
