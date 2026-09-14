@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.Anotacao;
-import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirebaseHelper;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,27 +60,27 @@ public class AnotacoesFragment extends Fragment {
     }
 
     private void carregarAnotacoes() {
-        Context context = getContext();
-        if (context == null) return;
-        Context appContext = context.getApplicationContext();
+        FirebaseHelper.getAnotacoesRef()
+                .orderBy("dataUltimaEdicao", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) return;
+                    
+                    List<Anotacao> lista = new ArrayList<>();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            Anotacao a = doc.toObject(Anotacao.class);
+                            a.id = doc.getId();
+                            lista.add(a);
+                        }
+                    }
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Anotacao> lista = AppDatabase.getInstance(appContext).anotacaoDao().buscarTodas();
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
                     if (adapter == null) {
                         adapter = new AnotacaoAdapter(new ArrayList<>(lista), this::abrirEditor);
+                        recyclerAnotacoes.setAdapter(adapter);
                     } else {
                         adapter.setAnotacoes(new ArrayList<>(lista));
                     }
-                    
-                    if (recyclerAnotacoes.getAdapter() == null) {
-                        recyclerAnotacoes.setAdapter(adapter);
-                    }
                 });
-            }
-        });
     }
 
     private void abrirEditor(Anotacao anotacao) {

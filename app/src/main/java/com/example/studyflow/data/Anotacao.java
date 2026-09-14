@@ -1,26 +1,20 @@
 package com.example.studyflow.data;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 /**
- * Entidade que representa uma Anotação no banco de dados.
- * Usamos HTML para salvar o texto formatado (cores, negrito, etc).
+ * Entidade que representa uma Anotação, adaptada para o Firebase.
  */
-@Entity(tableName = "Anotacoes")
 public class Anotacao implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
+    public String id; // ID do documento no Firestore
     public String titulo;
-
-    // Conteúdo da nota em formato HTML para preservar a estilização
     public String conteudoHtml;
-
-    // Data da última vez que a nota foi salva
     public long dataUltimaEdicao;
+
+    // Construtor vazio necessário para o Firestore
+    public Anotacao() {
+    }
 
     public Anotacao(String titulo, String conteudoHtml, long dataUltimaEdicao) {
         this.titulo = titulo;

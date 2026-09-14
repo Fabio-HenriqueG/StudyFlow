@@ -8,10 +8,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.Anotacao;
-import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirebaseHelper;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -87,16 +89,13 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
     }
 
     private void confirmarExclusao(View view, Anotacao anotacao, int position) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(view.getContext()).anotacaoDao().excluir(anotacao);
-            
-            view.post(() -> {
-                listaAnotacoes.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, listaAnotacoes.size());
-                com.google.android.material.snackbar.Snackbar.make(view, "Anotação excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-            });
-        });
+        FirebaseHelper.getAnotacoesRef().document(anotacao.id).delete()
+                .addOnSuccessListener(aVoid -> {
+                    Snackbar.make(view, "Anotação excluída", Snackbar.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Snackbar.make(view, "Erro ao excluir", Snackbar.LENGTH_SHORT).show();
+                });
     }
 
     @Override
@@ -105,7 +104,7 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
     }
 
     public void setAnotacoes(List<Anotacao> novasAnotacoes) {
-        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+        androidx.recyclerview.widget.DiffUtil.DiffResult result = androidx.recyclerview.widget.DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
                 return listaAnotacoes.size();
@@ -118,7 +117,9 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return listaAnotacoes.get(oldItemPosition).id == novasAnotacoes.get(newItemPosition).id;
+                String oldId = listaAnotacoes.get(oldItemPosition).id;
+                String newId = novasAnotacoes.get(newItemPosition).id;
+                return (oldId != null && oldId.equals(newId));
             }
 
             @Override
