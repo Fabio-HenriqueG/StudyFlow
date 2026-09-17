@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Meta;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -94,16 +95,13 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
             meta.ultimoCheckin = System.currentTimeMillis();
             
             // Registra a atividade no histórico
-            ProdutividadeManager.registrarAtividade(v.getContext(), "META", meta.id, 0);
+            ProdutividadeManager.registrarAtividade(v.getContext(), "META", meta.getIntId(), 0);
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(v.getContext()).metaDao().atualizar(meta);
-                
-                handler.post(() -> {
+            FirestoreService.getInstance().salvarMeta(meta)
+                .addOnSuccessListener(aVoid -> {
                     com.google.android.material.snackbar.Snackbar.make(v, "Parabéns! Meta confirmada por hoje.", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                     notifyItemChanged(position);
                 });
-            });
         });
 
         // Clique nos três pontinhos
@@ -142,16 +140,13 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
     }
 
     private void confirmarExclusao(View view, Meta meta, int position) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(view.getContext()).metaDao().excluir(meta);
-            
-            handler.post(() -> {
+        FirestoreService.getInstance().excluirMeta(meta.id)
+            .addOnSuccessListener(aVoid -> {
                 listaMetas.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, listaMetas.size());
                 com.google.android.material.snackbar.Snackbar.make(view, "Meta excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
             });
-        });
     }
 
     @Override
@@ -173,7 +168,7 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return listaMetas.get(oldItemPosition).id == novasMetas.get(newItemPosition).id;
+                return listaMetas.get(oldItemPosition).id.equals(novasMetas.get(newItemPosition).id);
             }
 
             @Override

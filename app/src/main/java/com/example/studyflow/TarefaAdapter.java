@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
 
 import java.text.SimpleDateFormat;
@@ -138,27 +139,26 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
     }
 
     private void confirmarExclusao(View view, Tarefa tarefa, int position) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Context context = view.getContext();
-            AppDatabase.getInstance(context).tarefaDao().excluir(tarefa);
-            
-            // Cancela notificações agendadas
-            NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+        Context context = view.getContext();
+        FirestoreService.getInstance().excluirTarefa(tarefa.id)
+            .addOnSuccessListener(aVoid -> {
+                // Cancela notificações agendadas
+                NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
 
-            view.post(() -> {
-                if (position < listaTarefas.size()) {
-                    listaTarefas.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, listaTarefas.size());
+                view.post(() -> {
+                    if (position < listaTarefas.size()) {
+                        listaTarefas.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, listaTarefas.size());
 
-                    if (onDataChangedListener != null) {
-                        onDataChangedListener.onDataChanged(listaTarefas.size());
+                        if (onDataChangedListener != null) {
+                            onDataChangedListener.onDataChanged(listaTarefas.size());
+                        }
+
+                        com.google.android.material.snackbar.Snackbar.make(view, "Tarefa excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                     }
-
-                    com.google.android.material.snackbar.Snackbar.make(view, "Tarefa excluída", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                }
+                });
             });
-        });
     }
 
     @Override
@@ -180,7 +180,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return listaTarefas.get(oldItemPosition).id == novasTarefas.get(newItemPosition).id;
+                return listaTarefas.get(oldItemPosition).id.equals(novasTarefas.get(newItemPosition).id);
             }
 
             @Override
@@ -203,10 +203,10 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
     public void removerTarefa(int position, Context context) {
         if (position >= 0 && position < listaTarefas.size()) {
             Tarefa tarefa = listaTarefas.get(position);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(context).tarefaDao().excluir(tarefa);
-                NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
-            });
+            FirestoreService.getInstance().excluirTarefa(tarefa.id)
+                .addOnSuccessListener(aVoid -> {
+                    NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+                });
             listaTarefas.remove(position);
             notifyItemRemoved(position);
             if (onDataChangedListener != null) {
@@ -218,18 +218,18 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
     public void concluirTarefa(int position, Context context) {
         if (position >= 0 && position < listaTarefas.size()) {
             Tarefa tarefa = listaTarefas.get(position);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase db = AppDatabase.getInstance(context);
-                if (tarefa.prioridade == 0) {
-                    db.tarefaDao().excluir(tarefa);
-                } else {
-                    tarefa.concluida = true;
-                    tarefa.dataConclusao = System.currentTimeMillis();
-                    db.tarefaDao().atualizar(tarefa);
-                }
-                NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
-                ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.id, 0);
-            });
+            
+            if (tarefa.prioridade == 0) {
+                FirestoreService.getInstance().excluirTarefa(tarefa.id);
+            } else {
+                tarefa.concluida = true;
+                tarefa.dataConclusao = System.currentTimeMillis();
+                FirestoreService.getInstance().salvarTarefa(tarefa);
+            }
+            
+            NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
+            ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.getIntId(), 0);
+
             listaTarefas.remove(position);
             notifyItemRemoved(position);
             if (onDataChangedListener != null) {

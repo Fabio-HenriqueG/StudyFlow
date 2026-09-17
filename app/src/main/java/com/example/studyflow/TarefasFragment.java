@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
 
 import java.util.ArrayList;
@@ -110,13 +112,12 @@ public class TarefasFragment extends Fragment {
     private void carregarTarefasDoBanco() {
         Context context = getContext();
         if (context == null) return;
-        Context appContext = context.getApplicationContext();
+        
+        FirestoreService.getInstance().buscarTarefasAtivas()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Tarefa> listaDoBanco = queryDocumentSnapshots.toObjects(Tarefa.class);
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Tarefa> listaDoBanco = AppDatabase.getInstance(appContext).tarefaDao().buscarAtivas();
-
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+                if (getActivity() != null) {
                     if (adapter == null) {
                         adapter = new TarefaAdapter(new ArrayList<>(listaDoBanco));
                         adapter.setOnDataChangedListener(count -> {
@@ -135,8 +136,12 @@ public class TarefasFragment extends Fragment {
                     if (txtEmptyState != null) {
                         txtEmptyState.setVisibility(listaDoBanco.isEmpty() ? View.VISIBLE : View.GONE);
                     }
-                });
-            }
-        });
+                }
+            })
+            .addOnFailureListener(e -> {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Erro ao carregar tarefas", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 }

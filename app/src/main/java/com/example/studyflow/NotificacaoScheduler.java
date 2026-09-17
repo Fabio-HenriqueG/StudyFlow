@@ -22,10 +22,11 @@ public class NotificacaoScheduler {
         long diferencaDias = (prazo - agora) / (24 * 60 * 60 * 1000);
 
         int intensidade = tarefa.insistencia; // 0=Focada, 1=Padrão, 2=Intensa
+        int tarefaIntId = tarefa.getIntId();
 
         // 1. Notificação Imediata de Confirmação (10 segundos depois)
-        agendar(context, tarefa.id + 600, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                NotificacaoMensagens.TAREFA_CONFIRMACAO_TITULO, String.format(NotificacaoMensagens.TAREFA_CONFIRMACAO_MSG, tarefa.titulo), agora + 10000, tarefa.id);
+        agendar(context, tarefaIntId + 600, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                NotificacaoMensagens.TAREFA_CONFIRMACAO_TITULO, String.format(NotificacaoMensagens.TAREFA_CONFIRMACAO_MSG, tarefa.titulo), agora + 10000, tarefaIntId);
 
         // Se intensidade for Focada (0), ignoramos os acompanhamentos de longo prazo
         if (intensidade >= 1) {
@@ -33,20 +34,20 @@ public class NotificacaoScheduler {
             if (diferencaDias > 14) {
                 // Ponto Médio
                 long meioCaminho = agora + ((prazo - agora) / 2);
-                agendar(context, tarefa.id, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        "Acompanhamento", String.format(NotificacaoMensagens.TAREFA_ACOMPANHAMENTO, tarefa.titulo), meioCaminho, tarefa.id);
+                agendar(context, tarefaIntId, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        "Acompanhamento", String.format(NotificacaoMensagens.TAREFA_ACOMPANHAMENTO, tarefa.titulo), meioCaminho, tarefaIntId);
 
                 // 7 dias antes
                 long seteDiasAntes = prazo - (7L * 24 * 60 * 60 * 1000);
-                agendar(context, tarefa.id + 100, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        "Lembrete", String.format(NotificacaoMensagens.TAREFA_ATENCAO_7_DIAS, tarefa.titulo), seteDiasAntes, tarefa.id);
+                agendar(context, tarefaIntId + 100, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        "Lembrete", String.format(NotificacaoMensagens.TAREFA_ATENCAO_7_DIAS, tarefa.titulo), seteDiasAntes, tarefaIntId);
             }
 
             // 3. Prazos Médios (4 a 14 dias)
             else if (diferencaDias >= 4) {
                 long meioCaminho = agora + ((prazo - agora) / 2);
-                agendar(context, tarefa.id, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        "Acompanhamento", String.format(NotificacaoMensagens.TAREFA_ACOMPANHAMENTO, tarefa.titulo), meioCaminho, tarefa.id);
+                agendar(context, tarefaIntId, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        "Acompanhamento", String.format(NotificacaoMensagens.TAREFA_ACOMPANHAMENTO, tarefa.titulo), meioCaminho, tarefaIntId);
             }
         }
 
@@ -57,6 +58,7 @@ public class NotificacaoScheduler {
     private static void configurarRetaFinal(Context context, Tarefa tarefa, int intensidade) {
         long prazo = tarefa.dataLimite;
         long agora = System.currentTimeMillis();
+        int tarefaIntId = tarefa.getIntId();
         
         if (intensidade == 2) { // MODO INTENSA: Algoritmo de Pressão Crescente
             // 1. Acompanhamento antes do dia final
@@ -71,8 +73,8 @@ public class NotificacaoScheduler {
                 else if (horasRestantes > 24) intervalo = 6 * 60 * 60 * 1000L; // 1 a cada 6h
                 else intervalo = 2 * 60 * 60 * 1000L; // 1 a cada 2h (na véspera)
 
-                agendar(context, tarefa.id + (int)(cursor % 10000), "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        "Modo Intenso", "Não esqueça: '" + tarefa.titulo + "' precisa ser feita!", cursor, tarefa.id);
+                agendar(context, tarefaIntId + (int)(cursor % 10000), "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        "Modo Intenso", "Não esqueça: '" + tarefa.titulo + "' precisa ser feita!", cursor, tarefaIntId);
                 
                 cursor += intervalo;
             }
@@ -81,8 +83,8 @@ public class NotificacaoScheduler {
             long horaInicioBombardeio = Math.max(agora, diaFinalMillis + (9 * 60 * 60 * 1000)); // 9h da manhã ou agora
             cursor = horaInicioBombardeio;
             while (cursor < prazo - (15 * 60 * 1000)) { // Até 15 min antes do fim
-                agendar(context, tarefa.id + (int)(cursor % 10000), "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
-                        "FOCO TOTAL!", "Alerta de 30 min: Conclua '" + tarefa.titulo + "' agora!", cursor, tarefa.id);
+                agendar(context, tarefaIntId + (int)(cursor % 10000), "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
+                        "FOCO TOTAL!", "Alerta de 30 min: Conclua '" + tarefa.titulo + "' agora!", cursor, tarefaIntId);
                 cursor += 30 * 60 * 1000; // 30 minutos
             }
         } 
@@ -93,8 +95,8 @@ public class NotificacaoScheduler {
                 manhaDia.setTimeInMillis(prazo);
                 manhaDia.set(Calendar.HOUR_OF_DAY, 9);
                 manhaDia.set(Calendar.MINUTE, 0);
-                agendar(context, tarefa.id + 500, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        NotificacaoMensagens.TAREFA_DIA_HOJE_TITULO, String.format(NotificacaoMensagens.TAREFA_DIA_HOJE, tarefa.titulo), manhaDia.getTimeInMillis(), tarefa.id);
+                agendar(context, tarefaIntId + 500, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        NotificacaoMensagens.TAREFA_DIA_HOJE_TITULO, String.format(NotificacaoMensagens.TAREFA_DIA_HOJE, tarefa.titulo), manhaDia.getTimeInMillis(), tarefaIntId);
             }
 
             if (tarefa.prioridade == 2) {
@@ -104,15 +106,15 @@ public class NotificacaoScheduler {
                     cal.add(Calendar.DAY_OF_YEAR, -1);
                     cal.set(Calendar.HOUR_OF_DAY, 20);
                     cal.set(Calendar.MINUTE, 0);
-                    agendar(context, tarefa.id + 200, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
-                            "Planejamento", String.format(NotificacaoMensagens.TAREFA_ALTA_PLANEJAMENTO, tarefa.titulo), cal.getTimeInMillis(), tarefa.id);
+                    agendar(context, tarefaIntId + 200, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
+                            "Planejamento", String.format(NotificacaoMensagens.TAREFA_ALTA_PLANEJAMENTO, tarefa.titulo), cal.getTimeInMillis(), tarefaIntId);
                 }
-                agendar(context, tarefa.id + 300, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
-                        "URGENTE", String.format(NotificacaoMensagens.TAREFA_URGENTE_1H, tarefa.titulo), prazo - (60 * 60 * 1000), tarefa.id);
+                agendar(context, tarefaIntId + 300, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_ALTA,
+                        "URGENTE", String.format(NotificacaoMensagens.TAREFA_URGENTE_1H, tarefa.titulo), prazo - (60 * 60 * 1000), tarefaIntId);
             } 
             else if (tarefa.prioridade == 1) {
-                agendar(context, tarefa.id + 400, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
-                        "Lembrete", String.format(NotificacaoMensagens.TAREFA_URGENTE_2H, tarefa.titulo), prazo - (2L * 60 * 60 * 1000), tarefa.id);
+                agendar(context, tarefaIntId + 400, "TAREFA", NotificacaoHelper.CHANNEL_TAREFAS_GERAL,
+                        "Lembrete", String.format(NotificacaoMensagens.TAREFA_URGENTE_2H, tarefa.titulo), prazo - (2L * 60 * 60 * 1000), tarefaIntId);
             }
         }
     }
@@ -152,8 +154,12 @@ public class NotificacaoScheduler {
     /**
      * Cancela todos os agendamentos de uma tarefa específica (útil ao excluir ou concluir).
      */
-    public static void cancelarNotificacoesTarefa(Context context, int tarefaId) {
-        WorkManager.getInstance(context).cancelAllWorkByTag("NOTIFICACAO_TAREFA_" + tarefaId);
+    public static void cancelarNotificacoesTarefa(Context context, String tarefaId) {
+        WorkManager.getInstance(context).cancelAllWorkByTag("NOTIFICACAO_TAREFA_" + tarefaId.hashCode());
+    }
+
+    public static void cancelarNotificacoesTarefa(Context context, int tarefaIntId) {
+        WorkManager.getInstance(context).cancelAllWorkByTag("NOTIFICACAO_TAREFA_" + tarefaIntId);
     }
 
     /**

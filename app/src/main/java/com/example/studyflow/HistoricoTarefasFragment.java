@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
 
 import java.util.ArrayList;
@@ -38,15 +39,13 @@ public class HistoricoTarefasFragment extends Fragment {
     }
 
     private void carregarHistorico() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Tarefa> historico = AppDatabase.getInstance(getContext()).tarefaDao().buscarNoHistorico();
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarTarefasConcluidas()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Tarefa> historico = queryDocumentSnapshots.toObjects(Tarefa.class);
+                if (getActivity() != null) {
                     TarefaAdapter adapter = new TarefaAdapter(new ArrayList<>(historico), true);
                     recyclerHistorico.setAdapter(adapter);
-                });
-            }
-        });
+                }
+            });
     }
 }

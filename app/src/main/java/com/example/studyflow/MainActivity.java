@@ -27,6 +27,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -104,25 +105,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processarLimpezaTarefas() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(this);
-            long agora = System.currentTimeMillis();
+        long agora = System.currentTimeMillis();
+        FirestoreService fs = FirestoreService.getInstance();
 
-            // 1. Move expiradas para o histórico ou deleta (Baixa)
-            List<Tarefa> expiradas = db.tarefaDao().buscarExpiradas(agora);
-            for (Tarefa t : expiradas) {
-                if (t.prioridade == 0) {
-                    db.tarefaDao().excluir(t);
-                } else {
-                    t.concluida = true;
-                    t.dataConclusao = agora;
-                    db.tarefaDao().atualizar(t);
+        // Busca todas as tarefas para processar limpeza (Poderia ser otimizado com query)
+        fs.buscarTarefasAtivas().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<Tarefa> tarefas = queryDocumentSnapshots.toObjects(Tarefa.class);
+            for (Tarefa t : tarefas) {
+                if (t.dataLimite < agora) {
+                    if (t.prioridade == 0) {
+                        fs.excluirTarefa(t.id);
+                    } else {
+                        t.concluida = true;
+                        t.dataConclusao = agora;
+                        fs.salvarTarefa(t);
+                    }
                 }
             }
+        });
 
-            // 2. Deleta Médias antigas (ex: mais de 7 dias)
-            long seteDiasAtras = agora - (7L * 24 * 60 * 60 * 1000);
-            db.tarefaDao().deletarMediasAntigas(seteDiasAtras);
+        // Limpeza do histórico (Médias antigas)
+        long seteDiasAtras = agora - (7L * 24 * 60 * 60 * 1000);
+        fs.buscarTarefasConcluidas().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<Tarefa> concluidas = queryDocumentSnapshots.toObjects(Tarefa.class);
+            for (Tarefa t : concluidas) {
+                if (t.prioridade == 1 && t.dataConclusao < seteDiasAtras) {
+                    fs.excluirTarefa(t.id);
+                }
+            }
         });
     }
 
@@ -168,22 +178,47 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
+    private void navegarPara(Fragment destino, boolean isVazio) {
+        if (!isFinishing() && !isDestroyed()) {
+            if (isVazio) {
+                Toast.makeText(this, R.string.nenhum_item_criado, Toast.LENGTH_SHORT).show();
+            }
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, destino)
+                    .commit();
+        }
+    }
+
     private void verificarDadosENavegar(int itemId) {
         Executors.newSingleThreadExecutor().execute(() -> {
             AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+            
+            if (itemId == R.id.nav_tarefas) {
+                FirestoreService.getInstance().buscarTarefasAtivas()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        boolean vazio = queryDocumentSnapshots.isEmpty();
+                        Fragment destino = vazio ? new CriaTarefaFragment() : new TarefasFragment();
+                        navegarPara(destino, vazio);
+                    });
+                return;
+            }
+
             Fragment destino = null;
             boolean vazio = false;
 
             try {
-                if (itemId == R.id.nav_tarefas) {
-                    vazio = db.tarefaDao().contarTodas() == 0;
-                    destino = vazio ? new CriaTarefaFragment() : new TarefasFragment();
-                } else if (itemId == R.id.nav_anotacoes) {
+                if (itemId == R.id.nav_anotacoes) {
                     vazio = db.anotacaoDao().contarTodas() == 0;
                     destino = vazio ? new EditorAnotacaoFragment() : new AnotacoesFragment();
                 } else if (itemId == R.id.nav_metas) {
-                    vazio = db.metaDao().contarTodas() == 0;
-                    destino = vazio ? new CriaMetaFragment() : new MetasFragment();
+                    FirestoreService.getInstance().buscarMetas()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            boolean isVazio = queryDocumentSnapshots.isEmpty();
+                            Fragment fragmentDestino = isVazio ? new CriaMetaFragment() : new MetasFragment();
+                            navegarPara(fragmentDestino, isVazio);
+                        });
+                    return;
                 } else if (itemId == R.id.nav_checklist) {
                     vazio = db.checklistDao().contarTodas() == 0;
                     destino = vazio ? new CriaChecklistFragment() : new ChecklistFragment();
@@ -193,23 +228,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (destino == null) return;
-
-            final boolean isVazio = vazio;
-            final Fragment finalDestino = destino;
-
-            runOnUiThread(() -> {
-                if (!isFinishing() && !isDestroyed()) {
-                    if (isVazio) {
-                        Toast.makeText(this, R.string.nenhum_item_criado, Toast.LENGTH_SHORT).show();
-                    }
-                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, finalDestino)
-                            .commit();
-                }
-            });
+            navegarPara(destino, vazio);
         });
     }
+
 
     /**
      * Técnica para desmarcar todos os itens do menu inferior.

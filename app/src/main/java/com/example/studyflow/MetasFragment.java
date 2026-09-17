@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Meta;
 
 import java.util.ArrayList;
@@ -62,15 +63,10 @@ public class MetasFragment extends Fragment {
     }
 
     private void carregarMetas() {
-        Context context = getContext();
-        if (context == null) return;
-        Context appContext = context.getApplicationContext();
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Meta> lista = AppDatabase.getInstance(appContext).metaDao().buscarTodas();
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarMetas()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Meta> lista = queryDocumentSnapshots.toObjects(Meta.class);
+                if (getActivity() != null) {
                     if (adapter == null) {
                         adapter = new MetaAdapter(new ArrayList<>(lista));
                     } else {
@@ -80,8 +76,7 @@ public class MetasFragment extends Fragment {
                     if (recyclerMetas.getAdapter() == null) {
                         recyclerMetas.setAdapter(adapter);
                     }
-                });
-            }
-        });
+                }
+            });
     }
 }
