@@ -9,10 +9,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.studyflow.data.AppDatabase;
-import com.example.studyflow.data.ChecklistItem;
+  import com.example.studyflow.data.ChecklistItem;
+import com.example.studyflow.data.FirestoreService;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class ChecklistItemsAdapter extends RecyclerView.Adapter<ChecklistItemsAdapter.ItemViewHolder> {
 
@@ -50,12 +49,10 @@ public class ChecklistItemsAdapter extends RecyclerView.Adapter<ChecklistItemsAd
             
             if (item.isChecked) {
                 // Registra a atividade no histórico
-                ProdutividadeManager.registrarAtividade(v.getContext(), "CHECKLIST", item.id, 0);
+                ProdutividadeManager.registrarAtividade(v.getContext(), "CHECKLIST", item.id, "");
             }
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(v.getContext()).checklistDao().atualizarItem(item);
-            });
+            FirestoreService.getInstance().salvarChecklistItem(item.checklistId, item);
         });
 
         // Clique em Editar
@@ -65,14 +62,10 @@ public class ChecklistItemsAdapter extends RecyclerView.Adapter<ChecklistItemsAd
 
         // Clique em Excluir
         holder.btnExcluir.setOnClickListener(v -> {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(v.getContext()).checklistDao().excluirItem(item);
-                
-                holder.itemView.post(() -> {
-                    listaItens.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, listaItens.size());
-                });
+            FirestoreService.getInstance().excluirChecklistItem(item.checklistId, item.id).addOnSuccessListener(aVoid -> {
+                listaItens.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, listaItens.size());
             });
         });
     }

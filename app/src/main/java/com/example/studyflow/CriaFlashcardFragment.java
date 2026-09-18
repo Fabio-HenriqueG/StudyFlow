@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
@@ -105,15 +106,11 @@ public class CriaFlashcardFragment extends Fragment {
         builder.setPositiveButton("Criar", (dialog, which) -> {
             String nome = input.getText().toString().trim();
             if (!nome.isEmpty()) {
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    Materia nova = new Materia(nome, Color.BLUE); // Cor padrão inicial
-                    long id = AppDatabase.getInstance(getContext()).materiaDao().inserir(nova);
-                    nova.id = (int) id;
-                    getActivity().runOnUiThread(() -> {
-                        carregarMaterias();
-                        materiaSelecionada = nova;
-                        spinnerMaterias.setText(nova.nome, false);
-                    });
+                Materia nova = new Materia(nome, Color.BLUE); // Cor padrão inicial
+                FirestoreService.getInstance().salvarMateria(nova).addOnSuccessListener(aVoid -> {
+                    carregarMaterias();
+                    materiaSelecionada = nova;
+                    spinnerMaterias.setText(nova.nome, false);
                 });
             }
         });
@@ -142,16 +139,12 @@ public class CriaFlashcardFragment extends Fragment {
             flashcardEdicao.explicacao = explicacao;
             flashcardEdicao.materiaId = materiaSelecionada.id;
             
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).flashcardDao().atualizar(flashcardEdicao);
-                finalizar(getString(R.string.flashcard_atualizado));
-            });
+            FirestoreService.getInstance().salvarFlashcard(flashcardEdicao)
+                .addOnSuccessListener(aVoid -> finalizar(getString(R.string.flashcard_atualizado)));
         } else {
             Flashcard flashcard = new Flashcard(pergunta, resposta, explicacao, materiaSelecionada.id);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).flashcardDao().inserir(flashcard);
-                finalizar(getString(R.string.flashcard_criado));
-            });
+            FirestoreService.getInstance().salvarFlashcard(flashcard)
+                .addOnSuccessListener(aVoid -> finalizar(getString(R.string.flashcard_criado)));
         }
     }
 

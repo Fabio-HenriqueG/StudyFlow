@@ -11,8 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Checklist;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import java.text.SimpleDateFormat;
@@ -104,24 +104,19 @@ public class CriaChecklistFragment extends Fragment {
             return;
         }
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            if (checklistEmEdicao != null) {
-                checklistEmEdicao.titulo = titulo;
-                checklistEmEdicao.isPinned = switchFixar.isChecked();
-                checklistEmEdicao.dataValidade = dataSelecionada;
-                AppDatabase.getInstance(getContext()).checklistDao().atualizar(checklistEmEdicao);
-            } else {
-                Checklist novo = new Checklist(titulo);
-                novo.isPinned = switchFixar.isChecked();
-                novo.dataValidade = dataSelecionada;
-                AppDatabase.getInstance(getContext()).checklistDao().inserir(novo);
-            }
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "Checklist salvo!", Toast.LENGTH_SHORT).show();
-                    voltarOuHome();
-                });
-            }
-        });
+        if (checklistEmEdicao != null) {
+            checklistEmEdicao.titulo = titulo;
+            checklistEmEdicao.isPinned = switchFixar.isChecked();
+            checklistEmEdicao.dataValidade = dataSelecionada;
+            FirestoreService.getInstance().salvarChecklist(checklistEmEdicao);
+        } else {
+            Checklist novo = new Checklist(titulo);
+            novo.isPinned = switchFixar.isChecked();
+            novo.dataValidade = dataSelecionada;
+            FirestoreService.getInstance().salvarChecklist(novo);
+        }
+        
+        Toast.makeText(getContext(), "Checklist salvo!", Toast.LENGTH_SHORT).show();
+        voltarOuHome();
     }
 }

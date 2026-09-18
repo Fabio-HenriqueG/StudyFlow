@@ -228,7 +228,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.TarefaView
             }
             
             NotificacaoScheduler.cancelarNotificacoesTarefa(context, tarefa.id);
-            ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.getIntId(), 0);
+            ProdutividadeManager.registrarAtividade(context, "TAREFA", tarefa.id, "");
 
             listaTarefas.remove(position);
             notifyItemRemoved(position);

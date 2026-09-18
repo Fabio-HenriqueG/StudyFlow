@@ -1,19 +1,25 @@
 package com.example.studyflow.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "AtividadeLog")
 public class AtividadeLog {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
+    @NonNull
+    public String id = "";
     
     public String tipo; // TAREFA, META, CHECKLIST, FLASHCARD
-    public int referenciaId;
+    public String referenciaId;
     public long dataMillis;
-    public int materiaId;
+    public String materiaId;
 
-    public AtividadeLog(String tipo, int referenciaId, long dataMillis, int materiaId) {
+    // Construtor vazio para o Firebase
+    public AtividadeLog() {
+    }
+
+    public AtividadeLog(String tipo, String referenciaId, long dataMillis, String materiaId) {
         this.tipo = tipo;
         this.referenciaId = referenciaId;
         this.dataMillis = dataMillis;

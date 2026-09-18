@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Meta;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.concurrent.Executors;
 
 public class CriaMetaFragment extends Fragment {
@@ -78,24 +80,22 @@ public class CriaMetaFragment extends Fragment {
         esconderTeclado();
         if (metaEmEdicao != null) {
             metaEmEdicao.titulo = titulo;
-            FirestoreService.getInstance().salvarMeta(metaEmEdicao)
-                .addOnSuccessListener(aVoid -> {
-                    View root = getActivity() != null ? getActivity().findViewById(android.R.id.content) : null;
-                    if (root != null) {
-                        com.google.android.material.snackbar.Snackbar.make(root, R.string.meta_atualizada, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                    }
-                    voltarOuHome();
-                });
+            FirestoreService.getInstance().salvarMeta(metaEmEdicao);
+            
+            View root = getActivity() != null ? getActivity().findViewById(android.R.id.content) : null;
+            if (root != null) {
+                Snackbar.make(root, R.string.meta_atualizada, Snackbar.LENGTH_SHORT).show();
+            }
+            voltarOuHome();
         } else {
             Meta novaMeta = new Meta(titulo, System.currentTimeMillis());
-            FirestoreService.getInstance().salvarMeta(novaMeta)
-                .addOnSuccessListener(aVoid -> {
-                    View root = getActivity() != null ? getActivity().findViewById(android.R.id.content) : null;
-                    if (root != null) {
-                        com.google.android.material.snackbar.Snackbar.make(root, R.string.meta_iniciada, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                    }
-                    voltarOuHome();
-                });
+            FirestoreService.getInstance().salvarMeta(novaMeta);
+            
+            View root = getActivity() != null ? getActivity().findViewById(android.R.id.content) : null;
+            if (root != null) {
+                Snackbar.make(root, R.string.meta_iniciada, Snackbar.LENGTH_SHORT).show();
+            }
+            voltarOuHome();
         }
     }
 }

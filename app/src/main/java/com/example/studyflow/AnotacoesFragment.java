@@ -13,9 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.Anotacao;
-import com.example.studyflow.data.FirebaseHelper;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.studyflow.data.FirestoreService;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,27 +59,18 @@ public class AnotacoesFragment extends Fragment {
     }
 
     private void carregarAnotacoes() {
-        FirebaseHelper.getAnotacoesRef()
-                .orderBy("dataUltimaEdicao", Query.Direction.DESCENDING)
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) return;
-                    
-                    List<Anotacao> lista = new ArrayList<>();
-                    if (value != null) {
-                        for (QueryDocumentSnapshot doc : value) {
-                            Anotacao a = doc.toObject(Anotacao.class);
-                            a.id = doc.getId();
-                            lista.add(a);
-                        }
-                    }
-
+        FirestoreService.getInstance().buscarAnotacoes()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Anotacao> lista = queryDocumentSnapshots.toObjects(Anotacao.class);
+                if (getActivity() != null) {
                     if (adapter == null) {
                         adapter = new AnotacaoAdapter(new ArrayList<>(lista), this::abrirEditor);
                         recyclerAnotacoes.setAdapter(adapter);
                     } else {
                         adapter.setAnotacoes(new ArrayList<>(lista));
                     }
-                });
+                }
+            });
     }
 
     private void abrirEditor(Anotacao anotacao) {

@@ -11,9 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,14 +48,13 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Flas
         Flashcard f = lista.get(position);
         holder.txtPergunta.setText(f.pergunta);
         
-        // Busca o nome da matéria pelo ID
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Materia m = AppDatabase.getInstance(holder.itemView.getContext()).materiaDao().buscarPorId(f.materiaId);
-            holder.itemView.post(() -> {
+        // Busca o nome da matéria pelo ID no Firestore
+        FirestoreService.getInstance().getMateriasRef().document(f.materiaId).get()
+            .addOnSuccessListener(documentSnapshot -> {
+                Materia m = documentSnapshot.toObject(Materia.class);
                 holder.txtMateria.setText(m != null ? m.nome : "Sem Categoria");
                 if (m != null) holder.txtMateria.setTextColor(m.cor);
             });
-        });
 
         // Status de Domínio
         String status;
@@ -85,14 +85,11 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Flas
     }
 
     private void excluirFlashcard(View v, Flashcard f, int pos) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(v.getContext()).flashcardDao().excluir(f);
-            v.post(() -> {
-                lista.remove(pos);
-                notifyItemRemoved(pos);
-                notifyItemRangeChanged(pos, lista.size());
-                com.google.android.material.snackbar.Snackbar.make(v, "Removido!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-            });
+        FirestoreService.getInstance().excluirFlashcard(f.id).addOnSuccessListener(aVoid -> {
+            lista.remove(pos);
+            notifyItemRemoved(pos);
+            notifyItemRangeChanged(pos, lista.size());
+            Snackbar.make(v, "Removido!", Snackbar.LENGTH_SHORT).show();
         });
     }
 

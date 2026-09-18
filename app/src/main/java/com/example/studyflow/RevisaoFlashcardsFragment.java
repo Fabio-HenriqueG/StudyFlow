@@ -14,14 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class RevisaoFlashcardsFragment extends Fragment {
 
@@ -77,21 +76,19 @@ public class RevisaoFlashcardsFragment extends Fragment {
     }
 
     private void carregarFlashcards() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            long hoje = System.currentTimeMillis();
-            listaRevisao = AppDatabase.getInstance(getContext()).flashcardDao().buscarParaRevisarHoje(hoje);
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        long hoje = System.currentTimeMillis();
+        FirestoreService.getInstance().buscarFlashcardsParaRevisar(hoje)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                listaRevisao = queryDocumentSnapshots.toObjects(Flashcard.class);
+                if (getActivity() != null) {
                     if (listaRevisao.isEmpty()) {
                         Toast.makeText(getContext(), "Não há nada para revisar hoje! 🎉", Toast.LENGTH_LONG).show();
                         getParentFragmentManager().popBackStack();
                     } else {
                         exibirCardAtual();
                     }
-                });
-            }
-        });
+                }
+            });
     }
 
     private void exibirCardAtual() {
@@ -106,16 +103,14 @@ public class RevisaoFlashcardsFragment extends Fragment {
         txtResposta.setText(atual.resposta);
         txtExplicacao.setText(atual.explicacao != null ? atual.explicacao : "");
         
-        // Busca a matéria para mostrar no topo do card se desejar
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Materia m = AppDatabase.getInstance(getContext()).materiaDao().buscarPorId(atual.materiaId);
-            if (m != null && getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    // Podemos colocar o nome da matéria no título ou subtítulo
+        // Busca a matéria para mostrar no topo do card
+        FirestoreService.getInstance().getMateriasRef().document(atual.materiaId).get()
+            .addOnSuccessListener(documentSnapshot -> {
+                Materia m = documentSnapshot.toObject(Materia.class);
+                if (m != null && getActivity() != null) {
                     lblProgresso.setText(m.nome + " • " + (indiceAtual + 1) + " / " + listaRevisao.size());
-                });
-            }
-        });
+                }
+            });
         
         mostrandoVerso = false;
         mostrandoExplicacao = false;
@@ -230,15 +225,10 @@ public class RevisaoFlashcardsFragment extends Fragment {
             ProdutividadeManager.registrarAtividade(getContext(), "FLASHCARD", atual.id, atual.materiaId);
         }
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            // Se for um novo item adicionado na sessão (ID=0), não salva no banco ainda
-            // Mas o 'atual' original que foi modificado precisa ser salvo
-            AppDatabase.getInstance(getContext()).flashcardDao().atualizar(atual);
+        FirestoreService.getInstance().salvarFlashcard(atual).addOnSuccessListener(aVoid -> {
             if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    indiceAtual++;
-                    exibirCardAtual();
-                });
+                indiceAtual++;
+                exibirCardAtual();
             }
         });
     }

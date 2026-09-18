@@ -12,10 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Checklist;
 import com.example.studyflow.data.ChecklistItem;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -64,27 +66,24 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
         }
 
         // Progresso
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<ChecklistItem> itens = AppDatabase.getInstance(holder.itemView.getContext())
-                    .checklistDao().buscarItensPorChecklist(checklist.id);
-            
-            int total = itens.size();
-            int concluidos = 0;
-            for (ChecklistItem item : itens) {
-                if (item.isChecked) concluidos++;
-            }
+        FirestoreService.getInstance().buscarItensPorChecklist(checklist.id)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<ChecklistItem> itens = queryDocumentSnapshots.toObjects(ChecklistItem.class);
+                int total = itens.size();
+                int concluidos = 0;
+                for (ChecklistItem item : itens) {
+                    if (item.isChecked) concluidos++;
+                }
 
-            final int fTotal = total;
-            final int fConcluidos = concluidos;
-            final int progresso = (total > 0) ? (concluidos * 100 / total) : 0;
+                final int progresso = (total > 0) ? (concluidos * 100 / total) : 0;
 
-            if (holder.itemView.getContext() instanceof AppCompatActivity) {
-                ((AppCompatActivity) holder.itemView.getContext()).runOnUiThread(() -> {
-                    holder.progress.setProgress(progresso);
-                    holder.textPorcentagem.setText(progresso + "%");
-                });
-            }
-        });
+                if (holder.itemView.getContext() instanceof AppCompatActivity) {
+                    ((AppCompatActivity) holder.itemView.getContext()).runOnUiThread(() -> {
+                        holder.progress.setProgress(progresso);
+                        holder.textPorcentagem.setText(progresso + "%");
+                    });
+                }
+            });
 
         // Clique no card abre os detalhes
         holder.itemView.setOnClickListener(v -> {
@@ -128,19 +127,12 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
 
     private void alternarFixacao(View view, Checklist checklist, int position) {
         checklist.isPinned = !checklist.isPinned;
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(view.getContext()).checklistDao().atualizar(checklist);
+        FirestoreService.getInstance().salvarChecklist(checklist).addOnSuccessListener(aVoid -> {
             if (view.getContext() instanceof AppCompatActivity) {
                 ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
-                    com.google.android.material.snackbar.Snackbar.make(view, checklist.isPinned ? "Fixado" : "Desafixado", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
-                    
-                    // Notifica mudança individual primeiro para feedback visual imediato (ícone)
+                    Snackbar.make(view, checklist.isPinned ? "Fixado" : "Desafixado", Snackbar.LENGTH_SHORT).show();
                     notifyItemChanged(position);
-                    
-                    // Notifica o Fragment para recarregar e re-ordenar (opcional dependendo da fluidez desejada)
-                    if (listener != null) {
-                        listener.onDataChanged();
-                    }
+                    if (listener != null) listener.onDataChanged();
                 });
             }
         });
@@ -162,20 +154,14 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.Chec
     }
 
     private void confirmarExclusao(View view, Checklist checklist, int position) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase.getInstance(view.getContext()).checklistDao().excluir(checklist);
-            
+        FirestoreService.getInstance().excluirChecklist(checklist.id).addOnSuccessListener(aVoid -> {
             if (view.getContext() instanceof AppCompatActivity) {
                 ((AppCompatActivity) view.getContext()).runOnUiThread(() -> {
                     listaChecklists.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaChecklists.size());
-                    
-                    if (listener != null) {
-                        listener.onDataChanged();
-                    }
-                    
-                    com.google.android.material.snackbar.Snackbar.make(view, "Checklist excluído", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    if (listener != null) listener.onDataChanged();
+                    Snackbar.make(view, "Checklist excluído", Snackbar.LENGTH_SHORT).show();
                 });
             }
         });

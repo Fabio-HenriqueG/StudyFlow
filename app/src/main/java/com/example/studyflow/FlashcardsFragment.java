@@ -10,10 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 /**
  * Fragmento que exibe a lista de Matérias/Decks de Flashcards.
@@ -51,19 +50,14 @@ public class FlashcardsFragment extends Fragment {
     }
 
     private void carregarMaterias() {
-        Context context = getContext();
-        if (context == null) return;
-        Context appContext = context.getApplicationContext();
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Materia> materias = AppDatabase.getInstance(appContext).materiaDao().buscarTodas();
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarMaterias()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Materia> materias = queryDocumentSnapshots.toObjects(Materia.class);
+                if (getActivity() != null) {
                     MateriaAdapter adapter = new MateriaAdapter(materias, this::abrirMateria);
                     recycler.setAdapter(adapter);
-                });
-            }
-        });
+                }
+            });
     }
 
     private void abrirMateria(Materia m) {

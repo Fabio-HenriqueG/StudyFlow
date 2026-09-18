@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Checklist;
+import com.example.studyflow.data.FirestoreService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 /**
  * Fragmento que exibe a lista de todos os Checklists do usuário.
@@ -58,15 +57,10 @@ public class ChecklistFragment extends Fragment {
     }
 
     private void carregarChecklists() {
-        Context context = getContext();
-        if (context == null) return;
-        Context appContext = context.getApplicationContext();
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Checklist> listas = AppDatabase.getInstance(appContext).checklistDao().buscarTodas();
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarChecklists()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Checklist> listas = queryDocumentSnapshots.toObjects(Checklist.class);
+                if (getActivity() != null) {
                     if (adapter == null) {
                         adapter = new ChecklistAdapter(new ArrayList<>(listas));
                         adapter.setOnDataChangedListener(this::carregarChecklists);
@@ -77,8 +71,7 @@ public class ChecklistFragment extends Fragment {
                     if (recyclerView.getAdapter() == null) {
                         recyclerView.setAdapter(adapter);
                     }
-                });
-            }
-        });
+                }
+            });
     }
 }

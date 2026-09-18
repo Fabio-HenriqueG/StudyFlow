@@ -1,23 +1,24 @@
 package com.example.studyflow.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
-@Entity(tableName = "ChecklistItems",
-        foreignKeys = @ForeignKey(entity = Checklist.class,
-                parentColumns = "id",
-                childColumns = "checklistId",
-                onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "ChecklistItems")
 public class ChecklistItem implements Serializable {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-    public int checklistId;
+    @PrimaryKey
+    @NonNull
+    public String id = "";
+    public String checklistId; // String para Firebase
     public String texto;
     public boolean isChecked;
 
-    public ChecklistItem(int checklistId, String texto) {
+    // Construtor vazio para o Firebase
+    public ChecklistItem() {
+    }
+
+    public ChecklistItem(String checklistId, String texto) {
         this.checklistId = checklistId;
         this.texto = texto;
         this.isChecked = false;

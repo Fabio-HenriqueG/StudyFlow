@@ -1,13 +1,15 @@
 package com.example.studyflow.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity(tableName = "Checklists")
 public class Checklist implements Serializable {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
+    @NonNull
+    public String id = "";
     public String titulo;
     public long ultimoAlerta;
     
@@ -16,6 +18,10 @@ public class Checklist implements Serializable {
     
     // Novo: Data de Validade
     public long dataValidade;
+
+    // Construtor vazio para o Firebase
+    public Checklist() {
+    }
 
     public Checklist(String titulo) {
         this.titulo = titulo;

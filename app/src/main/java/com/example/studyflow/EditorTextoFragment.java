@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.concurrent.Executors;
@@ -189,22 +190,22 @@ public class EditorTextoFragment extends Fragment {
             anotacaoExistente.titulo = titulo;
             anotacaoExistente.conteudoHtml = html;
             anotacaoExistente.dataUltimaEdicao = data;
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).anotacaoDao().atualizar(anotacaoExistente);
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "Nota salva!", Toast.LENGTH_SHORT).show();
+            FirestoreService.getInstance().salvarAnotacao(anotacaoExistente)
+                .addOnSuccessListener(aVoid -> {
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Nota salva!", Toast.LENGTH_SHORT).show();
+                    }
                     voltar();
                 });
-            });
         } else {
             Anotacao nova = new Anotacao(titulo, html, data);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).anotacaoDao().inserir(nova);
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "Nota criada!", Toast.LENGTH_SHORT).show();
+            FirestoreService.getInstance().salvarAnotacao(nova)
+                .addOnSuccessListener(aVoid -> {
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Nota criada!", Toast.LENGTH_SHORT).show();
+                    }
                     voltar();
                 });
-            });
         }
     }
 

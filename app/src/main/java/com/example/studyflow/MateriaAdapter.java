@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.List;
@@ -44,12 +44,11 @@ public class MateriaAdapter extends RecyclerView.Adapter<MateriaAdapter.MateriaV
         holder.viewCor.setBackgroundColor(m.cor);
 
         // Busca a quantidade de flashcards de forma assíncrona
-        Executors.newSingleThreadExecutor().execute(() -> {
-            int qtd = AppDatabase.getInstance(holder.itemView.getContext()).flashcardDao().buscarPorMateria(m.id).size();
-            holder.itemView.post(() -> {
+        FirestoreService.getInstance().buscarFlashcardsPorMateria(m.id)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                int qtd = queryDocumentSnapshots.size();
                 holder.txtQtd.setText(qtd + (qtd == 1 ? " cartão" : " cartões"));
             });
-        });
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onClick(m);
@@ -72,19 +71,11 @@ public class MateriaAdapter extends RecyclerView.Adapter<MateriaAdapter.MateriaV
                 .setTitle("Excluir Seção")
                 .setMessage("Isso apagará a seção '" + m.nome + "' e TODOS os flashcards dentro dela. Continuar?")
                 .setPositiveButton("Sim", (d, w) -> {
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        AppDatabase db = AppDatabase.getInstance(v.getContext());
-                        // 1. Deleta flashcards da matéria
-                        List<Flashcard> cards = db.flashcardDao().buscarPorMateria(m.id);
-                        for (Flashcard f : cards) db.flashcardDao().excluir(f);
-                        // 2. Deleta a matéria
-                        db.materiaDao().excluir(m);
-                        
-                        v.post(() -> {
-                            lista.remove(pos);
-                            notifyItemRemoved(pos);
-                            notifyItemRangeChanged(pos, lista.size());
-                        });
+                    // Exclusão no Firestore (Idealmente faríamos um batch ou function para os cards)
+                    FirestoreService.getInstance().excluirMateria(m.id).addOnSuccessListener(aVoid -> {
+                        lista.remove(pos);
+                        notifyItemRemoved(pos);
+                        notifyItemRangeChanged(pos, lista.size());
                     });
                 })
                 .setNegativeButton("Não", null)

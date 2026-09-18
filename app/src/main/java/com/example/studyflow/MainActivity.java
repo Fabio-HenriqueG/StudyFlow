@@ -2,6 +2,7 @@ package com.example.studyflow;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +28,14 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
+import com.example.studyflow.data.Meta;
+import com.example.studyflow.data.Anotacao;
+import com.example.studyflow.data.Checklist;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationBarView navView;
 
     // Launcher para pedido de permissão (deve ser declarado como campo da classe)
-    private final androidx.activity.result.ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestPermission(), isGranted -> {
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     Log.d("MainActivity", "Permissão de notificação concedida.");
                 } else {
@@ -67,17 +73,50 @@ public class MainActivity extends AppCompatActivity {
         });
 
         navView = findViewById(R.id.nav_view);
+        
+        // Inicialização Imediata (mesmo sem login concluído)
+        configurarNavegacao();
+        configurarBotaoVoltar();
+        configurarLifecycleCallbacks();
 
-        // Inicialização segura do menu
-        if (navView != null) {
-            configurarNavegacao();
-            // Desmarca qualquer item ao iniciar (Home é o padrão)
-            navView.post(this::desmarcarMenu);
+        // Firebase Auth - Login Anônimo em Background
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            auth.signInAnonymously()
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = authResult.getUser();
+                    if (user != null) {
+                        String uid = user.getUid();
+                        Log.d("MainActivity", "Login anônimo efetuado: " + uid);
+                        String displayId = uid.length() > 5 ? uid.substring(0, 5) : uid;
+                        Toast.makeText(this, "Sincronizado com a nuvem (ID: " + displayId + "...)", Toast.LENGTH_SHORT).show();
+                        recarregarFragmentoHome();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("MainActivity", "Falha no login anônimo", e);
+                    Toast.makeText(this, "Modo Offline ativo. Verifique sua conexão.", Toast.LENGTH_LONG).show();
+                });
+        } else {
+            Log.d("MainActivity", "Usuário já logado.");
         }
 
-        configurarBotaoVoltar();
+        // Suporte e Notificações
+        NotificacaoHelper.criarCanaisNotificacao(this);
+        pedirPermissaoNotificacao();
+        tratarIntentNotificacao(getIntent());
+        
+        try {
+            agendarVerificadorTarefas();
+            NotificacaoScheduler.agendarLembreteMetas(this);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Erro ao agendar tarefas", e);
+        }
+        
+        processarLimpezaTarefas();
+    }
 
-        // Vigia o ciclo de vida dos fragmentos para sincronizar o menu automaticamente
+    private void configurarLifecycleCallbacks() {
         getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
             @Override
             public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
@@ -87,21 +126,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, false);
+    }
 
-        // Inicializações de suporte
-        NotificacaoHelper.criarCanaisNotificacao(this);
-        pedirPermissaoNotificacao();
-        
-        tratarIntentNotificacao(getIntent());
-
-        try {
-            agendarVerificadorTarefas();
-            NotificacaoScheduler.agendarLembreteMetas(this);
-        } catch (Exception e) {
-            Log.e("MainActivity", "Erro ao agendar tarefas iniciais", e);
+    private void recarregarFragmentoHome() {
+        // Recarrega a HomeFragment para que ela busque dados com o novo UID
+        Fragment atual = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (atual instanceof HomeFragment) {
+            getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment())
+                .commitAllowingStateLoss();
         }
-        
-        processarLimpezaTarefas();
     }
 
     private void processarLimpezaTarefas() {
@@ -191,45 +225,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void verificarDadosENavegar(int itemId) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-            
-            if (itemId == R.id.nav_tarefas) {
-                FirestoreService.getInstance().buscarTarefasAtivas()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        boolean vazio = queryDocumentSnapshots.isEmpty();
-                        Fragment destino = vazio ? new CriaTarefaFragment() : new TarefasFragment();
-                        navegarPara(destino, vazio);
-                    });
-                return;
-            }
+        Fragment destino = null;
+        
+        if (itemId == R.id.nav_tarefas) {
+            destino = new TarefasFragment();
+        } else if (itemId == R.id.nav_anotacoes) {
+            destino = new AnotacoesFragment();
+        } else if (itemId == R.id.nav_metas) {
+            destino = new MetasFragment();
+        } else if (itemId == R.id.nav_checklist) {
+            destino = new ChecklistFragment();
+        }
 
-            Fragment destino = null;
-            boolean vazio = false;
-
-            try {
-                if (itemId == R.id.nav_anotacoes) {
-                    vazio = db.anotacaoDao().contarTodas() == 0;
-                    destino = vazio ? new EditorAnotacaoFragment() : new AnotacoesFragment();
-                } else if (itemId == R.id.nav_metas) {
-                    FirestoreService.getInstance().buscarMetas()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            boolean isVazio = queryDocumentSnapshots.isEmpty();
-                            Fragment fragmentDestino = isVazio ? new CriaMetaFragment() : new MetasFragment();
-                            navegarPara(fragmentDestino, isVazio);
-                        });
-                    return;
-                } else if (itemId == R.id.nav_checklist) {
-                    vazio = db.checklistDao().contarTodas() == 0;
-                    destino = vazio ? new CriaChecklistFragment() : new ChecklistFragment();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (destino == null) return;
-            navegarPara(destino, vazio);
-        });
+        if (destino != null) {
+            navegarPara(destino, false);
+        }
     }
 
 
@@ -267,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(this).enqueueUniquePeriodicWork("VerificadorPrazos", ExistingPeriodicWorkPolicy.KEEP, workRequest);
     }
 
-    private void tratarIntentNotificacao(android.content.Intent intent) {
+    private void tratarIntentNotificacao(Intent intent) {
         if (intent != null && intent.hasExtra("NavegarPara")) {
             String destino = intent.getStringExtra("NavegarPara");
             if ("TAREFA".equals(destino)) {

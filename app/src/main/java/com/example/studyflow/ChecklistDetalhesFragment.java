@@ -14,9 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Checklist;
 import com.example.studyflow.data.ChecklistItem;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -77,17 +77,15 @@ public class ChecklistDetalhesFragment extends Fragment {
     private void carregarItens() {
         if (checklist == null) return;
         
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<ChecklistItem> doBanco = AppDatabase.getInstance(getContext()).checklistDao().buscarItensPorChecklist(checklist.id);
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarItensPorChecklist(checklist.id)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<ChecklistItem> doBanco = queryDocumentSnapshots.toObjects(ChecklistItem.class);
+                if (getActivity() != null) {
                     listaItens.clear();
                     listaItens.addAll(doBanco);
                     adapter.notifyDataSetChanged();
-                });
-            }
-        });
+                }
+            });
     }
 
     private void resetarLista() {
@@ -97,13 +95,11 @@ public class ChecklistDetalhesFragment extends Fragment {
                 .setTitle("Reiniciar Lista")
                 .setMessage("Deseja desmarcar todos os itens desta lista?")
                 .setPositiveButton("Sim", (d, w) -> {
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        for (ChecklistItem item : listaItens) {
-                            item.isChecked = false;
-                            AppDatabase.getInstance(getContext()).checklistDao().atualizarItem(item);
-                        }
-                        getActivity().runOnUiThread(this::carregarItens);
-                    });
+                    for (ChecklistItem item : listaItens) {
+                        item.isChecked = false;
+                        FirestoreService.getInstance().salvarChecklistItem(checklist.id, item);
+                    }
+                    carregarItens();
                 })
                 .setNegativeButton("Não", null)
                 .show();
@@ -115,23 +111,19 @@ public class ChecklistDetalhesFragment extends Fragment {
 
         if (itemEmEdicao != null) {
             itemEmEdicao.texto = texto;
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).checklistDao().atualizarItem(itemEmEdicao);
-                itemEmEdicao = null;
-                getActivity().runOnUiThread(() -> {
+            FirestoreService.getInstance().salvarChecklistItem(checklist.id, itemEmEdicao)
+                .addOnSuccessListener(aVoid -> {
+                    itemEmEdicao = null;
                     editNovoItem.setText("");
                     carregarItens();
                 });
-            });
         } else if (checklist != null) {
             ChecklistItem novo = new ChecklistItem(checklist.id, texto);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).checklistDao().inserirItem(novo);
-                getActivity().runOnUiThread(() -> {
+            FirestoreService.getInstance().salvarChecklistItem(checklist.id, novo)
+                .addOnSuccessListener(aVoid -> {
                     editNovoItem.setText("");
                     carregarItens();
                 });
-            });
         }
     }
 }

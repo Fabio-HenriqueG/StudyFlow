@@ -11,11 +11,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.concurrent.Executors;
 public class TarefasFragment extends Fragment {
 
     private RecyclerView recyclerTarefas;
-    private View txtEmptyState;
+    private View txtEmptyState, progressBar;
     private TarefaAdapter adapter;
 
     public TarefasFragment() {
@@ -75,12 +77,13 @@ public class TarefasFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
         txtEmptyState = view.findViewById(R.id.txtEmptyTarefas);
+        progressBar = view.findViewById(R.id.progressTarefas);
         configurarSwipe();
     }
 
     private void configurarSwipe() {
-        new androidx.recyclerview.widget.ItemTouchHelper(new androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(0, 
-                androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
@@ -90,7 +93,7 @@ public class TarefasFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getBindingAdapterPosition();
                 if (adapter != null && position != RecyclerView.NO_POSITION) {
-                    if (direction == androidx.recyclerview.widget.ItemTouchHelper.RIGHT) {
+                    if (direction == ItemTouchHelper.RIGHT) {
                         adapter.concluirTarefa(position, getContext());
                         mostrarFeedback(getString(R.string.tarefa_concluida));
                     }
@@ -100,7 +103,7 @@ public class TarefasFragment extends Fragment {
     }
 
     private void mostrarFeedback(String msg) {
-        com.google.android.material.snackbar.Snackbar.make(recyclerTarefas, msg, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(recyclerTarefas, msg, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -113,8 +116,11 @@ public class TarefasFragment extends Fragment {
         Context context = getContext();
         if (context == null) return;
         
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        
         FirestoreService.getInstance().buscarTarefasAtivas()
             .addOnSuccessListener(queryDocumentSnapshots -> {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
                 List<Tarefa> listaDoBanco = queryDocumentSnapshots.toObjects(Tarefa.class);
 
                 if (getActivity() != null) {

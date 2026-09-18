@@ -12,10 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 /**
  * Fragmento que exibe a lista de Flashcards de uma matéria específica.
@@ -61,10 +61,10 @@ public class FlashcardListaFragment extends Fragment {
 
     private void carregarFlashcards() {
         if (materia == null) return;
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Flashcard> cards = AppDatabase.getInstance(getContext()).flashcardDao().buscarPorMateria(materia.id);
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarFlashcardsPorMateria(materia.id)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Flashcard> cards = queryDocumentSnapshots.toObjects(Flashcard.class);
+                if (getActivity() != null) {
                     if (adapter == null) {
                         adapter = new FlashcardAdapter(new ArrayList<>(cards), this::abrirEdicao);
                     } else {
@@ -74,9 +74,8 @@ public class FlashcardListaFragment extends Fragment {
                     if (recycler.getAdapter() == null) {
                         recycler.setAdapter(adapter);
                     }
-                });
-            }
-        });
+                }
+            });
     }
 
     private void abrirEdicao(Flashcard f) {

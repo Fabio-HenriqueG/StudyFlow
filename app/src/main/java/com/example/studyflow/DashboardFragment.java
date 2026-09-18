@@ -10,12 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.AtividadeLog;
+import com.example.studyflow.data.FirestoreService;
+import com.example.studyflow.data.Flashcard;
 import com.example.studyflow.data.Materia;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 public class DashboardFragment extends Fragment {
@@ -90,87 +97,133 @@ public class DashboardFragment extends Fragment {
         final long fInicio = inicio;
         final long fFim = fim;
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(getContext());
-            int t = db.atividadeLogDao().contarPorTipoEPeriodo("TAREFA", fInicio, fFim);
-            int m = db.atividadeLogDao().contarPorTipoEPeriodo("META", fInicio, fFim);
-            int f = db.atividadeLogDao().contarPorTipoEPeriodo("FLASHCARD", fInicio, fFim);
-            int mat = db.atividadeLogDao().contarMateriasEstudadas(fInicio, fFim);
-
-            // Flashcard Stats (Domínio)
-            int flashTotal = db.flashcardDao().contarTotal();
-            int flashDominados = db.flashcardDao().contarDominados();
-            List<Materia> materias = db.materiaDao().buscarTodas();
-
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    txtTarefas.setText(String.valueOf(t));
-                    txtMetas.setText(String.valueOf(m));
-                    txtFlashcards.setText(String.valueOf(f));
-                    txtMaterias.setText("Você focou em " + mat + " disciplinas neste período.");
-
-                    if (flashTotal > 0) {
-                        int percent = (flashDominados * 100) / flashTotal;
-                        progressFlash.setProgress(percent);
-                        txtPercentualFlash.setText(percent + "%");
-                    } else {
-                        progressFlash.setProgress(0);
-                        txtPercentualFlash.setText("0%");
+        FirestoreService.getInstance().getUserDoc().collection("atividades")
+            .whereGreaterThanOrEqualTo("dataMillis", fInicio)
+            .whereLessThanOrEqualTo("dataMillis", fFim)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                int t = 0, m = 0, f = 0, c = 0;
+                Set<String> materiasIds = new HashSet<>();
+                
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    AtividadeLog log = doc.toObject(AtividadeLog.class);
+                    if ("TAREFA".equals(log.tipo)) t++;
+                    else if ("META".equals(log.tipo)) m++;
+                    else if ("FLASHCARD".equals(log.tipo)) f++;
+                    else if ("CHECKLIST".equals(log.tipo)) c++;
+                    
+                    if (log.materiaId != null && !log.materiaId.isEmpty()) {
+                        materiasIds.add(log.materiaId);
                     }
+                }
 
-                    // Gráfico de Carga 7 dias (Geral)
-                    carregarGraficoSeteDias(db);
+                final int ft = t, fm = m, ff = f, fmat = materiasIds.size();
+                
+                // Fetch Flashcard Stats separately
+                FirestoreService.getInstance().getFlashcardsRef().get().addOnSuccessListener(flashSnap -> {
+                    List<Flashcard> allCards = flashSnap.toObjects(Flashcard.class);
+                    int total = allCards.size();
+                    int dominados = 0;
+                    for (Flashcard fc : allCards) if (fc.nivelDominio >= 5) dominados++;
 
-                    // Detalhe Matérias
-                    layoutMaterias.removeAllViews();
-                    for (Materia ma : materias) {
-                        adicionarBarraMateria(db, ma);
+                    if (getActivity() != null) {
+                        txtTarefas.setText(String.valueOf(ft));
+                        txtMetas.setText(String.valueOf(fm));
+                        txtFlashcards.setText(String.valueOf(ff));
+                        txtMaterias.setText("Você focou em " + fmat + " disciplinas neste período.");
+
+                        if (total > 0) {
+                            int percent = (dominados * 100) / total;
+                            progressFlash.setProgress(percent);
+                            txtPercentualFlash.setText(percent + "%");
+                        } else {
+                            progressFlash.setProgress(0);
+                            txtPercentualFlash.setText("0%");
+                        }
                     }
                 });
-            }
-        });
+
+                // Update Chart
+                carregarGraficoSeteDias();
+
+                // Detalhe Matérias
+                FirestoreService.getInstance().buscarMaterias().addOnSuccessListener(matSnap -> {
+                    layoutMaterias.removeAllViews();
+                    for (Materia mat : matSnap.toObjects(Materia.class)) {
+                        adicionarBarraMateria(mat);
+                    }
+                });
+            });
     }
 
-    private void carregarGraficoSeteDias(AppDatabase db) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            int[] cargaGeral = new int[7];
-            int[] cargaTarefas = new int[7];
-            int[] cargaMetas = new int[7];
-            
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            cal.add(Calendar.DAY_OF_YEAR, -6);
+    private void carregarGraficoSeteDias() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DAY_OF_YEAR, -6);
+        long inicioSemana = cal.getTimeInMillis();
 
-            int maxGeral = 1, maxTarefas = 1, maxMetas = 1;
-            
-            for (int i = 0; i < 7; i++) {
-                long dInicio = cal.getTimeInMillis();
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-                long dFim = cal.getTimeInMillis();
-                
-                cargaTarefas[i] = db.atividadeLogDao().contarPorTipoEPeriodo("TAREFA", dInicio, dFim);
-                cargaMetas[i] = db.atividadeLogDao().contarPorTipoEPeriodo("META", dInicio, dFim);
-                
-                cargaGeral[i] = cargaTarefas[i] + cargaMetas[i] +
-                               db.atividadeLogDao().contarPorTipoEPeriodo("CHECKLIST", dInicio, dFim) +
-                               db.atividadeLogDao().contarPorTipoEPeriodo("FLASHCARD", dInicio, dFim);
-                
-                if (cargaGeral[i] > maxGeral) maxGeral = cargaGeral[i];
-                if (cargaTarefas[i] > maxTarefas) maxTarefas = cargaTarefas[i];
-                if (cargaMetas[i] > maxMetas) maxMetas = cargaMetas[i];
-            }
+        FirestoreService.getInstance().getUserDoc().collection("atividades")
+            .whereGreaterThanOrEqualTo("dataMillis", inicioSemana)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                int[] cargaGeral = new int[7];
+                int[] cargaTarefas = new int[7];
+                int[] cargaMetas = new int[7];
+                int maxG = 1, maxT = 1, maxM = 1;
 
-            final int fMaxG = maxGeral, fMaxT = maxTarefas, fMaxM = maxMetas;
-            
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    AtividadeLog log = doc.toObject(AtividadeLog.class);
+                    long diaRelativo = (log.dataMillis - inicioSemana) / (24 * 60 * 60 * 1000);
+                    int idx = (int) diaRelativo;
+                    if (idx >= 0 && idx < 7) {
+                        cargaGeral[idx]++;
+                        if ("TAREFA".equals(log.tipo)) cargaTarefas[idx]++;
+                        else if ("META".equals(log.tipo)) cargaMetas[idx]++;
+                    }
+                }
+
+                for (int i = 0; i < 7; i++) {
+                    if (cargaGeral[i] > maxG) maxG = cargaGeral[i];
+                    if (cargaTarefas[i] > maxT) maxT = cargaTarefas[i];
+                    if (cargaMetas[i] > maxM) maxM = cargaMetas[i];
+                }
+
+                final int fmg = maxG, fmt = maxT, fmm = maxM;
+                if (getActivity() != null) {
+                    povoarLayoutBarras(layoutCargaSemana, cargaGeral, fmg, 100);
+                    povoarLayoutBarras(layoutCargaTarefas, cargaTarefas, fmt, 50);
+                    povoarLayoutBarras(layoutCargaMetas, cargaMetas, fmm, 50);
+                }
+            });
+    }
+
+    private void adicionarBarraMateria(Materia m) {
+        FirestoreService.getInstance().buscarFlashcardsPorMateria(m.id).addOnSuccessListener(snap -> {
+            List<Flashcard> cards = snap.toObjects(Flashcard.class);
+            int total = cards.size();
+            int dominados = 0;
+            for (Flashcard f : cards) if (f.nivelDominio >= 5) dominados++;
+
             if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    povoarLayoutBarras(layoutCargaSemana, cargaGeral, fMaxG, 100);
-                    povoarLayoutBarras(layoutCargaTarefas, cargaTarefas, fMaxT, 50);
-                    povoarLayoutBarras(layoutCargaMetas, cargaMetas, fMaxM, 50);
-                });
+                View item = getLayoutInflater().inflate(R.layout.item_stats_materia, null);
+                TextView nome = item.findViewById(R.id.txtNomeMateriaStats);
+                LinearProgressIndicator bar = item.findViewById(R.id.progressMateriaStats);
+                TextView info = item.findViewById(R.id.txtInfoMateriaStats);
+
+                nome.setText(m.nome);
+                if (total > 0) {
+                    int p = (dominados * 100) / total;
+                    bar.setProgress(p);
+                    bar.setIndicatorColor(m.cor);
+                    info.setText(p + "% concluído (" + total + " cards)");
+                } else {
+                    bar.setProgress(0);
+                    info.setText("Nenhum card criado");
+                }
+                layoutMaterias.addView(item);
             }
         });
     }
@@ -188,34 +241,4 @@ public class DashboardFragment extends Fragment {
             layout.addView(bar);
         }
     }
-
-
-    private void adicionarBarraMateria(AppDatabase db, Materia m) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            int totalM = db.flashcardDao().buscarPorMateria(m.id).size();
-            int dominadosM = db.flashcardDao().contarDominadosPorMateria(m.id);
-            
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    View item = getLayoutInflater().inflate(R.layout.item_stats_materia, null);
-                    TextView nome = item.findViewById(R.id.txtNomeMateriaStats);
-                    LinearProgressIndicator bar = item.findViewById(R.id.progressMateriaStats);
-                    TextView info = item.findViewById(R.id.txtInfoMateriaStats);
-
-                    nome.setText(m.nome);
-                    if (totalM > 0) {
-                        int p = (dominadosM * 100) / totalM;
-                        bar.setProgress(p);
-                        bar.setIndicatorColor(m.cor);
-                        info.setText(p + "% concluído (" + totalM + " cards)");
-                    } else {
-                        bar.setProgress(0);
-                        info.setText("Nenhum card criado");
-                    }
-                    layoutMaterias.addView(item);
-                });
-            }
-        });
-    }
-
 }

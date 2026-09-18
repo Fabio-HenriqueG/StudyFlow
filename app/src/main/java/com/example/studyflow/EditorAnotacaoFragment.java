@@ -45,6 +45,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -1316,18 +1317,19 @@ public class EditorAnotacaoFragment extends Fragment {
         if (t.isEmpty()) t = "Sem título";
         String j = serializarCanvas();
         long a = System.currentTimeMillis();
+        
         if (anotacaoExistente != null) {
-            anotacaoExistente.titulo = t; anotacaoExistente.conteudoHtml = j; anotacaoExistente.dataUltimaEdicao = a;
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).anotacaoDao().atualizar(anotacaoExistente);
-                voltarComFeedback("Caderno atualizado!");
-            });
+            anotacaoExistente.titulo = t; 
+            anotacaoExistente.conteudoHtml = j; 
+            anotacaoExistente.dataUltimaEdicao = a;
+            FirestoreService.getInstance().salvarAnotacao(anotacaoExistente)
+                .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno atualizado!"))
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Erro ao sincronizar", Toast.LENGTH_SHORT).show());
         } else {
             Anotacao n = new Anotacao(t, j, a);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                AppDatabase.getInstance(getContext()).anotacaoDao().inserir(n);
-                voltarComFeedback("Caderno salvo!");
-            });
+            FirestoreService.getInstance().salvarAnotacao(n)
+                .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno salvo!"))
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Erro ao salvar", Toast.LENGTH_SHORT).show());
         }
     }
 

@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Meta;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -95,11 +97,11 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
             meta.ultimoCheckin = System.currentTimeMillis();
             
             // Registra a atividade no histórico
-            ProdutividadeManager.registrarAtividade(v.getContext(), "META", meta.getIntId(), 0);
+            ProdutividadeManager.registrarAtividade(v.getContext(), "META", meta.id, "");
 
             FirestoreService.getInstance().salvarMeta(meta)
                 .addOnSuccessListener(aVoid -> {
-                    com.google.android.material.snackbar.Snackbar.make(v, "Parabéns! Meta confirmada por hoje.", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Parabéns! Meta confirmada por hoje.", Snackbar.LENGTH_SHORT).show();
                     notifyItemChanged(position);
                 });
         });

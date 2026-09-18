@@ -9,11 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.example.studyflow.data.AppDatabase;
-import com.example.studyflow.data.Checklist;
-import com.example.studyflow.data.ChecklistItem;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Meta;
 import com.example.studyflow.data.Tarefa;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.Calendar;
 import java.util.List;
@@ -47,26 +46,29 @@ public class NotificacaoWorker extends Worker {
 
         // Se houver um ID e Tipo, é uma notificação agendada
         if (id != -1 && tipo != null) {
-            return processarNotificacaoAgendada(context, id, tipo, channel, titulo, mensagem);
+            try {
+                return processarNotificacaoAgendada(context, id, tipo, channel, titulo, mensagem);
+            } catch (Exception e) {
+                return Result.retry();
+            }
         }
 
         return Result.success();
     }
 
-    private Result processarNotificacaoAgendada(Context context, int id, String tipo, String channel, String titulo, String mensagem) {
+    private Result processarNotificacaoAgendada(Context context, int id, String tipo, String channel, String titulo, String mensagem) throws Exception {
         SharedPreferences prefs = context.getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
-        int referenciaId = getInputData().getInt("referenciaId", id);
+        String referenciaId = getInputData().getString("referenciaId");
         
-        if ("TAREFA".equals(tipo)) {
-            Tarefa t = AppDatabase.getInstance(context).tarefaDao().buscarPorId(referenciaId);
+        if ("TAREFA".equals(tipo) && referenciaId != null) {
+            Tarefa t = Tasks.await(FirestoreService.getInstance().getTarefasRef().document(referenciaId).get()).toObject(Tarefa.class);
             if (t == null || t.concluida) return Result.success();
         } else if ("META".equals(tipo) && id == 999) {
             // Lembrete diário inteligente às 19:30 - Agenda para amanhã
             NotificacaoScheduler.agendarLembreteMetas(context);
             
             // Só envia se houver meta pendente
-            AppDatabase db = AppDatabase.getInstance(context);
-            List<Meta> metas = db.metaDao().buscarTodas();
+            List<Meta> metas = Tasks.await(FirestoreService.getInstance().buscarMetas()).toObjects(Meta.class);
             boolean temPendente = false;
             for (Meta m : metas) {
                 if (!foiCumpridaNoPeriodo(prefs, m.ultimoCheckin)) {

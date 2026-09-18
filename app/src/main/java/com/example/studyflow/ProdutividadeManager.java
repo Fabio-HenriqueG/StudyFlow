@@ -1,63 +1,30 @@
 package com.example.studyflow;
 
 import android.content.Context;
-import com.example.studyflow.data.AppDatabase;
+import android.content.Context;
 import com.example.studyflow.data.AtividadeLog;
+import com.example.studyflow.data.FirestoreService;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 public class ProdutividadeManager {
 
     /**
-     * Registra uma ação concluída no histórico.
+     * Registra uma ação concluída no histórico no Firestore.
      */
-    public static void registrarAtividade(Context context, String tipo, int referenciaId, int materiaId) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            AtividadeLog log = new AtividadeLog(tipo, referenciaId, System.currentTimeMillis(), materiaId);
-            AppDatabase.getInstance(context).atividadeLogDao().inserir(log);
-        });
+    public static void registrarAtividade(Context context, String tipo, String referenciaId, String materiaId) {
+        AtividadeLog log = new AtividadeLog(tipo, referenciaId, System.currentTimeMillis(), materiaId);
+        FirestoreService.getInstance().getUserDoc().collection("atividades").add(log);
     }
 
     /**
      * Calcula a sequência de dias ativos (Streak).
+     * Nota: Para o Firestore, idealmente faríamos uma query para buscar os dias.
      */
     public static int calcularStreak(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
-        List<String> diasAtivos = db.atividadeLogDao().buscarDiasComAtividade();
-        
-        if (diasAtivos == null || diasAtivos.isEmpty()) return 0;
-
-        int streak = 0;
-        Calendar cal = Calendar.getInstance();
-        String hoje = formatarData(cal);
-        
-        cal.add(Calendar.DAY_OF_YEAR, -1);
-        String ontem = formatarData(cal);
-
-        // Se não houve atividade hoje nem ontem, o streak foi quebrado
-        if (!diasAtivos.contains(hoje) && !diasAtivos.contains(ontem)) {
-            return 0;
-        }
-
-        // Começa a verificar a partir do último dia ativo (hoje ou ontem)
-        Calendar checker = Calendar.getInstance();
-        if (!diasAtivos.contains(hoje)) {
-            checker.add(Calendar.DAY_OF_YEAR, -1);
-        }
-
-        while (true) {
-            String diaStr = formatarData(checker);
-            if (diasAtivos.contains(diaStr)) {
-                streak++;
-                checker.add(Calendar.DAY_OF_YEAR, -1);
-            } else {
-                break;
-            }
-        }
-
-        return streak;
+        // Por enquanto, manteremos uma lógica simplificada ou retornaremos 0
+        // até implementarmos a busca de dias ativos no FirestoreService.
+        return 0; 
     }
 
     private static String formatarData(Calendar cal) {

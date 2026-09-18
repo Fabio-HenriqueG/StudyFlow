@@ -162,29 +162,26 @@ public class CriaTarefaFragment extends Fragment {
             tarefaEmEdicao.prioridade = prioridade;
             tarefaEmEdicao.insistencia = insistencia;
             
-            FirestoreService.getInstance().salvarTarefa(tarefaEmEdicao)
-                .addOnSuccessListener(aVoid -> {
-                    // Agendamento Inteligente
-                    NotificacaoScheduler.cancelarNotificacoesTarefa(appContext, tarefaEmEdicao.id);
-                    NotificacaoScheduler.agendarNotificacoesTarefa(appContext, tarefaEmEdicao);
-                    
-                    finalizarEDarFeedback(appContext, getString(R.string.tarefa_atualizada_sucesso));
-                })
-                .addOnFailureListener(e -> Toast.makeText(appContext, "Erro ao atualizar", Toast.LENGTH_SHORT).show());
+            // Dispara o salvamento e não trava a UI esperando a nuvem
+            FirestoreService.getInstance().salvarTarefa(tarefaEmEdicao);
+            
+            // Agendamento Inteligente
+            NotificacaoScheduler.cancelarNotificacoesTarefa(appContext, tarefaEmEdicao.getIntId());
+            NotificacaoScheduler.agendarNotificacoesTarefa(appContext, tarefaEmEdicao);
+            
+            finalizarEDarFeedback(appContext, getString(R.string.tarefa_atualizada_sucesso));
         } else {
             Tarefa novaTarefa = new Tarefa(titulo, descricao, dataSelecionada, prioridade, insistencia);
 
-            FirestoreService.getInstance().salvarTarefa(novaTarefa)
-                .addOnSuccessListener(aVoid -> {
-                    // Registra a atividade de planejamento (criação) para o streak
-                    ProdutividadeManager.registrarAtividade(appContext, "PLANEJAMENTO", novaTarefa.getIntId(), 0);
+            FirestoreService.getInstance().salvarTarefa(novaTarefa);
+            
+            // Registra a atividade de planejamento (criação) para o streak
+            ProdutividadeManager.registrarAtividade(appContext, "PLANEJAMENTO", novaTarefa.id, "");
 
-                    // Agendamento Inteligente
-                    NotificacaoScheduler.agendarNotificacoesTarefa(appContext, novaTarefa);
+            // Agendamento Inteligente
+            NotificacaoScheduler.agendarNotificacoesTarefa(appContext, novaTarefa);
 
-                    finalizarEDarFeedback(appContext, getString(R.string.tarefa_salva_sucesso));
-                })
-                .addOnFailureListener(e -> Toast.makeText(appContext, "Erro ao salvar", Toast.LENGTH_SHORT).show());
+            finalizarEDarFeedback(appContext, getString(R.string.tarefa_salva_sucesso));
         }
     }
 
