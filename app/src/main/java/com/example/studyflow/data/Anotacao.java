@@ -1,13 +1,20 @@
 package com.example.studyflow.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
 /**
  * Entidade que representa uma Anotação, adaptada para o Firebase.
  */
+@Entity(tableName = "anotacoes")
 public class Anotacao implements Serializable {
 
-    public String id; // ID do documento no Firestore
+    @PrimaryKey
+    @NonNull
+    public String id = ""; // ID do documento no Firestore
     public String titulo;
     public String conteudoHtml;
     public long dataUltimaEdicao;

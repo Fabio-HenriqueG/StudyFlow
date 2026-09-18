@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.studyflow" />
+                  <option name="mobileSdkAppId" value="1:760514982186:android:fd1638d263f233a3636e53" />
+                  <option name="projectId" value="studyflow-3d8315f6" />
+                  <option name="projectNumber" value="760514982186" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
