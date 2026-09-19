@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "760514982186",
-    "project_id": "studyflow-3d8315f6",
-    "storage_bucket": "studyflow-3d8315f6.firebasestorage.app"
+    "project_number": "809537622295",
+    "project_id": "studyflow-3dsetec",
+    "storage_bucket": "studyflow-3dsetec.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760514982186:android:fd1638d263f233a3636e53",
+        "mobilesdk_app_id": "1:809537622295:android:2abe6b4829630bd9c46752",
         "android_client_info": {
           "package_name": "com.example.studyflow"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCvM0SCXMhSWSQz6KeuBq0hOnEaTU5gs5c"
+          "current_key": "AIzaSyDzG9uGdH_Y9kxXjym9Z91UqtfDwSbKFYM"
         }
       ],
       "services": {

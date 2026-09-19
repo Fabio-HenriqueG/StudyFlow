@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Anotacao;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -209,12 +210,12 @@ public class ConfiguracoesFragment extends Fragment {
     private void confirmarLimpeza() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Limpar Tudo")
-                .setMessage("Isso apagará permanentemente todos os seus dados. Continuar?")
+                .setMessage("Isso apagará permanentemente todos os seus dados locais. Dados na nuvem (Firebase) não serão afetados. Continuar?")
                 .setPositiveButton("Sim", (d, w) -> Executors.newSingleThreadExecutor().execute(() -> {
                     AppDatabase.getInstance(requireContext()).clearAllTables();
                     prefs.edit().clear().apply();
                     requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(), "Dados limpos!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Dados locais limpos!", Toast.LENGTH_SHORT).show();
                         requireActivity().recreate();
                     });
                 }))
@@ -223,28 +224,35 @@ public class ConfiguracoesFragment extends Fragment {
     }
 
     private void exportarParaUri(Uri uri) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                List<Anotacao> anotacoes = AppDatabase.getInstance(requireContext()).anotacaoDao().buscarTodas();
-                JSONArray array = new JSONArray();
-                for (Anotacao a : anotacoes) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("titulo", a.titulo);
-                    obj.put("conteudo", a.conteudoHtml);
-                    obj.put("data", a.dataUltimaEdicao);
-                    array.put(obj);
-                }
-                
-                OutputStream os = requireContext().getContentResolver().openOutputStream(uri);
-                if (os != null) {
-                    os.write(array.toString(4).getBytes());
-                    os.close();
-                }
-                
-                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Dados exportados!", Toast.LENGTH_SHORT).show());
-            } catch (Exception e) {
-                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Erro ao exportar", Toast.LENGTH_SHORT).show());
-            }
-        });
+        FirestoreService.getInstance().buscarAnotacoes()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    try {
+                        List<Anotacao> anotacoes = queryDocumentSnapshots.toObjects(Anotacao.class);
+                        JSONArray array = new JSONArray();
+                        for (Anotacao a : anotacoes) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("titulo", a.titulo);
+                            obj.put("conteudo", a.conteudoHtml);
+                            obj.put("data", a.dataUltimaEdicao);
+                            array.put(obj);
+                        }
+                        
+                        OutputStream os = requireContext().getContentResolver().openOutputStream(uri);
+                        if (os != null) {
+                            os.write(array.toString(4).getBytes());
+                            os.close();
+                        }
+                        
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Dados exportados do Firebase!", Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (Exception e) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Erro ao exportar", Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                });
+            });
     }
 }

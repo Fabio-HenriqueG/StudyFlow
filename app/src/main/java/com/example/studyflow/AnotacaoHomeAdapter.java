@@ -76,14 +76,17 @@ public class AnotacaoHomeAdapter extends RecyclerView.Adapter<AnotacaoHomeAdapte
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return listaAnotacoes.get(oldItemPosition).id == novasAnotacoes.get(newItemPosition).id;
+                String oldId = listaAnotacoes.get(oldItemPosition).id;
+                String newId = novasAnotacoes.get(newItemPosition).id;
+                return oldId != null && oldId.equals(newId);
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                 Anotacao old = listaAnotacoes.get(oldItemPosition);
                 Anotacao nova = novasAnotacoes.get(newItemPosition);
-                return old.titulo.equals(nova.titulo) && 
+                boolean titulosIguais = (old.titulo != null ? old.titulo.equals(nova.titulo) : nova.titulo == null);
+                return titulosIguais && 
                        old.dataUltimaEdicao == nova.dataUltimaEdicao &&
                        (old.conteudoHtml != null ? old.conteudoHtml.equals(nova.conteudoHtml) : nova.conteudoHtml == null);
             }

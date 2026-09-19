@@ -126,7 +126,8 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                 Anotacao old = listaAnotacoes.get(oldItemPosition);
                 Anotacao nova = novasAnotacoes.get(newItemPosition);
-                return old.titulo.equals(nova.titulo) && 
+                boolean titulosIguais = (old.titulo != null ? old.titulo.equals(nova.titulo) : nova.titulo == null);
+                return titulosIguais && 
                        old.dataUltimaEdicao == nova.dataUltimaEdicao &&
                        (old.conteudoHtml != null ? old.conteudoHtml.equals(nova.conteudoHtml) : nova.conteudoHtml == null);
             }

@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.e("MainActivity", "Falha no login anônimo", e);
-                    Toast.makeText(this, "Modo Offline ativo. Verifique sua conexão.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Modo Offline ativo. Erro: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 });
         } else {
             Log.d("MainActivity", "Usuário já logado.");

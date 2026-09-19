@@ -74,14 +74,17 @@ public class MetaHomeAdapter extends RecyclerView.Adapter<MetaHomeAdapter.MetaHo
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return listaMetas.get(oldItemPosition).id == novasMetas.get(newItemPosition).id;
+                String oldId = listaMetas.get(oldItemPosition).id;
+                String newId = novasMetas.get(newItemPosition).id;
+                return oldId != null && oldId.equals(newId);
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                 Meta oldMeta = listaMetas.get(oldItemPosition);
                 Meta newMeta = novasMetas.get(newItemPosition);
-                return oldMeta.titulo.equals(newMeta.titulo) && oldMeta.dataCriacao == newMeta.dataCriacao;
+                boolean titulosIguais = (oldMeta.titulo != null ? oldMeta.titulo.equals(newMeta.titulo) : newMeta.titulo == null);
+                return titulosIguais && oldMeta.dataCriacao == newMeta.dataCriacao;
             }
         });
 

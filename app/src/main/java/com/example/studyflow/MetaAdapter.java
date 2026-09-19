@@ -177,7 +177,8 @@ public class MetaAdapter extends RecyclerView.Adapter<MetaAdapter.MetaViewHolder
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                 Meta old = listaMetas.get(oldItemPosition);
                 Meta nova = novasMetas.get(newItemPosition);
-                return old.titulo.equals(nova.titulo) && 
+                boolean titulosIguais = (old.titulo != null ? old.titulo.equals(nova.titulo) : nova.titulo == null);
+                return titulosIguais && 
                        old.dataCriacao == nova.dataCriacao &&
                        old.ultimoCheckin == nova.ultimoCheckin;
             }

@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.studyflow.data.AppDatabase;
+import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Tarefa;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 public class CalendarioTarefasFragment extends Fragment {
 
@@ -75,12 +74,13 @@ public class CalendarioTarefasFragment extends Fragment {
     }
 
     private void carregarTodasTarefas() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            todasTarefas = AppDatabase.getInstance(getContext()).tarefaDao().buscarAtivas();
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(this::setupCalendar);
-            }
-        });
+        FirestoreService.getInstance().buscarTarefasAtivas()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                todasTarefas = queryDocumentSnapshots.toObjects(Tarefa.class);
+                if (getActivity() != null) {
+                    setupCalendar();
+                }
+            });
     }
 
 

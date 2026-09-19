@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Flashcard;
 import com.example.studyflow.data.FirestoreService;
 import com.example.studyflow.data.Materia;
@@ -73,26 +72,25 @@ public class CriaFlashcardFragment extends Fragment {
     }
 
     private void carregarMaterias() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            listaMaterias = AppDatabase.getInstance(getContext()).materiaDao().buscarTodas();
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
+        FirestoreService.getInstance().buscarMaterias()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                listaMaterias = queryDocumentSnapshots.toObjects(Materia.class);
+                if (getActivity() != null) {
                     ArrayAdapter<Materia> adapter = new ArrayAdapter<>(getContext(), 
                             android.R.layout.simple_dropdown_item_1line, listaMaterias);
                     spinnerMaterias.setAdapter(adapter);
                     
                     if (flashcardEdicao != null) {
                         for (Materia m : listaMaterias) {
-                            if (m.id == flashcardEdicao.materiaId) {
+                            if (m.id.equals(flashcardEdicao.materiaId)) {
                                 materiaSelecionada = m;
                                 spinnerMaterias.setText(m.nome, false);
                                 break;
                             }
                         }
                     }
-                });
-            }
-        });
+                }
+            });
     }
 
     private void mostrarDialogoNovaMateria() {

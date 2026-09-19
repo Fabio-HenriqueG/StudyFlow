@@ -29,7 +29,6 @@ import androidx.fragment.app.Fragment;
 
 
 import com.example.studyflow.data.Anotacao;
-import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
