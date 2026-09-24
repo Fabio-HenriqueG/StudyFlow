@@ -27,6 +27,7 @@ public class MetasFragment extends Fragment {
 
     private RecyclerView recyclerMetas;
     private MetaAdapter adapter;
+    private View layoutEmptyMetas;
 
     public MetasFragment() {
         // Required empty public constructor
@@ -54,6 +55,7 @@ public class MetasFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerMetas = view.findViewById(R.id.recyclerMetas);
+        layoutEmptyMetas = view.findViewById(R.id.layoutEmptyMetas);
     }
 
     @Override
@@ -67,6 +69,9 @@ public class MetasFragment extends Fragment {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 List<Meta> lista = queryDocumentSnapshots.toObjects(Meta.class);
                 if (getActivity() != null) {
+                    if (layoutEmptyMetas != null) {
+                        layoutEmptyMetas.setVisibility(lista.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                     if (adapter == null) {
                         adapter = new MetaAdapter(new ArrayList<>(lista));
                     } else {

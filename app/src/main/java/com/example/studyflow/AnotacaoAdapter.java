@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.FirebaseHelper;
+import com.example.studyflow.data.FirestoreService;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
@@ -56,7 +57,7 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
         holder.textData.setText(dataFormatada);
 
         // Identifica e exibe o tipo da anotação
-        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+        if (anotacao.conteudoHtml != null && (anotacao.conteudoHtml.startsWith("{") || anotacao.conteudoHtml.startsWith("["))) {
             holder.textTipo.setText("CADERNO LIVRE");
         } else {
             holder.textTipo.setText("BLOCO DE NOTAS");
@@ -89,9 +90,16 @@ public class AnotacaoAdapter extends RecyclerView.Adapter<AnotacaoAdapter.Anotac
     }
 
     private void confirmarExclusao(View view, Anotacao anotacao, int position) {
-        FirebaseHelper.getAnotacoesRef().document(anotacao.id).delete()
+        FirestoreService.getInstance().excluirAnotacao(anotacao.id)
                 .addOnSuccessListener(aVoid -> {
-                    Snackbar.make(view, "Anotação excluída", Snackbar.LENGTH_SHORT).show();
+                    view.post(() -> {
+                        if (position >= 0 && position < listaAnotacoes.size()) {
+                            listaAnotacoes.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, listaAnotacoes.size());
+                            Snackbar.make(view, "Anotação excluída", Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
                 })
                 .addOnFailureListener(e -> {
                     Snackbar.make(view, "Erro ao excluir", Snackbar.LENGTH_SHORT).show();

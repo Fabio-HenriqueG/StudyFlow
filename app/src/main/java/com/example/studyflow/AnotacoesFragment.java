@@ -27,6 +27,7 @@ public class AnotacoesFragment extends Fragment {
 
     private RecyclerView recyclerAnotacoes;
     private AnotacaoAdapter adapter;
+    private View layoutEmptyAnotacoes;
 
     public AnotacoesFragment() {
         // Required empty public constructor
@@ -49,6 +50,7 @@ public class AnotacoesFragment extends Fragment {
         });
 
         recyclerAnotacoes = view.findViewById(R.id.recyclerAnotacoes);
+        layoutEmptyAnotacoes = view.findViewById(R.id.layoutEmptyAnotacoes);
         return view;
     }
 
@@ -63,6 +65,9 @@ public class AnotacoesFragment extends Fragment {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 List<Anotacao> lista = queryDocumentSnapshots.toObjects(Anotacao.class);
                 if (getActivity() != null) {
+                    if (layoutEmptyAnotacoes != null) {
+                        layoutEmptyAnotacoes.setVisibility(lista.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                     if (adapter == null) {
                         adapter = new AnotacaoAdapter(new ArrayList<>(lista), this::abrirEditor);
                         recyclerAnotacoes.setAdapter(adapter);
@@ -75,7 +80,7 @@ public class AnotacoesFragment extends Fragment {
 
     private void abrirEditor(Anotacao anotacao) {
         Fragment fragment;
-        if (anotacao != null && anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+        if (anotacao != null && anotacao.conteudoHtml != null && (anotacao.conteudoHtml.startsWith("{") || anotacao.conteudoHtml.startsWith("["))) {
             fragment = new EditorAnotacaoFragment();
         } else {
             fragment = new EditorTextoFragment();

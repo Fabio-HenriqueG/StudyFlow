@@ -91,19 +91,17 @@ public class EditorAnotacaoFragment extends Fragment {
                 if (uri != null) gravarPNG(uri);
             });
 
-    private final ActivityResultLauncher<String[]> pickFile =
+    private final ActivityResultLauncher<String[]> pickPdf =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
                 if (uri != null) {
-                    try {
-                        String type = requireContext().getContentResolver().getType(uri);
-                        if (type != null && type.contains("pdf")) {
-                            processarPdf(uri);
-                        } else {
-                            processarImagemGaleria(uri);
-                        }
-                    } catch (Exception e) {
-                        processarImagemGaleria(uri);
-                    }
+                    processarPdf(uri);
+                }
+            });
+
+    private final ActivityResultLauncher<String> pickImage =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri != null) {
+                    processarImagemGaleria(uri);
                 }
             });
 
@@ -434,14 +432,14 @@ public class EditorAnotacaoFragment extends Fragment {
                     canvas.drawColor(Color.WHITE);
                     page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     
-                    File file = new File(context.getCacheDir(), "p_" + System.currentTimeMillis() + "_" + i + ".jpg");
+                    File file = new File(context.getFilesDir(), "pdf_page_" + System.currentTimeMillis() + "_" + i + ".jpg");
                     FileOutputStream fos = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos); 
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos); 
                     fos.close();
                     
                     pageUris.add(Uri.fromFile(file));
                     pageHeights.add(renderH);
-                    totalHeight += renderH + 30;
+                    totalHeight += renderH + 24;
                     
                     bitmap.recycle();
                     page.close();
@@ -484,11 +482,21 @@ public class EditorAnotacaoFragment extends Fragment {
                             
                             int w = bmp.getWidth();
                             int h = bmp.getHeight();
+
+                            MaterialCardView card = new MaterialCardView(getContext());
+                            card.setCardBackgroundColor(Color.TRANSPARENT);
+                            card.setRadius(8f * getResources().getDisplayMetrics().density);
+                            card.setCardElevation(0f);
+                            card.setStrokeColor(ContextCompat.getColor(getContext(), R.color.outlineVariant));
+                            card.setStrokeWidth(1);
+                            card.addView(iv, new ViewGroup.LayoutParams(w, h));
+                            card.setTag(pageUris.get(i).getPath());
+
                             RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, h);
-                            iv.setTranslationX((canvasW - w) / 2f);
-                            iv.setTranslationY(currentY);
-                            canvasNotas.addView(iv, i, p);
-                            currentY += h + 30;
+                            card.setTranslationX((canvasW - w) / 2f);
+                            card.setTranslationY(currentY);
+                            canvasNotas.addView(card, i, p);
+                            currentY += h + 24;
                         }
                     }
                     
@@ -554,7 +562,7 @@ public class EditorAnotacaoFragment extends Fragment {
             switch (title) {
                 case "Adicionar Texto": mostrarDialogoNovoTexto(); break;
                 case "Importar Arquivo (PDF/Imagem)":
-                    pickFile.launch(new String[]{"application/pdf", "image/*"});
+                    mostrarDialogoEscolhaImportacao();
                     break;
                 case "Inserir Forma": mostrarMenuFormas(v); break;
                 case "Biblioteca de Stickers": mostrarDialogoStickers(); break;
@@ -562,6 +570,19 @@ public class EditorAnotacaoFragment extends Fragment {
             return true;
         });
         popup.show();
+    }
+
+    private void mostrarDialogoEscolhaImportacao() {
+        new MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Escolher Tipo de Arquivo")
+            .setItems(new CharSequence[]{"Importar PDF", "Importar Imagem"}, (dialog, which) -> {
+                if (which == 0) {
+                    pickPdf.launch(new String[]{"application/pdf"});
+                } else {
+                    pickImage.launch("image/*");
+                }
+            })
+            .show();
     }
 
     private void mostrarMenuFormas(View v) {
@@ -1073,14 +1094,13 @@ public class EditorAnotacaoFragment extends Fragment {
     private void concluirDesenho() {
         if (desenhoView == null) return;
         Bitmap drawingBitmap = desenhoView.getBitmap();
-        if (drawingBitmap == null) return;
+        if (drawingBitmap == null || desenhoView.isEmpty()) return;
 
         ProgressDialog pd = new ProgressDialog(getContext());
         pd.setMessage("Finalizando rabisco...");
         pd.setCancelable(false);
         pd.show();
 
-        // Salva estados de visão ANTES de processar (para precisão)
         final float currentScale = canvasNotas.getScaleX();
         final float transX = canvasNotas.getTranslationX();
         final float transY = canvasNotas.getTranslationY();
@@ -1091,7 +1111,6 @@ public class EditorAnotacaoFragment extends Fragment {
             requireActivity().runOnUiThread(() -> {
                 Uri uri = salvarFinalBitmap(result.bitmap);
                 if (uri != null) {
-                    // CONVERSÃO DE COORDENADAS: Mapeia o desenho da tela para o local correto no papel com zoom
                     float papelX = (result.x - transX) / currentScale;
                     float papelY = (result.y - transY) / currentScale;
                     float papelW = result.bitmap.getWidth() / currentScale;
@@ -1099,8 +1118,10 @@ public class EditorAnotacaoFragment extends Fragment {
 
                     exibirDesenhoNoCanvas(uri, (int) papelW, (int) papelH, papelX, papelY);
                 }
-                desenhoView.limpar();
-                desativarModoDesenho();
+                if (desenhoView != null) {
+                    desenhoView.limpar();
+                    desativarModoDesenho();
+                }
                 pd.dismiss();
             });
         });
@@ -1110,16 +1131,19 @@ public class EditorAnotacaoFragment extends Fragment {
         ImageView iv = new ImageView(getContext());
         iv.setImageBitmap(carregarBitmapOtimizado(uri, w, h));
         iv.setAdjustViewBounds(true);
+        iv.setElevation(2f * getResources().getDisplayMetrics().density);
         iv.setOnTouchListener(new MultiTouchListener(getContext()));
         iv.setOnLongClickListener(v -> { mostrarMenuOpcoesObjeto(iv); return true; });
         iv.setTag(uri.getPath());
         
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w, h);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w > 0 ? w : 100, h > 0 ? h : 100);
         iv.setTranslationX(x);
         iv.setTranslationY(y);
         
         canvasNotas.addView(iv, params);
-        iv.bringToFront();
+        if (desenhoView != null) {
+            desenhoView.bringToFront();
+        }
     }
 
     private Bitmap cortarEspacosVazios(Bitmap source) {
@@ -1203,12 +1227,13 @@ public class EditorAnotacaoFragment extends Fragment {
             if ("file".equals(uri.getScheme())) {
                 String path = uri.getPath();
                 if (path == null) return null;
+                boolean isDrawing = path.contains("drawing_");
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(path, opt);
                 opt.inSampleSize = calcularSampleSize(opt, reqW, reqH);
                 opt.inJustDecodeBounds = false;
-                opt.inPreferredConfig = Bitmap.Config.RGB_565;
+                opt.inPreferredConfig = isDrawing ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
                 return BitmapFactory.decodeFile(path, opt);
             }
 
@@ -1312,6 +1337,28 @@ public class EditorAnotacaoFragment extends Fragment {
 
     private void salvarNota() {
         esconderTeclado();
+        
+        // Se houver desenho pendente no desenhoView, converte automaticamente em objeto no canvas antes de salvar
+        if (desenhoView != null && !desenhoView.isEmpty()) {
+            Bitmap drawingBitmap = desenhoView.getBitmap();
+            if (drawingBitmap != null) {
+                final float currentScale = canvasNotas.getScaleX();
+                final float transX = canvasNotas.getTranslationX();
+                final float transY = canvasNotas.getTranslationY();
+
+                CropResult result = cortarEspacosVaziosComCoordenadas(drawingBitmap);
+                Uri uri = salvarFinalBitmap(result.bitmap);
+                if (uri != null) {
+                    float papelX = (result.x - transX) / currentScale;
+                    float papelY = (result.y - transY) / currentScale;
+                    float papelW = result.bitmap.getWidth() / currentScale;
+                    float papelH = result.bitmap.getHeight() / currentScale;
+                    exibirDesenhoNoCanvas(uri, (int) papelW, (int) papelH, papelX, papelY);
+                }
+                desenhoView.limpar();
+            }
+        }
+
         String t = editTitulo.getText().toString().trim();
         if (t.isEmpty()) t = "Sem título";
         String j = serializarCanvas();
@@ -1346,6 +1393,20 @@ public class EditorAnotacaoFragment extends Fragment {
                 JSONObject obj = new JSONObject();
                 String tag = child.getTag() != null ? child.getTag().toString() : "";
                 
+                if (child instanceof MaterialCardView) {
+                    MaterialCardView card = (MaterialCardView) child;
+                    obj.put("tipo", "imagem");
+                    obj.put("conteudo", tag);
+                    obj.put("x", card.getTranslationX()); 
+                    obj.put("y", card.getTranslationY());
+                    obj.put("scale", card.getScaleX()); 
+                    obj.put("rotation", card.getRotation());
+                    obj.put("w", card.getWidth()); 
+                    obj.put("h", card.getHeight());
+                    array.put(obj);
+                    continue;
+                }
+
                 if (child instanceof TextView) {
                     if (tag.startsWith("sticker:")) {
                         obj.put("tipo", "sticker");
@@ -1402,8 +1463,51 @@ public class EditorAnotacaoFragment extends Fragment {
                 array = new JSONArray(json);
             }
 
+            List<JSONObject> pdfPages = new ArrayList<>();
+            List<JSONObject> otherObjects = new ArrayList<>();
+
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
+                String tipo = obj.optString("tipo", "");
+                String conteudo = obj.optString("conteudo", "");
+                if (tipo.equals("imagem") && conteudo.contains("pdf_page_")) {
+                    pdfPages.add(obj);
+                } else {
+                    otherObjects.add(obj);
+                }
+            }
+
+            // 1. Carrega as páginas do PDF primeiro (fundo / background)
+            for (JSONObject obj : pdfPages) {
+                String conteudo = obj.getString("conteudo");
+                int w = obj.getInt("w"), h = obj.getInt("h");
+                ImageView iv = new ImageView(getContext());
+                Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
+                if (b != null) iv.setImageBitmap(b);
+                iv.setAdjustViewBounds(true);
+                iv.setTag(conteudo);
+
+                MaterialCardView card = new MaterialCardView(getContext());
+                card.setCardBackgroundColor(Color.TRANSPARENT);
+                card.setRadius(8f * getResources().getDisplayMetrics().density);
+                card.setCardElevation(0f);
+                card.setStrokeColor(ContextCompat.getColor(getContext(), R.color.outlineVariant));
+                card.setStrokeWidth(1);
+                card.addView(iv, new ViewGroup.LayoutParams(w, h));
+                card.setTag(conteudo);
+
+                card.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
+                card.setTranslationX((float) obj.getDouble("x")); 
+                card.setTranslationY((float) obj.getDouble("y"));
+                card.setScaleX((float) obj.getDouble("scale")); 
+                card.setScaleY((float) obj.getDouble("scale"));
+                card.setRotation((float) obj.getDouble("rotation"));
+                canvasNotas.addView(card);
+            }
+
+            // 2. Carrega os demais objetos (textos, formas, stickers, imagens da galeria, desenhos) por cima
+            for (int i = 0; i < otherObjects.size(); i++) {
+                JSONObject obj = otherObjects.get(i);
                 String tipo = obj.getString("tipo"), conteudo = obj.getString("conteudo");
                 int w = obj.getInt("w"), h = obj.getInt("h");
                 View v;
@@ -1438,15 +1542,19 @@ public class EditorAnotacaoFragment extends Fragment {
                     meta.put("type", conteudo); meta.put("color", color); meta.put("filled", filled);
                     v.setTag(meta.toString());
                 } else {
+                    // Imagem normal do usuário (galeria) - totalmente interativa e móvel
                     ImageView iv = new ImageView(getContext());
                     Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
                     if (b != null) iv.setImageBitmap(b);
-                    iv.setAdjustViewBounds(true); iv.setTag(conteudo);
+                    iv.setAdjustViewBounds(true);
+                    iv.setTag(conteudo);
                     v = iv;
                 }
                 v.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
-                v.setOnTouchListener(new MultiTouchListener(getContext()));
-                v.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(v); return true; });
+                if (!(v instanceof MaterialCardView)) {
+                    v.setOnTouchListener(new MultiTouchListener(getContext()));
+                    v.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(v); return true; });
+                }
                 v.setTranslationX((float) obj.getDouble("x")); v.setTranslationY((float) obj.getDouble("y"));
                 v.setScaleX((float) obj.getDouble("scale")); v.setScaleY((float) obj.getDouble("scale"));
                 v.setRotation((float) obj.getDouble("rotation"));

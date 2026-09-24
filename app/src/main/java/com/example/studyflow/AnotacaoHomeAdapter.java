@@ -46,7 +46,7 @@ public class AnotacaoHomeAdapter extends RecyclerView.Adapter<AnotacaoHomeAdapte
         holder.textData.setText(sdf.format(new Date(anotacao.dataUltimaEdicao)));
 
         // Identifica e exibe o tipo da anotação
-        if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+        if (anotacao.conteudoHtml != null && (anotacao.conteudoHtml.startsWith("{") || anotacao.conteudoHtml.startsWith("["))) {
             holder.textTipo.setText("DESENHO");
         } else {
             holder.textTipo.setText("TEXTO");

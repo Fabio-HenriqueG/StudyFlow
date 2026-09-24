@@ -25,6 +25,7 @@ public class FlashcardListaFragment extends Fragment {
     private RecyclerView recycler;
     private FlashcardAdapter adapter;
     private Materia materia;
+    private View layoutEmptyFlashcards;
 
     @Nullable
     @Override
@@ -44,6 +45,7 @@ public class FlashcardListaFragment extends Fragment {
         if (materia != null) lblTitulo.setText(materia.nome);
 
         recycler = view.findViewById(R.id.recyclerListaFlashcards);
+        layoutEmptyFlashcards = view.findViewById(R.id.layoutEmptyFlashcards);
         ImageButton btnVoltar = view.findViewById(R.id.btnVoltarListaFlash);
         ImageButton btnStats = view.findViewById(R.id.btnVerStats);
 
@@ -65,6 +67,9 @@ public class FlashcardListaFragment extends Fragment {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 List<Flashcard> cards = queryDocumentSnapshots.toObjects(Flashcard.class);
                 if (getActivity() != null) {
+                    if (layoutEmptyFlashcards != null) {
+                        layoutEmptyFlashcards.setVisibility(cards.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                     if (adapter == null) {
                         adapter = new FlashcardAdapter(new ArrayList<>(cards), this::abrirEdicao);
                     } else {

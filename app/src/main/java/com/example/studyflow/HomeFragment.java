@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
     private MetaHomeAdapter metaAdapter;
     private AnotacaoHomeAdapter anotacaoAdapter;
     private LinearLayout layoutStatus;
-    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards, cardStreak;
+    private View cardEmptyState, cardEmptyTarefas, cardEmptyAnotacoes, cardEmptyMetas, cardRevisaoFlashcards, cardEmptyFlashcards, layoutSecaoFlashcards, cardStreak, progressHome;
     private int countMetas = -1, countAnotacoes = -1, countTarefas = -1, countFlashcards = -1;
 
     public HomeFragment() {
@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment {
         txtFlashcardsCount = view.findViewById(R.id.txtFlashcardsCount);
         txtStreakCount = view.findViewById(R.id.txtStreakCount);
         cardStreak = view.findViewById(R.id.cardStreak);
+        progressHome = view.findViewById(R.id.progressHome);
         
         View btnIniciarRevisao = view.findViewById(R.id.btnIniciarRevisao);
         View btnVerColecaoHome = view.findViewById(R.id.btnVerColecaoHome);
@@ -148,6 +149,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (progressHome != null) progressHome.setVisibility(View.VISIBLE);
         countMetas = -1;
         countAnotacoes = -1;
         countTarefas = -1;
@@ -202,6 +204,10 @@ public class HomeFragment extends Fragment {
                         atualizarVisibilidadeEstadoVazio();
                     });
                 }
+            })
+            .addOnFailureListener(e -> {
+                countTarefas = 0;
+                if (getActivity() != null) getActivity().runOnUiThread(this::atualizarVisibilidadeEstadoVazio);
             });
     }
 
@@ -226,6 +232,10 @@ public class HomeFragment extends Fragment {
                     
                     atualizarVisibilidadeEstadoVazio();
                 }
+            })
+            .addOnFailureListener(e -> {
+                countMetas = 0;
+                if (getActivity() != null) getActivity().runOnUiThread(this::atualizarVisibilidadeEstadoVazio);
             });
     }
 
@@ -239,7 +249,7 @@ public class HomeFragment extends Fragment {
                     if (anotacaoAdapter == null) {
                         anotacaoAdapter = new AnotacaoHomeAdapter(anotacoes, anotacao -> {
                             Fragment fragment;
-                            if (anotacao.conteudoHtml != null && anotacao.conteudoHtml.startsWith("[")) {
+                            if (anotacao.conteudoHtml != null && (anotacao.conteudoHtml.startsWith("{") || anotacao.conteudoHtml.startsWith("["))) {
                                 fragment = new EditorAnotacaoFragment();
                             } else {
                                 fragment = new EditorTextoFragment();
@@ -260,6 +270,10 @@ public class HomeFragment extends Fragment {
                     
                     atualizarVisibilidadeEstadoVazio();
                 }
+            })
+            .addOnFailureListener(e -> {
+                countAnotacoes = 0;
+                if (getActivity() != null) getActivity().runOnUiThread(this::atualizarVisibilidadeEstadoVazio);
             });
     }
 
@@ -269,11 +283,6 @@ public class HomeFragment extends Fragment {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 int paraRevisar = queryDocumentSnapshots.size();
                 
-                // Para o total de flashcards, precisaríamos de outra query ou contar de todas as matérias
-                // Por simplificação agora, vamos focar no que revisa.
-                // countFlashcards = total; 
-                
-                // Vamos assumir que se tem para revisar, o count é > 0
                 countFlashcards = paraRevisar; 
 
                 if (getActivity() != null) {
@@ -288,14 +297,15 @@ public class HomeFragment extends Fragment {
                                 }
                             }
                         } else {
-                            // Se não tem nada para revisar, checamos se existe algum flashcard no total
-                            // Para ser 100% fiel ao Firebase, precisaríamos de uma query de 'count'
-                            // Vou simplificar mantendo a lógica de visibilidade
                             layoutSecaoFlashcards.setVisibility(View.GONE);
                         }
                     }
                     atualizarVisibilidadeEstadoVazio();
                 }
+            })
+            .addOnFailureListener(e -> {
+                countFlashcards = 0;
+                if (getActivity() != null) getActivity().runOnUiThread(this::atualizarVisibilidadeEstadoVazio);
             });
     }
 
@@ -305,6 +315,8 @@ public class HomeFragment extends Fragment {
     private void atualizarVisibilidadeEstadoVazio() {
         // Só executa quando todos os carregamentos terminarem
         if (countMetas == -1 || countAnotacoes == -1 || countTarefas == -1 || countFlashcards == -1) return;
+
+        if (progressHome != null) progressHome.setVisibility(View.GONE);
 
         if (countMetas == 0 && countAnotacoes == 0 && countTarefas == 0 && countFlashcards == 0) {
             // TUDO VAZIO: Mostra o card de boas-vindas gigante e esconde o resto

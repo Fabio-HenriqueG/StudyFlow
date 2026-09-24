@@ -25,6 +25,7 @@ public class ChecklistFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ChecklistAdapter adapter;
+    private View layoutEmptyChecklists;
 
     public ChecklistFragment() {
         // Required empty public constructor
@@ -47,6 +48,7 @@ public class ChecklistFragment extends Fragment {
         });
 
         recyclerView = view.findViewById(R.id.recyclerChecklists);
+        layoutEmptyChecklists = view.findViewById(R.id.layoutEmptyChecklists);
         return view;
     }
 
@@ -61,6 +63,9 @@ public class ChecklistFragment extends Fragment {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 List<Checklist> listas = queryDocumentSnapshots.toObjects(Checklist.class);
                 if (getActivity() != null) {
+                    if (layoutEmptyChecklists != null) {
+                        layoutEmptyChecklists.setVisibility(listas.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                     if (adapter == null) {
                         adapter = new ChecklistAdapter(new ArrayList<>(listas));
                         adapter.setOnDataChangedListener(this::carregarChecklists);

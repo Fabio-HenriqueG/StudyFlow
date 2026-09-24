@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.studyflow" />
-                  <option name="mobileSdkAppId" value="1:760514982186:android:fd1638d263f233a3636e53" />
-                  <option name="projectId" value="studyflow-3d8315f6" />
-                  <option name="projectNumber" value="760514982186" />
+                  <option name="mobileSdkAppId" value="1:809537622295:android:2abe6b4829630bd9c46752" />
+                  <option name="projectId" value="studyflow-3dsetec" />
+                  <option name="projectNumber" value="809537622295" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

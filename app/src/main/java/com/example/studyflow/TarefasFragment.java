@@ -76,7 +76,7 @@ public class TarefasFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerTarefas = view.findViewById(R.id.recyclerTarefas);
-        txtEmptyState = view.findViewById(R.id.txtEmptyTarefas);
+        txtEmptyState = view.findViewById(R.id.layoutEmptyTarefas);
         progressBar = view.findViewById(R.id.progressTarefas);
         configurarSwipe();
     }

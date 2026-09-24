@@ -208,4 +208,16 @@ public class DesenhoView extends View {
     public Bitmap getBitmap() {
         return canvasBitmap;
     }
+
+    public void setBitmap(Bitmap bitmap) {
+        if (bitmap != null && drawCanvas != null) {
+            drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            drawCanvas.drawBitmap(bitmap, 0, 0, canvasPaint);
+            invalidate();
+        }
+    }
+
+    public boolean isEmpty() {
+        return strokes.isEmpty();
+    }
 }
