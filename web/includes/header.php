@@ -57,6 +57,15 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
                 <a href="metas.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'metas' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">track_changes</span> Metas
                 </a>
+                <a href="anotacoes.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                    <span class="material-icons-outlined text-sm">description</span> Anotações
+                </a>
+                <a href="anotacoes_livres.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes_livres' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                    <span class="material-icons-outlined text-sm">brush</span> Quadro Livre
+                </a>
+                <a href="flashcards.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'flashcards' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                    <span class="material-icons-outlined text-sm">style</span> Flashcards
+                </a>
                 <a href="ia_assistente.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'ia_assistente' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">psychology</span> Assistente IA
                 </a>
