@@ -79,26 +79,17 @@ public class MainActivity extends AppCompatActivity {
         configurarBotaoVoltar();
         configurarLifecycleCallbacks();
 
-        // Firebase Auth - Login Anônimo em Background
+        // Verificar estado de Autenticação do Usuário
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
-            auth.signInAnonymously()
-                .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = authResult.getUser();
-                    if (user != null) {
-                        String uid = user.getUid();
-                        Log.d("MainActivity", "Login anônimo efetuado: " + uid);
-                        String displayId = uid.length() > 5 ? uid.substring(0, 5) : uid;
-                        Toast.makeText(this, "Sincronizado com a nuvem (ID: " + displayId + "...)", Toast.LENGTH_SHORT).show();
-                        recarregarFragmentoHome();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("MainActivity", "Falha no login anônimo", e);
-                    Toast.makeText(this, "Modo Offline ativo. Erro: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                });
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
         } else {
-            Log.d("MainActivity", "Usuário já logado.");
+            FirebaseUser user = auth.getCurrentUser();
+            String name = user.getDisplayName() != null ? user.getDisplayName() : (user.isAnonymous() ? "Convidado" : user.getEmail());
+            Log.d("MainActivity", "Usuário logado: " + user.getUid() + " (" + name + ")");
         }
 
         // Suporte e Notificações

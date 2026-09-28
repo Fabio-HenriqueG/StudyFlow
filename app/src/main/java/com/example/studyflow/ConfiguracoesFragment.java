@@ -28,6 +28,8 @@ import androidx.fragment.app.Fragment;
 import com.example.studyflow.data.AppDatabase;
 import com.example.studyflow.data.Anotacao;
 import com.example.studyflow.data.FirestoreService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -157,7 +159,16 @@ public class ConfiguracoesFragment extends Fragment {
     }
 
     private void carregarConfiguracoes() {
-        editNome.setText(prefs.getString("user_name", ""));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String nomeSalvo = prefs.getString("user_name", "");
+        if (nomeSalvo.isEmpty() && user != null) {
+            if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
+                nomeSalvo = user.getDisplayName();
+            } else if (user.getEmail() != null) {
+                nomeSalvo = user.getEmail();
+            }
+        }
+        editNome.setText(nomeSalvo);
         
         currentProfilePicUri = prefs.getString("user_profile_pic", "");
         if (!currentProfilePicUri.isEmpty()) {
