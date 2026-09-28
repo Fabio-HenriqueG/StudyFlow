@@ -141,7 +141,7 @@
 
         app:iconSize="21dp"
 
-        app:iconTint="@color/onPrimaryContainer" />
+        app:iconTint="@color/primary" />
 
 
     <!-- ================================================= -->
@@ -169,7 +169,7 @@
 
         android:textAllCaps="false"
 
-        android:textColor="@color/onPrimaryContainer"
+        android:textColor="@color/primary"
 
         android:textSize="13sp"
 
@@ -185,7 +185,7 @@
 
         app:iconSize="21dp"
 
-        app:iconTint="@color/onPrimaryContainer" />
+        app:iconTint="@color/primary" />
 
 
     <!-- ================================================= -->
@@ -213,7 +213,7 @@
 
         android:textAllCaps="false"
 
-        android:textColor="@color/onPrimaryContainer"
+        android:textColor="@color/primary"
 
         android:textSize="13sp"
 
@@ -229,7 +229,7 @@
 
         app:iconSize="21dp"
 
-        app:iconTint="@color/onPrimaryContainer" />
+        app:iconTint="@color/primary" />
 
 
     <!-- ================================================= -->
@@ -299,7 +299,7 @@
 
         android:textAllCaps="false"
 
-        android:textColor="@color/onPrimaryContainer"
+        android:textColor="@color/primary"
 
         android:textSize="13sp"
 
@@ -315,6 +315,6 @@
 
         app:iconSize="21dp"
 
-        app:iconTint="@color/onPrimaryContainer" />
+        app:iconTint="@color/primary" />
 
 </LinearLayout>

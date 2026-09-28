@@ -96,7 +96,7 @@
 
             android:src="@drawable/ic_more_vert"
 
-            app:tint="@color/onSurfaceVariant"
+            app:tint="@color/onSurface"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -119,6 +119,8 @@
 
             android:fontFamily="@font/poppins_semibold"
 
+            android:background="@drawable/bg_tipo_anotacao"
+
             android:text="Informações"
 
             android:textColor="@color/primary"
@@ -234,6 +236,8 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="24dp"
+
+            android:background="@drawable/bg_tipo_anotacao"
 
             android:fontFamily="@font/poppins_semibold"
 
@@ -540,6 +544,8 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="26dp"
+
+            android:background="@drawable/bg_tipo_anotacao"
 
             android:fontFamily="@font/poppins_semibold"
 

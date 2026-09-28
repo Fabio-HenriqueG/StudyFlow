@@ -126,7 +126,7 @@
 
                 android:src="@drawable/ic_clock"
 
-                app:tint="@color/onSurfaceVariant" />
+                app:tint="@color/onSurface" />
 
         </com.google.android.material.card.MaterialCardView>
 

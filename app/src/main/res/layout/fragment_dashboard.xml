@@ -119,10 +119,12 @@
 
             android:fontFamily="@font/poppins_semibold"
 
+            android:background="@drawable/bg_tipo_anotacao"
+
             android:text="Período"
 
             android:textColor="@color/primary"
-            android:textSize="13sp"
+            android:textSize="14sp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblDescricaoDashboard" />
@@ -894,7 +896,7 @@
 
                     android:src="@drawable/ic_card"
 
-                    app:tint="@color/onSecondaryContainer" />
+                    app:tint="@color/primary" />
 
 
                 <TextView
@@ -911,7 +913,7 @@
 
                     android:text="Você focou em 0 disciplinas neste período."
 
-                    android:textColor="@color/onSecondaryContainer"
+                    android:textColor="@color/primary"
                     android:textSize="11sp" />
 
             </LinearLayout>

@@ -217,7 +217,7 @@
 
                 android:src="@drawable/ic_target"
 
-                app:tint="@color/onPrimaryContainer" />
+                app:tint="@color/primary" />
 
 
             <TextView
@@ -234,7 +234,7 @@
 
                 android:text="Ex.: Beber 3 litros de água, ler 20 páginas ou fazer exercícios."
 
-                android:textColor="@color/onPrimaryContainer"
+                android:textColor="@color/primary"
 
                 android:textSize="10sp" />
 
@@ -252,6 +252,8 @@
         android:layout_height="wrap_content"
 
         android:layout_marginTop="24dp"
+
+        android:background="@drawable/bg_tipo_anotacao"
 
         android:fontFamily="@font/poppins_semibold"
 

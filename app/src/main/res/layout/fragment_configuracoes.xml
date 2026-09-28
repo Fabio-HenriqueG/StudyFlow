@@ -236,6 +236,8 @@
 
             android:layout_marginTop="28dp"
 
+            android:background="@drawable/bg_tipo_anotacao"
+
             android:fontFamily="@font/poppins_semibold"
 
             android:text="Aparência"
@@ -439,6 +441,8 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="28dp"
+
+            android:background="@drawable/bg_tipo_anotacao"
 
             android:fontFamily="@font/poppins_semibold"
 

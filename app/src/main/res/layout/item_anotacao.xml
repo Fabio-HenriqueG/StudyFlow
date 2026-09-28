@@ -78,7 +78,7 @@
 
                 android:src="@drawable/ic_more_vert"
 
-                app:tint="@color/onSurfaceVariant" />
+                app:tint="@color/onSurface" />
 
         </RelativeLayout>
         <!-- CONTEÚDO -->
@@ -142,7 +142,7 @@
 
             android:text="Tipo"
 
-            android:textColor="@color/onPrimaryContainer"
+            android:textColor="@color/primary"
 
             android:textSize="9sp" />
 

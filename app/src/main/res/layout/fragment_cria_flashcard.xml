@@ -118,6 +118,8 @@
 
             android:layout_marginTop="28dp"
 
+            android:background="@drawable/bg_tipo_anotacao"
+
             android:fontFamily="@font/poppins_semibold"
 
             android:text="Frente"
@@ -207,6 +209,8 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:background="@drawable/bg_tipo_anotacao"
 
             android:layout_marginTop="22dp"
 
@@ -302,13 +306,15 @@
 
             android:layout_marginTop="22dp"
 
-            android:fontFamily="@font/poppins_medium"
+            android:background="@drawable/bg_tipo_anotacao"
+
+            android:fontFamily="@font/poppins_semibold"
 
             android:text="Explicação"
 
-            android:textColor="@color/onSurface"
+            android:textColor="@color/primary"
 
-            android:textSize="12sp"
+            android:textSize="14sp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutResposta" />
@@ -391,9 +397,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="22dp"
 
             android:fontFamily="@font/poppins_semibold"
+
+            android:background="@drawable/bg_tipo_anotacao"
 
             android:text="Matéria"
 
@@ -543,7 +551,7 @@
 
                     android:src="@drawable/ic_card"
 
-                    app:tint="@color/onPrimaryContainer" />
+                    app:tint="@color/primary" />
 
 
                 <TextView
@@ -558,7 +566,7 @@
 
                     android:text="Perguntas curtas e respostas objetivas facilitam a revisão."
 
-                    android:textColor="@color/onPrimaryContainer"
+                    android:textColor="@color/primary"
 
                     android:textSize="10sp" />
 

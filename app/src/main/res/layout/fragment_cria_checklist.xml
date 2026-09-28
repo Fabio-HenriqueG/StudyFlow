@@ -186,6 +186,8 @@
 
         android:fontFamily="@font/poppins_semibold"
 
+        android:background="@drawable/bg_tipo_anotacao"
+
         android:text="Opções"
 
         android:textColor="@color/primary"
@@ -265,7 +267,7 @@
 
         android:textAllCaps="false"
 
-        android:textColor="@color/onPrimaryContainer"
+        android:textColor="@color/primary"
 
         android:textSize="12sp"
 
@@ -273,7 +275,7 @@
 
         app:cornerRadius="16dp"
 
-        app:icon="@android:drawable/ic_menu_today"
+        app:icon="@drawable/ic_calendar"
 
         app:iconGravity="textStart"
 
@@ -281,7 +283,7 @@
 
         app:iconSize="20dp"
 
-        app:iconTint="@color/onPrimaryContainer"
+        app:iconTint="@color/primary"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

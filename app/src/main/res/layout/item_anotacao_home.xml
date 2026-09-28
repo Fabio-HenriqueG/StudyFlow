@@ -107,8 +107,9 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center"
+
                 android:src="@drawable/ic_pencil"
-                app:tint="@color/onPrimaryContainer" />
+                app:tint="@color/primary" />
 
         </com.google.android.material.card.MaterialCardView>
 

@@ -44,8 +44,7 @@
 
                 android:contentDescription="@null"
                 android:src="@drawable/ic_target"
-
-                app:tint="@color/onPrimaryContainer" />
+                app:tint="@color/primary" />
 
         </com.google.android.material.card.MaterialCardView>
 
