@@ -18,26 +18,32 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
                     colors: {
                         primary: '#6750A4',
                         primaryDark: '#4F378B',
+                        primaryContainer: '#EADDFF',
+                        onPrimaryContainer: '#21005D',
                         secondary: '#625B71',
                         surface: '#FEF7FF',
                         surfaceVariant: '#E7E0EC',
+                        outlineVariant: '#CAC4D0',
                         accent: '#7D5260'
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif']
                     }
                 }
             }
         }
     </script>
 
-    <!-- Material Icons & Google Fonts -->
+    <!-- Material Icons & Google Fonts Poppins -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Estilos Personalizados -->
+    <!-- Estilos Personalizados M3 -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="bg-surface text-gray-900 font-sans min-h-screen flex flex-col">
 
-    <!-- Navbar Principal -->
+    <!-- Navbar Principal M3 -->
     <header class="bg-primary text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <!-- Logo e Título -->
@@ -46,27 +52,30 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
                 <a href="index.php" class="font-bold text-xl tracking-wide">StudyFlow</a>
             </div>
 
-            <!-- Links de Navegação (Desktop) -->
-            <nav class="hidden md:flex space-x-1">
-                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'index' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+            <!-- Links de Navegação Completa (Desktop) -->
+            <nav class="hidden lg:flex space-x-1">
+                <a href="index.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'index' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">dashboard</span> Dashboard
                 </a>
-                <a href="tarefas.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'tarefas' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="tarefas.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'tarefas' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">task_alt</span> Tarefas
                 </a>
-                <a href="metas.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'metas' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="metas.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'metas' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">track_changes</span> Metas
                 </a>
-                <a href="anotacoes.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="checklists.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'checklists' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                    <span class="material-icons-outlined text-sm">fact_check</span> Checklists
+                </a>
+                <a href="anotacoes.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">description</span> Anotações
                 </a>
-                <a href="anotacoes_livres.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes_livres' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="anotacoes_livres.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'anotacoes_livres' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">brush</span> Quadro Livre
                 </a>
-                <a href="flashcards.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'flashcards' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="flashcards.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'flashcards' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">style</span> Flashcards
                 </a>
-                <a href="ia_assistente.php" class="px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 <?= $currentPage === 'ia_assistente' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
+                <a href="ia_assistente.php" class="px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1 <?= $currentPage === 'ia_assistente' ? 'bg-primaryDark text-white' : 'hover:bg-primaryDark/50' ?>">
                     <span class="material-icons-outlined text-sm">psychology</span> Assistente IA
                 </a>
             </nav>
@@ -74,12 +83,12 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             <!-- Usuário / Login / Logout -->
             <div class="flex items-center space-x-3">
                 <div id="userProfile" class="hidden flex items-center space-x-2">
-                    <span id="userName" class="text-sm font-medium"></span>
-                    <button id="btnLogout" class="bg-primaryDark hover:bg-red-700 text-white p-2 rounded-full transition flex items-center justify-center" title="Sair">
+                    <span id="userName" class="text-xs font-semibold"></span>
+                    <button id="btnLogout" class="bg-primaryDark hover:bg-red-700 text-white p-2 rounded-full transition flex items-center justify-center shadow-sm" title="Sair">
                         <span class="material-icons-outlined text-sm">logout</span>
                     </button>
                 </div>
-                <a id="btnLoginNav" href="login.php" class="hidden bg-white text-primary font-medium text-sm px-4 py-2 rounded-lg hover:bg-gray-100 transition shadow">
+                <a id="btnLoginNav" href="login.php" class="hidden bg-white text-primary font-medium text-xs px-4 py-2 rounded-xl hover:bg-gray-100 transition shadow">
                     Entrar
                 </a>
             </div>

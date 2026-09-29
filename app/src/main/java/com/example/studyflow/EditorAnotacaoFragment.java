@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -53,6 +55,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -1361,7 +1364,7 @@ public class EditorAnotacaoFragment extends Fragment {
 
         String t = editTitulo.getText().toString().trim();
         if (t.isEmpty()) t = "Sem título";
-        String j = serializarCanvas();
+        String j = exportarCanvasParaImageHtml();
         long a = System.currentTimeMillis();
         
         if (anotacaoExistente != null) {
@@ -1376,6 +1379,29 @@ public class EditorAnotacaoFragment extends Fragment {
             FirestoreService.getInstance().salvarAnotacao(n)
                 .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno salvo!"))
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Erro ao salvar", Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private String exportarCanvasParaImageHtml() {
+        try {
+            int w = canvasNotas.getWidth();
+            int h = canvasNotas.getHeight();
+            if (w <= 0 || h <= 0) {
+                w = 1080;
+                h = 1920;
+            }
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            canvasNotas.draw(canvas);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
+            byte[] bytes = baos.toByteArray();
+            String base64 = Base64.encodeToString(bytes, Base64.NO_WRAP);
+            return "<img src=\"data:image/png;base64," + base64 + "\" />";
+        } catch (Exception e) {
+            Log.e("EditorAnotacaoFragment", "Erro ao exportar imagem do canvas", e);
+            return serializarCanvas();
         }
     }
 
@@ -1445,7 +1471,33 @@ public class EditorAnotacaoFragment extends Fragment {
     }
 
     private void carregarObjetosDoJson(String json) {
-        if (json == null || json.isEmpty() || json.startsWith("<")) return;
+        if (json == null || json.isEmpty()) return;
+
+        // Se a anotação foi criada na Web e contém imagem em Base64 / HTML
+        if (json.startsWith("<") || json.contains("data:image")) {
+            try {
+                int start = json.indexOf("base64,");
+                if (start != -1) {
+                    start += 7;
+                    int end = json.indexOf("\"", start);
+                    if (end == -1) end = json.indexOf("'", start);
+                    if (end == -1) end = json.length();
+                    String base64Data = json.substring(start, end).trim();
+                    byte[] decodedString = Base64.decode(base64Data, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    if (decodedByte != null) {
+                        ImageView iv = new ImageView(getContext());
+                        iv.setImageBitmap(decodedByte);
+                        iv.setAdjustViewBounds(true);
+                        iv.setOnTouchListener(new MultiTouchListener(getContext()));
+                        canvasNotas.addView(iv, new RelativeLayout.LayoutParams(decodedByte.getWidth(), decodedByte.getHeight()));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("EditorAnotacaoFragment", "Erro ao carregar anotação criada na Web", e);
+            }
+            return;
+        }
         try {
             JSONArray array;
             if (json.startsWith("{")) {

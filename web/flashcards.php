@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-gray-800">Flashcards para Revisão</h1>
-        <p class="text-sm text-gray-500">Memorize conceitos usando repetição espaçada.</p>
+        <p class="text-sm text-gray-500">Memorize conceitos usando Repetição Espaçada (SRS).</p>
     </div>
     <div class="flex items-center gap-2">
         <button id="btnNovaMateria" class="bg-purple-100 hover:bg-purple-200 text-primary px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm flex items-center gap-2">
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
         <form id="formMateria" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Matéria</label>
-                <input type="text" id="materiaNome" required placeholder="Ex: Biologia, Matemática..." class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary">
+                <input type="text" id="materiaNome" required placeholder="Ex: Biologia, História..." class="w-full px-4 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-primary">
             </div>
             <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white py-2.5 rounded-xl font-medium shadow transition">
                 Salvar Matéria
@@ -47,17 +47,17 @@ require_once __DIR__ . '/includes/header.php';
         <form id="formFlashcard" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Matéria</label>
-                <select id="flashcardMateriaId" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary">
+                <select id="flashcardMateriaId" required class="w-full px-4 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-primary">
                     <option value="">Selecione a Matéria...</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Pergunta (Frente)</label>
-                <textarea id="flashcardPergunta" rows="2" required placeholder="O que é a mitocôndria?" class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary"></textarea>
+                <textarea id="flashcardPergunta" rows="2" required placeholder="O que é a mitocôndria?" class="w-full px-4 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-primary"></textarea>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Resposta (Verso)</label>
-                <textarea id="flashcardResposta" rows="3" required placeholder="Organela responsável pela respiração celular..." class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary"></textarea>
+                <textarea id="flashcardResposta" rows="3" required placeholder="Organela responsável pela respiração celular..." class="w-full px-4 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-primary"></textarea>
             </div>
             <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white py-2.5 rounded-xl font-medium shadow transition">
                 Salvar Flashcard
@@ -68,7 +68,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- Container Principal -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Lista de Matérias / Decks (1 coluna) -->
+    <!-- Lista de Matérias / Decks -->
     <div class="space-y-4">
         <h2 class="font-bold text-gray-800 text-lg flex items-center gap-2">
             <span class="material-icons-outlined text-primary">folder</span> Matérias / Decks
@@ -80,7 +80,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-    <!-- Área de Estudo / Flashcard Atual (2 colunas) -->
+    <!-- Área de Estudo / Flashcard Atual -->
     <div class="lg:col-span-2 space-y-6">
         <div id="areaEstudo" class="hidden space-y-6">
             <div class="flex justify-between items-center">
@@ -89,36 +89,39 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <!-- Card de Pergunta/Resposta com Efeito Flip -->
-            <div id="flashcardContainer" class="card-md3 min-h-[280px] p-8 flex flex-col justify-between items-center text-center cursor-pointer border border-gray-200 select-none shadow-md transition transform duration-300">
-                <div class="w-full flex justify-between text-xs text-gray-400">
-                    <span id="labelTipoCard">PERGUNTA</span>
-                    <span>Clique para ver a resposta</span>
+            <div id="flashcardContainer" class="card-md3 min-h-[300px] p-8 flex flex-col justify-between items-center text-center cursor-pointer border border-gray-200 select-none shadow-md transition transform duration-300 hover:border-primary/50">
+                <div class="w-full flex justify-between text-xs text-gray-400 font-medium">
+                    <span id="labelTipoCard" class="text-primary font-bold">PERGUNTA</span>
+                    <span>Clique para virar</span>
                 </div>
                 <div class="my-auto py-6">
-                    <h3 id="textoCard" class="text-xl font-bold text-gray-800">Selecione uma matéria ao lado para começar.</h3>
+                    <h3 id="textoCard" class="text-xl font-bold text-gray-800">Selecione uma matéria para começar.</h3>
                 </div>
-                <div class="text-xs text-primary font-medium">
-                    (Pressione para virar)
+                <div class="text-xs text-gray-400">
+                    (Clique para ver a resposta)
                 </div>
             </div>
 
-            <!-- Botões de Avaliação -->
+            <!-- Botões de Avaliação do SRS (SuperMemo / Anki Math) -->
             <div id="painelAvaliacao" class="hidden grid grid-cols-3 gap-4">
-                <button onclick="avaliarCard(1)" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 rounded-xl transition text-sm shadow-sm">
-                    Difícil 🔴
+                <button onclick="avaliarCard(1)" class="bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3.5 rounded-xl transition text-sm shadow-sm flex flex-col items-center">
+                    <span>Difícil 🔴</span>
+                    <span class="text-[10px] font-normal text-red-400">Revisar amanhã</span>
                 </button>
-                <button onclick="avaliarCard(3)" class="bg-amber-50 hover:bg-amber-100 text-amber-600 font-medium py-3 rounded-xl transition text-sm shadow-sm">
-                    Bom 🟡
+                <button onclick="avaliarCard(3)" class="bg-amber-50 hover:bg-amber-100 text-amber-600 font-semibold py-3.5 rounded-xl transition text-sm shadow-sm flex flex-col items-center">
+                    <span>Bom 🟡</span>
+                    <span class="text-[10px] font-normal text-amber-400">Revisar em breve</span>
                 </button>
-                <button onclick="avaliarCard(5)" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-medium py-3 rounded-xl transition text-sm shadow-sm">
-                    Fácil 🟢
+                <button onclick="avaliarCard(5)" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold py-3.5 rounded-xl transition text-sm shadow-sm flex flex-col items-center">
+                    <span>Fácil 🟢</span>
+                    <span class="text-[10px] font-normal text-emerald-400">Domínio aumentado</span>
                 </button>
             </div>
         </div>
 
         <div id="placeholderEstudo" class="card-md3 p-12 text-center text-gray-400 border border-gray-100">
             <span class="material-icons-outlined text-5xl text-gray-300 mb-2">style</span>
-            <p>Selecione uma matéria na lista ao lado para iniciar a revisão dos Flashcards ou crie um novo flashcard.</p>
+            <p>Selecione uma matéria na lista ao lado para iniciar a revisão dos Flashcards.</p>
         </div>
     </div>
 </div>
@@ -139,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         carregarMaterias();
     });
 
-    // Modais
     const modalMateria = document.getElementById('modalMateria');
     const modalFlashcard = document.getElementById('modalFlashcard');
 
@@ -152,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnFecharModalFlashcard').addEventListener('click', () => modalFlashcard.classList.add('hidden'));
 
-    // Salvar Matéria
     document.getElementById('formMateria').addEventListener('submit', (e) => {
         e.preventDefault();
         if (!currentUserId) return;
@@ -163,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ref.set({
             id: ref.id,
             nome: nome,
-            cor: -65536 // Cor padrão
+            cor: -65536
         }).then(() => {
             showToast("Matéria criada com sucesso!");
             modalMateria.classList.add('hidden');
@@ -172,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Salvar Flashcard
     document.getElementById('formFlashcard').addEventListener('submit', (e) => {
         e.preventDefault();
         if (!currentUserId) return;
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nivelDominio: 0,
             intervalo: 0,
             repeticoes: 0,
-            facilidade: 2.5f = 2.5,
+            facilidade: 2.5,
             dataProximaRevisao: Date.now(),
             dataCriacao: Date.now()
         }).then(() => {
@@ -227,14 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.innerHTML = '';
 
                 if (snapshot.empty) {
-                    container.innerHTML = `<div class="p-6 text-center text-gray-500 bg-white rounded-2xl border border-gray-100">Nenhuma matéria encontrada. Clique em "Nova Matéria" acima.</div>`;
+                    container.innerHTML = `<div class="p-6 text-center text-gray-500 bg-white rounded-2xl border border-gray-100">Nenhuma matéria cadastrada.</div>`;
                     return;
                 }
 
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const btn = document.createElement('button');
-                    btn.className = 'w-full text-left p-4 rounded-xl bg-white hover:bg-purple-50 hover:text-primary transition card-md3 border border-gray-100 flex items-center justify-between font-medium text-gray-700';
+                    btn.className = 'w-full text-left p-4 rounded-2xl bg-white hover:bg-purple-50 hover:text-primary transition card-md3 border border-gray-100 flex items-center justify-between font-medium text-gray-700';
                     btn.innerHTML = `
                         <span class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-primary inline-block"></span> ${data.nome}
@@ -290,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contadorFlashcards').textContent = `Cartão ${indiceAtual + 1} de ${flashcardsAtuais.length}`;
     }
 
-    // Clique no card para virar (Flip)
     document.getElementById('flashcardContainer').addEventListener('click', () => {
         if (flashcardsAtuais.length === 0 || indiceAtual >= flashcardsAtuais.length) return;
         const card = flashcardsAtuais[indiceAtual];
@@ -307,9 +306,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    window.avaliarCard = function(nota) {
-        indiceAtual++;
-        exibirCardAtual();
+    // Lógica do Algoritmo de Repetição Espaçada (SRS) igual ao RevisaoFlashcardsFragment.java no Android
+    window.avaliarCard = function(score) {
+        if (indiceAtual >= flashcardsAtuais.length) return;
+        const card = flashcardsAtuais[indiceAtual];
+
+        let reps = card.repeticoes || 0;
+        let interv = card.intervalo || 0;
+        let facil = card.facilidade || 2.5;
+        let nivel = card.nivelDominio || 0;
+
+        if (score === 1) { // Difícil
+            reps = 0;
+            interv = 1;
+            nivel = Math.max(0, nivel - 1);
+        } else if (score === 3) { // Bom
+            reps += 1;
+            interv = (reps === 1) ? 1 : ((reps === 2) ? 6 : Math.round(interv * facil));
+            nivel = Math.min(5, nivel + 1);
+        } else if (score === 5) { // Fácil
+            reps += 1;
+            interv = (reps === 1) ? 2 : ((reps === 2) ? 7 : Math.round(interv * (facil + 0.3)));
+            nivel = Math.min(5, nivel + 2);
+        }
+
+        const proxRevisao = Date.now() + (interv * 86400000);
+
+        db.collection('users').doc(currentUserId).collection('flashcards').doc(card.id).update({
+            repeticoes: reps,
+            intervalo: interv,
+            nivelDominio: nivel,
+            dataProximaRevisao: proxRevisao
+        }).then(() => {
+            showToast("Revisão registrada!");
+            indiceAtual++;
+            exibirCardAtual();
+        });
     };
 });
 </script>

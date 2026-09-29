@@ -105,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dataFormatada = new Date(data.dataUltimaEdicao || Date.now()).toLocaleDateString('pt-BR');
 
                     const div = document.createElement('div');
-                    div.className = 'card-md3 p-5 border border-gray-100 flex flex-col justify-between hover:border-primary/50 transition';
+                    div.className = 'card-md3 p-5 border border-gray-100 flex flex-col justify-between hover:border-primary/50 transition cursor-pointer';
+                    div.onclick = () => window.location.href = `anotacoes_livres.php?id=${doc.id}`;
                     div.innerHTML = `
                         <div>
                             <div class="flex items-center justify-between mb-3">
@@ -115,7 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h3 class="font-bold text-gray-800 text-lg mb-2">${data.titulo || 'Sem Título'}</h3>
                             <p class="text-xs text-gray-500 line-clamp-3">${data.conteudoHtml ? data.conteudoHtml.replace(/<[^>]*>?/gm, '') : 'Anotação sem texto'}</p>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-gray-100 flex justify-end items-center text-xs">
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs">
+                            <span class="text-primary font-medium flex items-center gap-1"><span class="material-icons-outlined text-sm">open_in_new</span> Abrir Quadro</span>
                             <button onclick="deletarAnotacao(event, '${doc.id}')" class="text-gray-400 hover:text-red-600 transition flex items-center gap-1">
                                 <span class="material-icons-outlined text-base">delete</span> Excluir
                             </button>
