@@ -1366,10 +1366,10 @@ public class EditorAnotacaoFragment extends Fragment {
         if (t.isEmpty()) t = "Sem título";
         String j = exportarCanvasParaImageHtml();
         long a = System.currentTimeMillis();
-        
+
         if (anotacaoExistente != null) {
-            anotacaoExistente.titulo = t; 
-            anotacaoExistente.conteudoHtml = j; 
+            anotacaoExistente.titulo = t;
+            anotacaoExistente.conteudoHtml = j;
             anotacaoExistente.dataUltimaEdicao = a;
             FirestoreService.getInstance().salvarAnotacao(anotacaoExistente)
                 .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno atualizado!"))
@@ -1418,16 +1418,16 @@ public class EditorAnotacaoFragment extends Fragment {
                 
                 JSONObject obj = new JSONObject();
                 String tag = child.getTag() != null ? child.getTag().toString() : "";
-                
+
                 if (child instanceof MaterialCardView) {
                     MaterialCardView card = (MaterialCardView) child;
                     obj.put("tipo", "imagem");
                     obj.put("conteudo", tag);
-                    obj.put("x", card.getTranslationX()); 
+                    obj.put("x", card.getTranslationX());
                     obj.put("y", card.getTranslationY());
                     obj.put("scale", card.getScaleX()); 
                     obj.put("rotation", card.getRotation());
-                    obj.put("w", card.getWidth()); 
+                    obj.put("w", card.getWidth());
                     obj.put("h", card.getHeight());
                     array.put(obj);
                     continue;
@@ -1504,7 +1504,7 @@ public class EditorAnotacaoFragment extends Fragment {
                 JSONObject root = new JSONObject(json);
                 int savedW = root.optInt("canvasW", 3000);
                 int savedH = root.optInt("canvasH", 3000);
-                
+
                 ViewGroup.LayoutParams lp = canvasNotas.getLayoutParams();
                 lp.width = savedW;
                 lp.height = savedH;
@@ -1549,9 +1549,9 @@ public class EditorAnotacaoFragment extends Fragment {
                 card.setTag(conteudo);
 
                 card.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
-                card.setTranslationX((float) obj.getDouble("x")); 
+                card.setTranslationX((float) obj.getDouble("x"));
                 card.setTranslationY((float) obj.getDouble("y"));
-                card.setScaleX((float) obj.getDouble("scale")); 
+                card.setScaleX((float) obj.getDouble("scale"));
                 card.setScaleY((float) obj.getDouble("scale"));
                 card.setRotation((float) obj.getDouble("rotation"));
                 canvasNotas.addView(card);

@@ -1,4 +1,5 @@
 <?php
+
 $pageTitle = "Quadro de Anotações Livres";
 require_once __DIR__ . '/includes/header.php';
 ?>
