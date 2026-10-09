@@ -55,6 +55,7 @@
     <!-- Erros -->
     <color name="error">#DC4C4C</color>
     <color name="onError">#FFFFFF</color>
+    <color name="errorContainer">#FEECEC</color>
 
     <!-- Prioridades -->
 

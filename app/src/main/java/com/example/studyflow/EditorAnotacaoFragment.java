@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfRenderer;
@@ -1363,23 +1365,46 @@ public class EditorAnotacaoFragment extends Fragment {
         }
 
         String t = editTitulo.getText().toString().trim();
-        if (t.isEmpty()) t = "Sem título";
-        String j = exportarCanvasParaImageHtml();
-        long a = System.currentTimeMillis();
+        final String tituloNota = t.isEmpty() ? "Sem título" : t;
 
-        if (anotacaoExistente != null) {
-            anotacaoExistente.titulo = t;
-            anotacaoExistente.conteudoHtml = j;
-            anotacaoExistente.dataUltimaEdicao = a;
-            FirestoreService.getInstance().salvarAnotacao(anotacaoExistente)
-                .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno atualizado!"))
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Erro ao sincronizar", Toast.LENGTH_SHORT).show());
-        } else {
-            Anotacao n = new Anotacao(t, j, a);
-            FirestoreService.getInstance().salvarAnotacao(n)
-                .addOnSuccessListener(aVoid -> voltarComFeedback("Caderno salvo!"))
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Erro ao salvar", Toast.LENGTH_SHORT).show());
-        }
+        ProgressDialog pd = new ProgressDialog(getContext());
+        pd.setMessage("Salvando e sincronizando caderno...");
+        pd.setCancelable(false);
+        pd.show();
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            String j = serializarCanvas();
+            long a = System.currentTimeMillis();
+
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (anotacaoExistente != null) {
+                    anotacaoExistente.titulo = tituloNota; 
+                    anotacaoExistente.conteudoHtml = j; 
+                    anotacaoExistente.dataUltimaEdicao = a;
+                    FirestoreService.getInstance().salvarAnotacao(anotacaoExistente)
+                        .addOnSuccessListener(aVoid -> {
+                            pd.dismiss();
+                            voltarComFeedback("Caderno atualizado!");
+                        })
+                        .addOnFailureListener(e -> {
+                            pd.dismiss();
+                            Toast.makeText(getContext(), "Erro ao sincronizar", Toast.LENGTH_SHORT).show();
+                        });
+                } else {
+                    Anotacao n = new Anotacao(tituloNota, j, a);
+                    FirestoreService.getInstance().salvarAnotacao(n)
+                        .addOnSuccessListener(aVoid -> {
+                            pd.dismiss();
+                            voltarComFeedback("Caderno salvo!");
+                        })
+                        .addOnFailureListener(e -> {
+                            pd.dismiss();
+                            Toast.makeText(getContext(), "Erro ao salvar", Toast.LENGTH_SHORT).show();
+                        });
+                }
+            });
+        });
     }
 
     private String exportarCanvasParaImageHtml() {
@@ -1390,15 +1415,26 @@ public class EditorAnotacaoFragment extends Fragment {
                 w = 1080;
                 h = 1920;
             }
-            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
+            float maxDim = 1280f;
+            float scale = 1.0f;
+            if (w > maxDim || h > maxDim) {
+                scale = Math.min(maxDim / w, maxDim / h);
+            }
+            int targetW = (int) (w * scale);
+            int targetH = (int) (h * scale);
+
+            Bitmap bitmap = Bitmap.createBitmap(targetW, targetH, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE); // Garante fundo branco em vez de transparente/preto
+            canvas.scale(scale, scale);
             canvasNotas.draw(canvas);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, baos);
             byte[] bytes = baos.toByteArray();
             String base64 = Base64.encodeToString(bytes, Base64.NO_WRAP);
-            return "<img src=\"data:image/png;base64," + base64 + "\" />";
+            return "<img src=\"data:image/jpeg;base64," + base64 + "\" />";
         } catch (Exception e) {
             Log.e("EditorAnotacaoFragment", "Erro ao exportar imagem do canvas", e);
             return serializarCanvas();
@@ -1470,19 +1506,69 @@ public class EditorAnotacaoFragment extends Fragment {
         } catch (Exception e) { return "[]"; }
     }
 
-    private void carregarObjetosDoJson(String json) {
-        if (json == null || json.isEmpty()) return;
+    private String normalizarConteudoImagem(String tag) {
+        if (tag == null || tag.isEmpty() || getContext() == null) return tag != null ? tag : "";
+        if (tag.startsWith("data:image") || tag.startsWith("http")) return tag;
+        try {
+            Uri uri = (tag.startsWith("content:") || tag.startsWith("file:")) ? Uri.parse(tag) : Uri.fromFile(new File(tag));
+            InputStream is = getContext().getContentResolver().openInputStream(uri);
+            Bitmap b = BitmapFactory.decodeStream(is);
+            if (b == null) return tag;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            return "data:image/jpeg;base64," + Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+        } catch (Exception e) {
+            return tag;
+        }
+    }
 
-        // Se a anotação foi criada na Web e contém imagem em Base64 / HTML
-        if (json.startsWith("<") || json.contains("data:image")) {
+    private Bitmap criarBitmapDoPincel(JSONArray pontosArray, int cor, float espessura, int w, int h) {
+        try {
+            if (w <= 0) w = 200;
+            if (h <= 0) h = 200;
+            Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bmp);
+            c.drawColor(Color.TRANSPARENT);
+
+            Paint paint = new Paint();
+            paint.setColor(cor);
+            paint.setAntiAlias(true);
+            paint.setStrokeWidth(espessura);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeJoin(Paint.Join.ROUND);
+            paint.setStrokeCap(Paint.Cap.ROUND);
+
+            Path path = new Path();
+            if (pontosArray != null) {
+                for (int j = 0; j < pontosArray.length(); j++) {
+                    JSONObject p = pontosArray.getJSONObject(j);
+                    float px = (float) p.getDouble("x");
+                    float py = (float) p.getDouble("y");
+                    if (j == 0) path.moveTo(px, py);
+                    else path.lineTo(px, py);
+                }
+            }
+            c.drawPath(path, paint);
+            return bmp;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void carregarObjetosDoJson(String json) {
+        if (json == null || json.trim().isEmpty()) return;
+        String trimmed = json.trim();
+
+        // Se for HTML puro ou imagem em Base64 direta (sem ser JSON de objetos)
+        if ((trimmed.startsWith("<") || trimmed.startsWith("data:image")) && !trimmed.startsWith("{") && !trimmed.startsWith("[")) {
             try {
-                int start = json.indexOf("base64,");
+                int start = trimmed.indexOf("base64,");
                 if (start != -1) {
                     start += 7;
-                    int end = json.indexOf("\"", start);
-                    if (end == -1) end = json.indexOf("'", start);
-                    if (end == -1) end = json.length();
-                    String base64Data = json.substring(start, end).trim();
+                    int end = trimmed.indexOf("\"", start);
+                    if (end == -1) end = trimmed.indexOf("'", start);
+                    if (end == -1) end = trimmed.length();
+                    String base64Data = trimmed.substring(start, end).trim();
                     byte[] decodedString = Base64.decode(base64Data, Base64.DEFAULT);
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     if (decodedByte != null) {
@@ -1490,7 +1576,17 @@ public class EditorAnotacaoFragment extends Fragment {
                         iv.setImageBitmap(decodedByte);
                         iv.setAdjustViewBounds(true);
                         iv.setOnTouchListener(new MultiTouchListener(getContext()));
-                        canvasNotas.addView(iv, new RelativeLayout.LayoutParams(decodedByte.getWidth(), decodedByte.getHeight()));
+
+                        int cw = canvasNotas.getWidth() > 0 ? canvasNotas.getWidth() : 1080;
+                        int ch = canvasNotas.getHeight() > 0 ? canvasNotas.getHeight() : 1920;
+                        float posX = Math.max(0, (cw - decodedByte.getWidth()) / 2f);
+                        float posY = Math.max(0, (ch - decodedByte.getHeight()) / 2f);
+
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(decodedByte.getWidth(), decodedByte.getHeight());
+                        iv.setLayoutParams(lp);
+                        iv.setTranslationX(posX);
+                        iv.setTranslationY(posY);
+                        canvasNotas.addView(iv);
                     }
                 }
             } catch (Exception e) {
@@ -1498,21 +1594,70 @@ public class EditorAnotacaoFragment extends Fragment {
             }
             return;
         }
+
         try {
             JSONArray array;
-            if (json.startsWith("{")) {
-                JSONObject root = new JSONObject(json);
-                int savedW = root.optInt("canvasW", 3000);
-                int savedH = root.optInt("canvasH", 3000);
+            float factorX = 1.0f;
+            float factorY = 1.0f;
 
-                ViewGroup.LayoutParams lp = canvasNotas.getLayoutParams();
-                lp.width = savedW;
-                lp.height = savedH;
-                canvasNotas.setLayoutParams(lp);
-                
-                array = root.getJSONArray("objetos");
+            if (trimmed.startsWith("{")) {
+                JSONObject root = new JSONObject(trimmed);
+                int savedW = root.optInt("canvasW", 1200);
+                int savedH = root.optInt("canvasH", 800);
+
+                if (canvasNotas.getWidth() > 0 && savedW > 0) {
+                    factorX = (float) canvasNotas.getWidth() / (float) savedW;
+                }
+                if (canvasNotas.getHeight() > 0 && savedH > 0) {
+                    factorY = (float) canvasNotas.getHeight() / (float) savedH;
+                }
+
+                if (factorX <= 0f || Float.isNaN(factorX) || Float.isInfinite(factorX)) factorX = 1.0f;
+                if (factorY <= 0f || Float.isNaN(factorY) || Float.isInfinite(factorY)) factorY = 1.0f;
+
+                array = root.optJSONArray("objetos");
+                if (array == null) array = new JSONArray();
             } else {
-                array = new JSONArray(json);
+                array = new JSONArray(trimmed);
+            }
+
+            // ALGORITMO DE CENTRALIZAÇÃO DOS COMPONENTES NO MEIO DO QUADRO
+            double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+            double minY = Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                String tipo = obj.optString("tipo", "");
+                if (tipo.equals("desenho")) continue;
+
+                double x = obj.optDouble("x", 50) * factorX;
+                double y = obj.optDouble("y", 50) * factorY;
+                double w = Math.max(60, obj.optInt("w", 200) * factorX);
+                double h = Math.max(40, obj.optInt("h", 100) * factorY);
+
+                if (x < minX) minX = x;
+                if (x + w > maxX) maxX = x + w;
+                if (y < minY) minY = y;
+                if (y + h > maxY) maxY = y + h;
+            }
+
+            double shiftX = 0;
+            double shiftY = 0;
+
+            if (minX != Double.MAX_VALUE && maxX != -Double.MAX_VALUE) {
+                double bboxWidth = maxX - minX;
+                double bboxHeight = maxY - minY;
+                double bboxCenterX = minX + bboxWidth / 2.0;
+                double bboxCenterY = minY + bboxHeight / 2.0;
+
+                int targetCw = canvasNotas.getWidth() > 0 ? canvasNotas.getWidth() : 1080;
+                int targetCh = canvasNotas.getHeight() > 0 ? canvasNotas.getHeight() : 1920;
+
+                double targetCenterX = targetCw / 2.0;
+                double targetCenterY = targetCh / 2.0;
+
+                shiftX = targetCenterX - bboxCenterX;
+                shiftY = targetCenterY - bboxCenterY;
             }
 
             List<JSONObject> pdfPages = new ArrayList<>();
@@ -1529,10 +1674,11 @@ public class EditorAnotacaoFragment extends Fragment {
                 }
             }
 
-            // 1. Carrega as páginas do PDF primeiro (fundo / background)
+            // 1. Carrega as páginas do PDF primeiro
             for (JSONObject obj : pdfPages) {
-                String conteudo = obj.getString("conteudo");
-                int w = obj.getInt("w"), h = obj.getInt("h");
+                String conteudo = obj.optString("conteudo", "");
+                int w = (int) Math.max(100, obj.optInt("w", 200) * factorX);
+                int h = (int) Math.max(100, obj.optInt("h", 200) * factorY);
                 ImageView iv = new ImageView(getContext());
                 Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
                 if (b != null) iv.setImageBitmap(b);
@@ -1549,37 +1695,58 @@ public class EditorAnotacaoFragment extends Fragment {
                 card.setTag(conteudo);
 
                 card.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
-                card.setTranslationX((float) obj.getDouble("x"));
-                card.setTranslationY((float) obj.getDouble("y"));
-                card.setScaleX((float) obj.getDouble("scale"));
-                card.setScaleY((float) obj.getDouble("scale"));
-                card.setRotation((float) obj.getDouble("rotation"));
+                card.setTranslationX((float) (obj.optDouble("x", 0) * factorX + shiftX));
+                card.setTranslationY((float) (obj.optDouble("y", 0) * factorY + shiftY));
+                card.setScaleX((float) obj.optDouble("scale", 1));
+                card.setScaleY((float) obj.optDouble("scale", 1));
+                card.setRotation((float) obj.optDouble("rotation", 0));
                 canvasNotas.addView(card);
             }
 
-            // 2. Carrega os demais objetos (textos, formas, stickers, imagens da galeria, desenhos) por cima
+            // 2. Carrega cada objeto individual centralizado no meio do quadro
             for (int i = 0; i < otherObjects.size(); i++) {
                 JSONObject obj = otherObjects.get(i);
-                String tipo = obj.getString("tipo"), conteudo = obj.getString("conteudo");
-                int w = obj.getInt("w"), h = obj.getInt("h");
-                View v;
+                String tipo = obj.optString("tipo", "texto");
+                String conteudo = obj.optString("conteudo", "");
+                int w = (int) Math.max(60, obj.optInt("w", 200) * factorX);
+                int h = (int) Math.max(40, obj.optInt("h", 100) * factorY);
+
+                float posX = tipo.equals("desenho") ? 0 : (float) (obj.optDouble("x", 50) * factorX + shiftX);
+                float posY = tipo.equals("desenho") ? 0 : (float) (obj.optDouble("y", 50) * factorY + shiftY);
+
+                View v = null;
+
                 if (tipo.equals("texto")) {
                     TextView tv = new TextView(getContext());
-                    tv.setText(conteudo); 
+                    tv.setText(conteudo);
                     int size = obj.optInt("size", 24);
                     int color = obj.optInt("color", Color.BLACK);
-                    tv.setTextSize(size); 
+                    tv.setTextSize(size);
                     tv.setTextColor(color);
                     tv.setPadding(20, 20, 20, 20);
-                    
+
                     JSONObject meta = new JSONObject();
                     meta.put("type", "text"); meta.put("color", color); meta.put("size", size);
                     tv.setTag(meta.toString());
                     v = tv;
                 } else if (tipo.equals("sticker")) {
                     TextView tv = new TextView(getContext());
-                    tv.setText(conteudo); tv.setTextSize(50); tv.setTag("sticker:" + conteudo);
+                    tv.setText(conteudo);
+                    tv.setTextSize(50);
+                    tv.setTag("sticker:" + conteudo);
                     v = tv;
+                } else if (tipo.equals("pincel")) {
+                    JSONArray pontosArray = obj.optJSONArray("pontos");
+                    int color = Color.parseColor(obj.optString("cor", "#1C1B1F"));
+                    float espessura = (float) obj.optDouble("espessura", 4.0);
+                    Bitmap strokeBmp = criarBitmapDoPincel(pontosArray, color, espessura, w, h);
+                    if (strokeBmp != null) {
+                        ImageView iv = new ImageView(getContext());
+                        iv.setImageBitmap(strokeBmp);
+                        iv.setAdjustViewBounds(true);
+                        iv.setTag("pincel");
+                        v = iv;
+                    }
                 } else if (tipo.equals("forma")) {
                     v = new View(getContext());
                     int color = obj.optInt("color", Color.BLACK);
@@ -1589,32 +1756,53 @@ public class EditorAnotacaoFragment extends Fragment {
                     } catch (Exception e) {
                         v.setBackground(ShapeDrawableHelper.createShape(ShapeDrawableHelper.ShapeType.RECTANGLE, color, filled));
                     }
-                    
+
                     JSONObject meta = new JSONObject();
                     meta.put("type", conteudo); meta.put("color", color); meta.put("filled", filled);
                     v.setTag(meta.toString());
-                } else {
-                    // Imagem normal do usuário (galeria) - totalmente interativa e móvel
+                } else if (tipo.equals("imagem") || tipo.equals("desenho")) {
                     ImageView iv = new ImageView(getContext());
-                    Bitmap b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
+                    Bitmap b = null;
+
+                    if (conteudo.startsWith("data:image")) {
+                        try {
+                            int start = conteudo.indexOf("base64,");
+                            if (start != -1) {
+                                start += 7;
+                                byte[] decodedString = Base64.decode(conteudo.substring(start).trim(), Base64.DEFAULT);
+                                b = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            }
+                        } catch (Exception e) {
+                            Log.e("EditorAnotacaoFragment", "Erro ao decodificar imagem Base64 do objeto", e);
+                        }
+                    } else if (!conteudo.isEmpty()) {
+                        b = carregarBitmapOtimizado(Uri.fromFile(new File(conteudo)), w, h);
+                    }
+
                     if (b != null) iv.setImageBitmap(b);
                     iv.setAdjustViewBounds(true);
                     iv.setTag(conteudo);
                     v = iv;
                 }
-                v.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
-                if (!(v instanceof MaterialCardView)) {
-                    v.setOnTouchListener(new MultiTouchListener(getContext()));
-                    v.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(v); return true; });
+
+                if (v != null) {
+                    final View viewTarget = v;
+                    viewTarget.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
+                    if (!(viewTarget instanceof MaterialCardView)) {
+                        viewTarget.setOnTouchListener(new MultiTouchListener(getContext()));
+                        viewTarget.setOnLongClickListener(view -> { mostrarMenuOpcoesObjeto(viewTarget); return true; });
+                    }
+                    viewTarget.setTranslationX(posX);
+                    viewTarget.setTranslationY(posY);
+                    viewTarget.setScaleX((float) obj.optDouble("scale", 1));
+                    viewTarget.setScaleY((float) obj.optDouble("scale", 1));
+                    viewTarget.setRotation((float) obj.optDouble("rotation", 0));
+                    canvasNotas.addView(viewTarget);
                 }
-                v.setTranslationX((float) obj.getDouble("x")); v.setTranslationY((float) obj.getDouble("y"));
-                v.setScaleX((float) obj.getDouble("scale")); v.setScaleY((float) obj.getDouble("scale"));
-                v.setRotation((float) obj.getDouble("rotation"));
-                canvasNotas.addView(v);
             }
-            
+
             if (desenhoView != null) desenhoView.bringToFront();
-            
+
         } catch (Exception e) { e.printStackTrace(); }
     }
 

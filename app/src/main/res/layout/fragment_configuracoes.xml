@@ -872,10 +872,27 @@
             app:backgroundTint="@color/primary"
             app:cornerRadius="16dp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardSobreConfig" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSairConta"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Sair da Conta"
+            android:textAllCaps="false"
+            android:textColor="@color/error"
+            android:textSize="13sp"
+            app:backgroundTint="@color/errorContainer"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSalvarConfig" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

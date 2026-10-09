@@ -1,6 +1,7 @@
 package com.example.studyflow;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -97,6 +98,17 @@ public class ConfiguracoesFragment extends Fragment {
         Button btnAlterarFoto = view.findViewById(R.id.btnAlterarFoto);
         Button btnExportar = view.findViewById(R.id.btnExportarDados);
         Button btnLimpar = view.findViewById(R.id.btnLimparTudo);
+        Button btnSair = view.findViewById(R.id.btnSairConta);
+
+        if (btnSair != null) {
+            btnSair.setOnClickListener(v -> {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(requireContext(), "Desconectado com sucesso", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(requireContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            });
+        }
 
         prefs = requireContext().getSharedPreferences("StudyFlowPrefs", Context.MODE_PRIVATE);
 

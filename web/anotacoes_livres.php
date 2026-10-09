@@ -717,21 +717,74 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (strTrim.startsWith('{') || strTrim.startsWith('[')) {
             try {
                 let arrayObjetos = [];
+                let canvasW = canvas.width;
+                let canvasH = canvas.height;
+
                 if (strTrim.startsWith('{')) {
                     const root = JSON.parse(strTrim);
                     arrayObjetos = root.objetos || [];
+                    if (root.canvasW && root.canvasW > 0) canvasW = root.canvasW;
+                    if (root.canvasH && root.canvasH > 0) canvasH = root.canvasH;
                 } else {
                     arrayObjetos = JSON.parse(strTrim);
                 }
 
+                const factorX = canvas.width / canvasW;
+                const factorY = canvas.height / canvasH;
+
+                // ALGORITMO DE CENTRALIZAÇÃO GEOMÉTRICA NO MEIO DO QUADRO WEB
+                let minX = Infinity, maxX = -Infinity;
+                let minY = Infinity, maxY = -Infinity;
+
+                arrayObjetos.forEach(obj => {
+                    const tipo = obj.tipo || 'texto';
+                    if (tipo === 'desenho') return;
+
+                    const rawX = parseFloat(obj.x) || 50;
+                    const rawY = parseFloat(obj.y) || 50;
+                    const rawW = parseFloat(obj.w) || 200;
+                    const rawH = parseFloat(obj.h) || 100;
+
+                    const x = rawX * factorX;
+                    const y = rawY * factorY;
+                    const w = Math.max(30, rawW * factorX);
+                    const h = Math.max(20, rawH * factorY);
+
+                    if (x < minX) minX = x;
+                    if (x + w > maxX) maxX = x + w;
+                    if (y < minY) minY = y;
+                    if (y + h > maxY) maxY = y + h;
+                });
+
+                let shiftX = 0;
+                let shiftY = 0;
+
+                if (minX !== Infinity && maxX !== -Infinity) {
+                    const bboxW = maxX - minX;
+                    const bboxH = maxY - minY;
+                    const bboxCenterX = minX + bboxW / 2;
+                    const bboxCenterY = minY + bboxH / 2;
+
+                    const viewportCenterX = canvas.width / 2;
+                    const viewportCenterY = canvas.height / 2;
+
+                    shiftX = viewportCenterX - bboxCenterX;
+                    shiftY = viewportCenterY - bboxCenterY;
+                }
+
                 arrayObjetos.forEach((obj, idx) => {
                     const tipo = obj.tipo || 'texto';
-                    const x = parseFloat(obj.x) || 50;
-                    const y = parseFloat(obj.y) || 50;
+                    let rawX = parseFloat(obj.x) || 50;
+                    let rawY = parseFloat(obj.y) || 50;
+                    let rawW = parseFloat(obj.w) || 200;
+                    let rawH = parseFloat(obj.h) || 100;
                     const scale = parseFloat(obj.scale) || 1;
                     const rot = parseFloat(obj.rotation) || 0;
-                    const w = parseFloat(obj.w) || 200;
-                    const h = parseFloat(obj.h) || 100;
+
+                    let x = (rawX * factorX) + (tipo === 'desenho' ? 0 : shiftX);
+                    let y = (rawY * factorY) + (tipo === 'desenho' ? 0 : shiftY);
+                    let w = Math.max(30, rawW * factorX);
+                    let h = Math.max(20, rawH * factorY);
 
                     if (tipo === 'texto') {
                         itens.push({
@@ -741,15 +794,28 @@ document.addEventListener('DOMContentLoaded', () => {
                             x: x, y: y, largura: w, altura: h,
                             escala: scale, rotacao: rot, zIndex: idx
                         });
-                    } else if (tipo === 'imagem' || tipo === 'sticker') {
-                        if (obj.conteudo) {
+                    } else if (tipo === 'sticker') {
+                        itens.push({
+                            id: Date.now() + idx,
+                            tipo: 'sticker',
+                            conteudo: obj.conteudo || '⭐',
+                            x: x, y: y, largura: Math.max(60, w), altura: Math.max(60, h),
+                            escala: scale, rotacao: rot, zIndex: idx
+                        });
+                    } else if (tipo === 'imagem' || tipo === 'desenho') {
+                        if (obj.conteudo && (obj.conteudo.startsWith('data:image') || obj.conteudo.startsWith('http'))) {
                             const img = new Image();
                             img.onload = () => {
+                                const finalW = tipo === 'desenho' ? canvas.width : w;
+                                const finalH = tipo === 'desenho' ? canvas.height : h;
+                                const finalX = tipo === 'desenho' ? 0 : x;
+                                const finalY = tipo === 'desenho' ? 0 : y;
+
                                 itens.push({
                                     id: Date.now() + idx,
                                     tipo: 'imagem',
                                     imgElement: img,
-                                    x: x, y: y, largura: w, altura: h,
+                                    x: finalX, y: finalY, largura: finalW, altura: finalH,
                                     escala: scale, rotacao: rot, zIndex: idx
                                 });
                                 desenharCena();
@@ -839,17 +905,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnSalvarQuadro').addEventListener('click', () => {
         if (!currentUserId) return;
-        const titulo = "Quadro Rápido " + new Date().toLocaleDateString('pt-BR');
+        const titulo = tituloAnotacaoAtual || ("Quadro Rápido " + new Date().toLocaleDateString('pt-BR'));
 
         const backupSel = itemSelecionado;
         itemSelecionado = null;
         desenharCena();
 
-        const dataUrl = canvas.toDataURL('image/png');
+        // Cria canvas temporário com fundo branco sólido (#FFFFFF) para evitar telas pretas/transparentes
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(canvas, 0, 0);
+
+        const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
+
         itemSelecionado = backupSel;
         desenharCena();
 
-        const ref = db.collection('users').doc(currentUserId).collection('anotacoes').doc();
+        const ref = idAnotacaoAtual
+            ? db.collection('users').doc(currentUserId).collection('anotacoes').doc(idAnotacaoAtual)
+            : db.collection('users').doc(currentUserId).collection('anotacoes').doc();
+
+        if (!idAnotacaoAtual) idAnotacaoAtual = ref.id;
+
         ref.set({
             id: ref.id,
             titulo: titulo,
